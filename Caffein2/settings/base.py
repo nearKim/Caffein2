@@ -21,9 +21,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load secret key
 # https://wayhome25.github.io/django/2017/07/11/django-settings-secret-key/
-secret_file = os.path.join(BASE_DIR, 'secretes.json')
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
 with open(secret_file) as f:
-    secrets = json.load(f.read())
+    secrets = json.loads(f.read())
 
 
 def get_secret(setting, secrets=secrets):
@@ -51,6 +51,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # User registered apps
+    'accounts',
+    'cafe',
+    'core',
+    'meetings',
+    'partners',
+    'survey',
+    # 3rd party apps
+    'imagekit',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +78,7 @@ ROOT_URLCONF = 'Caffein2.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'Caffein2', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,16 +92,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Caffein2.wsgi.application'
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -128,3 +128,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Media files
+
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'media'),
+]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# User Model
+# TODO: Define Custom User model
+# AUTH_USER_MODEL = 'accounts.User'
+
+# Crispy Forms
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

@@ -6,6 +6,7 @@ secrets.json
 caffein2-env/
 
 # sqlite3 DB
+/Caffein2/db.sqlite3
 /db.sqlite3
 
 # AWS related
