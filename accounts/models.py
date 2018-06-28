@@ -122,6 +122,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('회원')
         verbose_name_plural = _('회원')
 
+    def __str__(self):
+        return "{} {} {}".format(self.get_college_display(), self.get_department_display(), self.name)
+
     def get_user_name(self):
         """Returns the short name for the user.
         """
@@ -137,13 +140,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class ActiveUser(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     active_year = models.PositiveSmallIntegerField(_('활동 년도'), default=now().year)
     active_semester = models.PositiveSmallIntegerField(_('활동 학기'), choices=User.SEMESTER_CHOICE)
     is_paid = models.BooleanField(_('입금 확인'), default=False)
 
+    def __str__(self):
+        return self.user.__str__()
+
     def is_paid(self):
-        """Make bastards who didn't pay pay"""
+        """Make bastards who didn't pay pay
+        """
         return self.is_paid
 
     def is_new(self):
