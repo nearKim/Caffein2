@@ -1,26 +1,41 @@
 from django.db import models
-from django.conf import settings
+
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from .mixins import (
     TimeStampedMixin,
-    Postable,
+    Instable,
+    Postable
 )
 
 
-class Post(Postable):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('작성자'))
+class Instagram(Instable):
+    pass
 
 
-def get_photo_post_path(instance, filename):
+class Posting(Postable):
+    pass
+
+
+def get_feed_photo_path(instance, filename):
+    user_id = instance.pk
+    return 'feed_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
+
+
+def get_posted_photo_path(instance, filename):
     user_id = instance.pk
     return 'post_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
-class Photos(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_photo_post_path)
-    posting = models.ForeignKey(Post, default=None, on_delete=models.CASCADE)
+class FeedPhotos(models.Model):
+    image = models.ImageField(upload_to=get_feed_photo_path)
+    instagram = models.ForeignKey(Instagram, default=None, on_delete=models.CASCADE)
+
+
+class PostedPhotos(models.Model):
+    image = models.ImageField(upload_to=get_posted_photo_path)
+    posting = models.ForeignKey(Posting, default=None, on_delete=models.CASCADE)
 
 
 class OperationScheme(models.Model):
@@ -51,6 +66,7 @@ class OperationScheme(models.Model):
     bank = models.CharField(_('입금 은행'), choices=BANK_CHOICES, max_length=2)
 
     # 어떠한 일이 있어도 이 relation의 tuple 정보는 삭제되면 안됨
+    # 피치 못할 경우 동일인이 회장을 2회 할 가능성 존재
     boss = models.ForeignKey('accounts.ActiveUser', on_delete=models.DO_NOTHING)
 
     new_pay = models.PositiveIntegerField(_('신입회원 가입비'))
