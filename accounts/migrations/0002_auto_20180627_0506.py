@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='join_year',
-            field=models.PositiveSmallIntegerField(validators=[accounts.validator.enroll_year_validator], verbose_name='가입 년도'),
+            field=models.PositiveSmallIntegerField(validators=[accounts.validator.year_validator], verbose_name='가입 년도'),
         ),
         migrations.AlterField(
             model_name='user',

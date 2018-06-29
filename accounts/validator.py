@@ -13,9 +13,9 @@ def student_no_validator(value):
         raise ValidationError(_('학번을 정확히 입력해 주세요.'))
 
 
-def enroll_year_validator(value):
+def year_validator(value):
     if not re.match(r'^(20[\d+]{2})$', str(value)):
-        raise ValidationError('가입년도를 정확히 입력해 주세요.')
+        raise ValidationError('연도를 정확히 입력해 주세요.')
 
 
 def snumail_validator(value):

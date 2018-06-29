@@ -67,7 +67,7 @@ class OperationScheme(models.Model):
 
     # 어떠한 일이 있어도 이 relation의 tuple 정보는 삭제되면 안됨
     # 피치 못할 경우 동일인이 회장을 2회 할 가능성 존재
-    boss = models.ForeignKey('accounts.ActiveUser', on_delete=models.DO_NOTHING)
+    boss = models.ForeignKey('accounts.ActiveUser', on_delete=models.DO_NOTHING, limit_choices_to={'is_staff': True})
 
     new_pay = models.PositiveIntegerField(_('신입회원 가입비'))
     old_pay = models.PositiveIntegerField(_('기존회원 가입비'))

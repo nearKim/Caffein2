@@ -20,7 +20,7 @@ from .validator import (
     snumail_validator,
     student_no_validator,
     phone_validator,
-    enroll_year_validator
+    year_validator
 )
 from django.utils.timezone import now
 from imagekit.models import ProcessedImageField
@@ -104,7 +104,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                       options={'quality': 60},
                                       null=True, blank=True)
 
-    join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[enroll_year_validator])
+    join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[year_validator])
     join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE)
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
@@ -141,7 +141,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class ActiveUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    active_year = models.PositiveSmallIntegerField(_('활동 년도'), default=now().year)
+    active_year = models.PositiveSmallIntegerField(_('활동 년도'), default=now().year, validators=[year_validator])
     active_semester = models.PositiveSmallIntegerField(_('활동 학기'), choices=User.SEMESTER_CHOICE)
     is_paid = models.BooleanField(_('입금 확인'), default=False)
 
@@ -153,6 +153,7 @@ class ActiveUser(models.Model):
         """
         return self.is_paid
 
+    @property
     def is_new(self):
         """Return whether this active user is a newbie or not
         """
