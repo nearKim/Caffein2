@@ -72,6 +72,10 @@ class OperationScheme(models.Model):
     new_pay = models.PositiveIntegerField(_('신입회원 가입비'))
     old_pay = models.PositiveIntegerField(_('기존회원 가입비'))
 
+    class Meta:
+        verbose_name = _('운영 정보')
+        verbose_name_plural = _('운영 정보')
+
     @staticmethod
     def latest():
         return OperationScheme.objects.latest('id')

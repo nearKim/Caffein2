@@ -27,6 +27,10 @@ class Partners(models.Model):
                                        blank=True, null=True)
     score = models.SmallIntegerField(_('짝지 점수'), default=0)
 
+    class Meta:
+        verbose_name = _('짝지')
+        verbose_name_plural = _('짝지')
+
     def raise_score(self, score):
         self.score += score
         self.save()
@@ -36,3 +40,7 @@ class PartnerMeeting(Instagram):
     partner = models.ForeignKey(Partners, on_delete=models.CASCADE)
     num_coffee = models.SmallIntegerField(_('마신 커피 수'), default=0)
     num_eat = models.SmallIntegerField(_('먹은 식사 수'), default=0)
+
+    class Meta:
+        verbose_name = _('짝지 모임')
+        verbose_name_plural = _('짝지 모임')

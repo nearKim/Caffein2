@@ -142,6 +142,10 @@ class ActiveUser(models.Model):
     active_semester = models.PositiveSmallIntegerField(_('활동 학기'), choices=User.SEMESTER_CHOICE)
     is_paid = models.BooleanField(_('입금 확인'), default=False)
 
+    class Meta:
+        verbose_name = _('활동 회원')
+        verbose_name_plural = _('활동 회원')
+
     def __str__(self):
         return self.user.__str__()
 

@@ -11,6 +11,10 @@ class Meeting(Posting):
     max_participants = models.PositiveIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
+    class Meta:
+        verbose_name = _('모임')
+        verbose_name_plural = _('모임')
+
     def can_participate(self):
         if self.max_participants == 0:
             return True
@@ -34,6 +38,10 @@ class OfficialMeeting(Meeting):
     # TODO: Add navermap / googlemap functionality
     location = models.CharField(_('행사 장소'), max_length=50, blank=True)
 
+    class Meta:
+        verbose_name = _('공식 모임')
+        verbose_name_plural = _('공식 모임')
+
 
 class CoffeeEducation(Meeting):
     DRIP, CUPPING, ESPRESSO, ADMIN = 'd', 'c', 'e', 'a'
@@ -54,6 +62,10 @@ class CoffeeEducation(Meeting):
     difficulty = models.CharField(_('난이도'), max_length=1, choices=DIFFICULTY_CHOICES)
     # TODO: Add navermap / googlemap functionality
     location = models.CharField(_('장소'), max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = _('커피 교육')
+        verbose_name_plural = _('커피 교육')
 
 
 class CoffeeMeeting(Meeting):
