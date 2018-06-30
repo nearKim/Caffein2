@@ -13,14 +13,17 @@ class Partners(models.Model):
     down_partner_1 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
                                        limit_choices_to={'is_new': True},
+                                       related_name='partners1',
                                        blank=True, null=True)
     down_partner_2 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
                                        limit_choices_to={'is_new': True},
+                                       related_name='partners2',
                                        blank=True, null=True)
     down_partner_3 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
                                        limit_choices_to={'is_new': True},
+                                       related_name='partners3',
                                        blank=True, null=True)
     score = models.SmallIntegerField(_('짝지 점수'), default=0)
 

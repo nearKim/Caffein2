@@ -59,7 +59,4 @@ class CoffeeEducation(Meeting):
 class CoffeeMeeting(Meeting):
     pass
     # TODO: Add cafe app
-    # cafe = models.ForeignKey()
-
-
 

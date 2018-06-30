@@ -67,10 +67,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    UNDERGRADUATE = 'u'
-    GRADUATE = 'g'
-    EXCHANGE = 'e'
-    PROFESSOR = 'p'
+    UNDERGRADUATE, GRADUATE, EXCHANGE, PROFESSOR = 'u', 'g', 'e', 'p'
 
     STUDENT_CATEGORY = (
         (UNDERGRADUATE, '학부생'),
@@ -104,8 +101,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                                       options={'quality': 60},
                                       null=True, blank=True)
 
-    join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[year_validator])
-    join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE)
+    join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[year_validator], default=now().year)
+    join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE, default=1)
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
     rule_confirm = models.BooleanField(_('약관 동의'), default=False)
