@@ -25,7 +25,7 @@ class Partners(models.Model):
                                        limit_choices_to={'is_new': True},
                                        related_name='partners3',
                                        blank=True, null=True)
-    score = models.SmallIntegerField(_('짝지 점수'), default=0)
+    score = models.FloatField(_('짝지 점수'), default=0.0)
 
     class Meta:
         verbose_name = _('짝지')
@@ -44,3 +44,9 @@ class PartnerMeeting(Instagram):
     class Meta:
         verbose_name = _('짝지 모임')
         verbose_name_plural = _('짝지 모임')
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        pass
+        # TODO: implement here
+        # self.partner.raise_score()

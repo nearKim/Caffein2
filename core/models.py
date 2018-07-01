@@ -55,12 +55,15 @@ class OperationScheme(models.Model):
 
     semester_start = models.DateField(_('학기 시작일'))
     # 학기 종료일 = 짝지 마감일
-    semester_end = models.DateField(_('학기 종료일'), blank=True, null=True)
+    semester_end = models.DateField(_('학기 종료일'), blank=True, null=True, default=None)
 
     new_register_start = models.DateTimeField(_('신입 가입 시작일'))
     new_register_end = models.DateTimeField(_('신입 가입 종료일'))
     old_register_start = models.DateTimeField(_('기존 가입 시작일'))
     old_register_end = models.DateTimeField(_('기존 가입 종료일'))
+
+    coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0, help_text=_('실수형 점수입니다. 예: 2.0'))
+    eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))
 
     bank_account = models.CharField(_('입금 계좌'), max_length=30)
     bank = models.CharField(_('입금 은행'), choices=BANK_CHOICES, max_length=2)
