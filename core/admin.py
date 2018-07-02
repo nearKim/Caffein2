@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import (
+    OperationScheme,
+    Posting,
+    Instagram,
+)
 
-# Register your models here.
+admin.site.register(OperationScheme)
+admin.site.register(Posting)
+admin.site.register(Instagram)

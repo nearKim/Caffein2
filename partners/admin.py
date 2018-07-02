@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import (
+    Partners,
+    PartnerMeeting
+)
 
-# Register your models here.
+admin.site.register(Partners)
+admin.site.register(PartnerMeeting)

@@ -34,6 +34,14 @@ def get_profile_path(instance, filename):
     return 'accounts/profile/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
+def get_default_semester():
+    """If today is between August(8) and September(9) return 2(Fall) else 1(Spring)"""
+    if now().month in range(8, 10):
+        return 2
+    elif now().month in range(2, 4):
+        return 1
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -102,7 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                       null=True, blank=True)
 
     join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[year_validator], default=now().year)
-    join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE, default=1)
+    join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE, default=get_default_semester)
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
     rule_confirm = models.BooleanField(_('약관 동의'), default=False)
@@ -150,12 +158,10 @@ class ActiveUser(models.Model):
         return self.user.__str__()
 
     def is_paid(self):
-        """Make bastards who didn't pay pay
-        """
+        """Make bastards who didn't pay pay"""
         return self.is_paid
 
     @property
     def is_new(self):
-        """Return whether this active user is a newbie or not
-        """
+        """Return whether this active user is a newbie or not"""
         return self.user.get_join_year_semester == (self.active_year, self.active_semester)
