@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.urls import reverse
 
 if not settings.configured:
     # TODO: Production 레벨에서 Production 세팅으로 전환
@@ -121,7 +122,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['join_semester']
 
     class Meta:
         verbose_name = _('회원')
@@ -129,6 +130,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return "{} {} {}".format(self.get_college_display(), self.get_department_display(), self.name)
+
+    def get_absolute_url(self):
+        return reverse('accounts:detail', args=[str(self.id)])
 
     def get_user_name(self):
         """Returns the short name for the user.

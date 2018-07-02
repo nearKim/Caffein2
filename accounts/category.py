@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class College(Enum):
     HUMANITY = 'hum'
     SOCIAL = 'soc'
@@ -22,24 +23,24 @@ class College(Enum):
 
 
 COLLEGE_CHOICES = (
-    (College.HUMANITY, '인문대학'),
-    (College.SOCIAL, '사회과학대학'),
-    (College.NATURE, '자연과학대학'),
-    (College.NURSING, '간호대학'),
-    (College.BUSINESS, '경영대학'),
-    (College.ENGINEERING, '공과대학'),
-    (College.AGRICULTURE, '농업생명과학대학'),
-    (College.ART, '미술대학'),
-    (College.LAW, '법과대학'),
-    (College.EDUCATION, '사범대학'),
-    (College.HUMEC, '생활과학대학'),
-    (College.VETERINARY, '수의과대학'),
-    (College.PHARMACY, '약학대학'),
-    (College.MUSIC, '음악대학'),
-    (College.MEDICINE, '의과대학'),
-    (College.FREE, '자유전공학부'),
-    (College.UNION, '연합전공'),
-    (College.CORRELATION, '연계전공')
+    (College.HUMANITY.value, '인문대학'),
+    (College.SOCIAL.value, '사회과학대학'),
+    (College.NATURE.value, '자연과학대학'),
+    (College.NURSING.value, '간호대학'),
+    (College.BUSINESS.value, '경영대학'),
+    (College.ENGINEERING.value, '공과대학'),
+    (College.AGRICULTURE.value, '농업생명과학대학'),
+    (College.ART.value, '미술대학'),
+    (College.LAW.value, '법과대학'),
+    (College.EDUCATION.value, '사범대학'),
+    (College.HUMEC.value, '생활과학대학'),
+    (College.VETERINARY.value, '수의과대학'),
+    (College.PHARMACY.value, '약학대학'),
+    (College.MUSIC.value, '음악대학'),
+    (College.MEDICINE.value, '의과대학'),
+    (College.FREE.value, '자유전공학부'),
+    (College.UNION.value, '연합전공'),
+    (College.CORRELATION.value, '연계전공')
 )
 
 DEPARTMENT_COLLEGE_MAP = {
