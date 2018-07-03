@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.timezone import now
 from django.views import View
 from django.views.generic.edit import (
     CreateView,
@@ -47,10 +48,26 @@ class UserUpdateView(UserActionMixin, UpdateView):
     template_name_suffix = '_update_form'
 
 
+class ActiveUserCreateView(View):
+    def get(self, request, pk):
+        if not OperationScheme.can_old_register():
+            return render(request, 'accounts/old_register_wait.html')
+        else:
+            return render(request, 'accounts/old_register.html')
+
+    def post(self, request, pk):
+        latest_os = OperationScheme.latest()
+        active_user = ActiveUser(user=User.objects.get(pk=pk), active_year=latest_os.current_year,
+                                 active_semester=latest_os.current_semester)
+        active_user.save()
+        return render(request, 'accounts/old_register_done.html')
+
+
 class PaymentView(View):
     latest_os = OperationScheme.latest()
 
     def get(self, request, pk):
+        # FIXME: Retrieval of an ActiveUser based on user pk might return multiple rows. Add latest logic.
         active_user = ActiveUser.objects.get(user__pk=pk)
         print(active_user.is_new)
         if active_user.is_new:

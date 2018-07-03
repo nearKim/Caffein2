@@ -53,7 +53,7 @@ class OperationScheme(models.Model):
         ('sm', '새마을금고')
     )
 
-    semester_start = models.DateField(_('학기 시작일'))
+    semester_start = models.DateField(_('학기 시작일'), help_text=_('1학기는 3월 2일, 2학기는 9월 1일'))
     # 학기 종료일 = 짝지 마감일
     semester_end = models.DateField(_('학기 종료일'), blank=True, null=True, default=None)
 
@@ -79,6 +79,30 @@ class OperationScheme(models.Model):
         verbose_name = _('운영 정보')
         verbose_name_plural = _('운영 정보')
 
+    @property
+    def current_semester(self):
+        return 1 if self.semester_start.month == 3 else 2
+
+    @property
+    def current_year(self):
+        return self.semester_start.year
+
     @staticmethod
     def latest():
         return OperationScheme.objects.latest('id')
+
+    @staticmethod
+    def can_new_register():
+        latest_os = OperationScheme.latest()
+        if latest_os.new_register_end:
+            return latest_os.new_register_end > now() > latest_os.new_register_start
+        else:
+            return now() > OperationScheme.latest().new_register_start
+
+    @staticmethod
+    def can_old_register():
+        latest_os = OperationScheme.latest()
+        if latest_os.old_register_end:
+            return latest_os.old_register_end > now() > latest_os.old_register_start
+        else:
+            return now() > OperationScheme.latest().old_register_start
