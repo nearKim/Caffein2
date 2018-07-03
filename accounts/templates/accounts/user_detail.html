@@ -14,4 +14,13 @@
 <p>{{object.join_year}}</p>
 <p>{{object.join_semester}}</p>
 <p>{{object.rule_confirm}}</p>
+<b>
+    <p>Active User에 대한 정보</p>
+    <p>마지막 등록상태</p>
+    {% with active=object.active.latest %}
+<p>{{active.active_year}}</p>
+<p>{{active.active_semester}}</p>
+<p>{{active.is_paid}}</p>
+    {% endwith %}
+</b>
 </html>

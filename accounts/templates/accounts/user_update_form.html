@@ -1,0 +1,12 @@
+<html>
+<head>
+    카페인 가입 테스트 페이지
+</head>
+<body>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update"/>
+</form>
+
+</body>
+</html>

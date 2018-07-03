@@ -149,7 +149,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class ActiveUser(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='active')
     active_year = models.PositiveSmallIntegerField(_('활동 년도'), default=now().year, validators=[year_validator])
     active_semester = models.PositiveSmallIntegerField(_('활동 학기'), choices=User.SEMESTER_CHOICE)
     is_paid = models.BooleanField(_('입금 확인'), default=False)
@@ -157,15 +157,13 @@ class ActiveUser(models.Model):
     class Meta:
         verbose_name = _('활동 회원')
         verbose_name_plural = _('활동 회원')
+        # FIXME: Check latest logic. should we reverse the order of active_semester field ?
+        get_latest_by = ['active_year', '-active_semester']
 
     def __str__(self):
         return self.user.__str__()
 
-    def is_paid(self):
-        """Make bastards who didn't pay pay"""
-        return self.is_paid
-
     @property
     def is_new(self):
         """Return whether this active user is a newbie or not"""
-        return self.user.get_join_year_semester == (self.active_year, self.active_semester)
+        return self.user.get_join_year_semester() == (self.active_year, self.active_semester)
