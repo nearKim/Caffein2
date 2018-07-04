@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.http import HttpResponse
 from django.urls import reverse
 
 if not settings.configured:
@@ -167,3 +168,6 @@ class ActiveUser(models.Model):
     def is_new(self):
         """Return whether this active user is a newbie or not"""
         return self.user.get_join_year_semester() == (self.active_year, self.active_semester)
+
+    def get_absolute_url(self):
+        return HttpResponse('Success!')

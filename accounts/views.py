@@ -1,6 +1,6 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic.edit import (
@@ -16,23 +16,22 @@ from .models import (
 from core.models import OperationScheme
 
 
-class UserActionMixin(object):
+class UserCreateView(CreateView):
     model = User
-    fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
+    fields = ['rule_confirm', 'email', 'password', 'name', 'phone', 'student_no', 'college', 'department', 'category',
               'profile_pic', 'join_year', 'join_semester']
+    template_name = 'accounts/new_register.html'
 
-    class Meta:
-        abstract = True
-
-
-class UserCreateView(UserActionMixin, CreateView):
-    # TODO: Add Date limiting logic
-    template_name = 'accounts/user_form.html'
+    def dispatch(self, request, *args, **kwargs):
+        # TODO: Add Email verification logic
+        if not OperationScheme.can_new_register():
+            return HttpResponse('아직 가입기간이 아닙니다')
+        else:
+            # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
+            return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # TODO: Add Email verification logic
         self.object = form.save()
-        # 신규 User가 생성될 때 자동으로 Active User 추가
         active_user = ActiveUser(user=self.object, active_year=self.object.join_year,
                                  active_semester=self.object.join_semester)
         active_user.save()
@@ -40,27 +39,38 @@ class UserCreateView(UserActionMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class UserDetailView(UserActionMixin, DetailView):
-    pass
+class UserDetailView(DetailView):
+    model = User
+    fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
+              'profile_pic', 'join_year', 'join_semester']
 
 
-class UserUpdateView(UserActionMixin, UpdateView):
+class UserUpdateView(UpdateView):
     template_name_suffix = '_update_form'
+    model = User
+    fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
+              'profile_pic']
 
 
-class ActiveUserCreateView(View):
-    def get(self, request, pk):
+class ActiveUserCreateView(CreateView):
+    # FIXME: Login기능 구현 후 request에 user 객체를 담아 활용
+
+    model = ActiveUser
+    fields = []
+
+    def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_old_register():
-            return render(request, 'accounts/old_register_wait.html')
+            return HttpResponse('아직 가입기간이 아닙니다.')
         else:
-            return render(request, 'accounts/old_register.html')
+            return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
 
-    def post(self, request, pk):
+    def form_valid(self, form, pk):
         latest_os = OperationScheme.latest()
-        active_user = ActiveUser(user=User.objects.get(pk=pk), active_year=latest_os.current_year,
-                                 active_semester=latest_os.current_semester)
-        active_user.save()
-        return render(request, 'accounts/old_register_done.html')
+        user = self.request.user
+        form.instance.user = user
+        form.instance.active_year = latest_os.current_year
+        form.instance.active_semester = latest_os.current_semester
+        return super(ActiveUserCreateView, self).form_valid(form)
 
 
 class PaymentView(View):
