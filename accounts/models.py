@@ -123,7 +123,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['join_semester']
+    REQUIRED_FIELDS = ['name', 'join_semester']
 
     class Meta:
         verbose_name = _('회원')

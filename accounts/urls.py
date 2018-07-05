@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from .views import (
     UserCreateView,
     UserDetailView,
@@ -6,6 +6,7 @@ from .views import (
     ActiveUserCreateView,
     PaymentView
 )
+
 
 app_name = 'accounts'
 

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
@@ -6,7 +7,8 @@ from django.views import View
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView,
+    FormView,
 )
 from django.views.generic.detail import DetailView
 from .models import (
@@ -14,6 +16,7 @@ from .models import (
     ActiveUser
 )
 from core.models import OperationScheme
+from .forms import AuthenticationForm
 
 
 class UserCreateView(CreateView):
@@ -24,19 +27,11 @@ class UserCreateView(CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         # TODO: Add Email verification logic
-        if not OperationScheme.can_new_register():
+        if OperationScheme.can_new_register():
             return HttpResponse('아직 가입기간이 아닙니다')
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        self.object = form.save()
-        active_user = ActiveUser(user=self.object, active_year=self.object.join_year,
-                                 active_semester=self.object.join_semester)
-        active_user.save()
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 class UserDetailView(DetailView):
