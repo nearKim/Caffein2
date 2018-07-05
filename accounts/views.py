@@ -3,20 +3,22 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
+
 from django.views import View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
     DeleteView,
     FormView,
 )
-from django.views.generic.detail import DetailView
 from .models import (
     User,
     ActiveUser
 )
 from core.models import OperationScheme
 from .forms import AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class UserCreateView(CreateView):
@@ -34,20 +36,20 @@ class UserCreateView(CreateView):
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
               'profile_pic', 'join_year', 'join_semester']
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
     model = User
     fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
               'profile_pic']
 
 
-class ActiveUserCreateView(CreateView):
+class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     # FIXME: Login기능 구현 후 request에 user 객체를 담아 활용
 
     model = ActiveUser
