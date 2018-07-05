@@ -69,13 +69,12 @@ class ActiveUserCreateView(CreateView):
 
 
 class PaymentView(View):
-    latest_os = OperationScheme.latest()
 
     def get(self, request, pk):
         # FIXME: Retrieval of an ActiveUser based on user pk might return multiple rows. Add latest logic.
         active_user = ActiveUser.objects.get(user__pk=pk)
-        print(active_user.is_new)
-        if active_user.is_new:
-            return render(request, 'accounts/new_pay.html', context={'active_user': active_user, 'os': self.latest_os})
-        else:
-            return render(request, 'accounts/old_pay.html', context={'active_user': active_user, 'os': self.latest_os})
+        latest_os = OperationScheme.latest()
+        pay = latest_os.new_pay if active_user.is_new else latest_os.old_pay
+
+        return render(request, 'accounts/now_pay.html',
+                      context={'active_user': active_user, 'os': latest_os, 'pay': pay})
