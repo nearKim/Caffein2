@@ -1,0 +1,10 @@
+<html>
+<head>
+    {% autoescape off %}
+    안녕하세요. {{user.name}} 님.
+    아래 링크를 클릭하여 회원가입을 완료하세요.
+
+    http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
+    {% endautoescape %}
+</head>
+</html>
