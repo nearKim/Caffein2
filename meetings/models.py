@@ -1,14 +1,12 @@
 from django.db import models
-from core.models import (
-    Instagram,
-    Posting,
-)
+from core.models import Instagram
 from django.utils.translation import ugettext_lazy as _
 
 
-class Meeting(Posting):
+class Meeting(Instagram):
+    title = models.CharField(_('제목'), max_length=20, blank=True)
     meeting_date = models.DateTimeField(_('날짜 및 시간'))
-    max_participants = models.PositiveIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
+    max_participants = models.SmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
     class Meta:
@@ -71,4 +69,3 @@ class CoffeeEducation(Meeting):
 class CoffeeMeeting(Meeting):
     pass
     # TODO: Add cafe app
-

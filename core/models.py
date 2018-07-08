@@ -6,15 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 from .mixins import (
     TimeStampedMixin,
     Instable,
-    Postable
 )
 
 
 class Instagram(Instable):
-    pass
-
-
-class Posting(Postable):
     pass
 
 
@@ -23,19 +18,10 @@ def get_feed_photo_path(instance, filename):
     return 'feed_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
-def get_posted_photo_path(instance, filename):
-    user_id = instance.pk
-    return 'post_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
-
-
 class FeedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
-    instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'), on_delete=models.CASCADE)
-
-
-class PostedPhotos(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_posted_photo_path)
-    posting = models.ForeignKey(Posting, default=None,related_name='photos', verbose_name=_('포스트'), on_delete=models.CASCADE)
+    instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'),
+                                  on_delete=models.CASCADE)
 
 
 class OperationScheme(models.Model):
