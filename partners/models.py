@@ -3,26 +3,23 @@ from accounts.validator import year_validator
 from accounts.models import User
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import Instagram
+from core.models import Instagram, OperationScheme
 
 
 class Partners(models.Model):
     partner_year = models.PositiveSmallIntegerField(_('짝지 연도'), validators=[year_validator])
     partner_semester = models.PositiveSmallIntegerField(_('짝지 학기'), choices=User.SEMESTER_CHOICE)
-    up_partner = models.ForeignKey('accounts.ActiveUser', on_delete=models.CASCADE, limit_choices_to={'is_new': False})
+    up_partner = models.ForeignKey('accounts.ActiveUser', on_delete=models.CASCADE)
     down_partner_1 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
-                                       limit_choices_to={'is_new': True},
                                        related_name='partners1',
                                        blank=True, null=True)
     down_partner_2 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
-                                       limit_choices_to={'is_new': True},
                                        related_name='partners2',
                                        blank=True, null=True)
     down_partner_3 = models.ForeignKey('accounts.ActiveUser',
                                        on_delete=models.SET_NULL,
-                                       limit_choices_to={'is_new': True},
                                        related_name='partners3',
                                        blank=True, null=True)
     score = models.FloatField(_('짝지 점수'), default=0.0)
@@ -47,6 +44,7 @@ class PartnerMeeting(Instagram):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        pass
-        # TODO: implement here
-        # self.partner.raise_score()
+        latest_os = OperationScheme.latest()
+        coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
+        self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
+

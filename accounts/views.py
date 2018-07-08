@@ -64,9 +64,7 @@ class UserCreateView(CreateView):
     template_name = 'accounts/new_register.html'
 
     def dispatch(self, request, *args, **kwargs):
-        # TODO: Add Email verification logic
-        # FIXME: not!
-        if OperationScheme.can_new_register():
+        if not OperationScheme.can_new_register():
             return HttpResponse('아직 가입기간이 아닙니다')
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
@@ -104,8 +102,6 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
-    # FIXME: Login기능 구현 후 request에 user 객체를 담아 활용
-
     model = ActiveUser
     fields = []
 

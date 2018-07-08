@@ -28,14 +28,14 @@ def get_posted_photo_path(instance, filename):
     return 'post_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
-class FeedPhotos(models.Model):
+class FeedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
-    instagram = models.ForeignKey(Instagram, default=None, on_delete=models.CASCADE)
+    instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'), on_delete=models.CASCADE)
 
 
-class PostedPhotos(models.Model):
+class PostedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_posted_photo_path)
-    posting = models.ForeignKey(Posting, default=None, on_delete=models.CASCADE)
+    posting = models.ForeignKey(Posting, default=None,related_name='photos', verbose_name=_('포스트'), on_delete=models.CASCADE)
 
 
 class OperationScheme(models.Model):
