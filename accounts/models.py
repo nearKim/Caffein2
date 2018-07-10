@@ -1,4 +1,3 @@
-import os
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
@@ -27,7 +26,6 @@ from .validator import (
 from django.utils.timezone import now
 from imagekit.models import ProcessedImageField
 from imagekit.processors import Thumbnail
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -158,8 +156,8 @@ class ActiveUser(models.Model):
     class Meta:
         verbose_name = _('활동 회원')
         verbose_name_plural = _('활동 회원')
-        # FIXME: Check latest logic. should we reverse the order of active_semester field ?
-        get_latest_by = ['active_year', '-active_semester']
+        unique_together = ('user', 'active_year', 'active_semester')
+        get_latest_by = ['-active_year', 'active_semester']
 
     def __str__(self):
         return self.user.__str__()
