@@ -1,6 +1,11 @@
 # Secret information
 secrets.json
 
+# Media Files
+/Caffein2/media/*
+/feed_images/*
+feed_images/
+
 # Virtual env
 /caffein2-env/*
 caffein2-env/
