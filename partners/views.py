@@ -4,7 +4,7 @@ from django.views.generic.base import View
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
-)
+    DeleteView)
 
 from .forms import PartnerMeetingForm
 from .models import (
@@ -19,6 +19,11 @@ class PartnerDetailView(DetailView):
 
 class PartnerMeetingListView(ListView):
     model = PartnerMeeting
+
+
+class PartnerMeetingDeleteView(DeleteView):
+    model = PartnerMeeting
+    success_url = reverse_lazy('partners:meeting-list')
 
 
 class PartnerMeetingUpdateCreateMixin:

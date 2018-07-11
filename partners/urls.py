@@ -5,6 +5,7 @@ from .views import (
     PartnerMeetingListView,
     PartnerMeetingCreateView,
     PartnerMeetingUpdateView,
+    PartnerMeetingDeleteView,
 )
 
 app_name = 'partners'
@@ -14,4 +15,5 @@ urlpatterns = [
     path('meeting/list/', PartnerMeetingListView.as_view(), name='meeting-list'),
     path('meeting/create/', PartnerMeetingCreateView.as_view(), name='meeting-create'),
     path('meeting/update/<int:pk>/', PartnerMeetingUpdateView.as_view(), name='meeting-update'),
+    path('meeting/delete/<int:pk>/', PartnerMeetingDeleteView.as_view(), name='meeting-delete'),
 ]
