@@ -55,7 +55,9 @@ class PartnerMeeting(Instagram):
         verbose_name_plural = _('짝지 모임')
 
     def save(self):
-        latest_os = OperationScheme.latest()
-        coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
-        self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
+        if not self.pk:
+            # https://stackoverflow.com/questions/2307943/django-overriding-the-model-create-method
+            latest_os = OperationScheme.latest()
+            coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
+            self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
         super().save()
