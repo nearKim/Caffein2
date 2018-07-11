@@ -130,7 +130,6 @@ USE_TZ = True
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -143,6 +142,7 @@ STATICFILES_DIRS = [
 # Media files
 
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'Caffein2/media')
 MEDIAFILES_DIRS = [
     os.path.join(BASE_DIR, 'Caffein2', 'media'),
 ]

@@ -22,6 +22,9 @@ class FeedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
     instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
+    class Meta:
+        verbose_name = _('사진')
+        verbose_name_plural = _('사진')
 
 
 class OperationScheme(models.Model):
