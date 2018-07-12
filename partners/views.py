@@ -6,6 +6,7 @@ from django.views.generic.edit import (
     UpdateView,
     DeleteView)
 
+from core.models import FeedPhotos
 from .forms import PartnerMeetingForm
 from .models import (
     PartnerMeeting,
@@ -18,7 +19,9 @@ class PartnerDetailView(DetailView):
 
 
 class PartnerMeetingListView(ListView):
+    # TODO: Add infinite scroll feature
     model = PartnerMeeting
+    ordering = ['-created', '-modified']
 
 
 class PartnerMeetingDeleteView(DeleteView):
@@ -41,8 +44,23 @@ class PartnerMeetingUpdateCreateMixin:
 
 
 class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
-    pass
+    def form_valid(self, form):
+        instance = form.save()
+        FeedPhotos.objects.filter(instagram=instance).delete()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                feed_photo = FeedPhotos(instagram=instance, image=f)
+                feed_photo.save()
+
+        return super(PartnerMeetingUpdateView, self).form_valid(form)
 
 
 class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
-    pass
+    def form_valid(self, form):
+        instance = form.save()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                feed_photo = FeedPhotos(instagram=instance, image=f)
+                feed_photo.save()
+
+        return super(PartnerMeetingCreateView, self).form_valid(form)
