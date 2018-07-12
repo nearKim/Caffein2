@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_staff %}
+        <a href="{% url 'survey:form-create' %}" class="btn btn-info">New Form</a>
+    {% endif %}
+<div class="row">
+{% for form in object_list %}
+{% if form.owner == user %}
+<div class="col-sm-4">
+  <div class="card">
+    <div class="card-block">
+      <h4 class="card-title">{{ form.title }}</h4>
+      <p class="card-text">{{ form.description }}</p>
+      <a href="{% url 'survey:view-form' user_id=form.owner.id pk=form.id %}" class="btn btn-primary">View</a>
+      <a href="{% url 'survey:delete-form' pk=form.id %}" class="btn btn-danger">Delete</a>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="col-sm-4">
+  <div class="card">
+    <div class="card-block">
+      <h4 class="card-title">{{ form.title }}</h4>
+      <p class="card-text">{{ form.description }}</p>
+      <a href="{% url 'survey:view-form' user_id=user.id pk=form.id %}" class="btn btn-success">Fill</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endblock %}

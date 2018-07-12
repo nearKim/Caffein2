@@ -1,3 +1,4 @@
+'''
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -5,20 +6,6 @@ from django.views import generic
 from django.utils import timezone
 from .models import Question, Choice
 
-'''
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, 'index.html', context)
-
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'survey/detail.html', {'question': question})
-
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-'''
 class IndexView(generic.ListView):
     template_name = 'survey/index.html'
     context_object_name = 'latest_question_list'
@@ -67,3 +54,126 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('survey:results', args=(question.id,)))
+'''
+
+#from rest_framework import viewsets
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
+#from django.contrib.auth.models import User
+from accounts.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+import json
+
+from .models import Form, Question, Choice, Answer, TextAnswer
+#from .serializers import UserSerializer, FormSerializer, QuestionSerializer
+
+
+class FormListView(LoginRequiredMixin, ListView):
+    model = Form
+    def get_queryset(self):
+        return Form.objects.filter()
+
+
+class FormCreate(LoginRequiredMixin, CreateView):
+    model = Form
+    template_name = 'survey/form_create.html'
+    fields = '__all__'
+
+    def post(self, request):
+        result = {"result": "", "error_reason": ""}
+        unicode_body = request.body.decode('utf-8')
+        dict_post_data = json.loads(unicode_body)
+        print(dict_post_data)
+        if len(dict_post_data['questions']) > 0:
+            form = Form.objects.create(title=dict_post_data['form_title'],
+                        description=dict_post_data['form_description'],
+                        owner=self.request.user)
+            print(form)
+            #form.save()
+
+            result['result'] = 'Form saved successfully'
+            for question_item in dict_post_data['questions']:
+                question = Question(question_text=question_item['text'],
+                                    question_type=question_item['type'],
+                                    form=form)
+                print(question)
+                question.save()
+                if question_item['type'] == 'mcq_one' or question_item['type'] == 'mcq_many':
+                    for choice_item in question_item['options']:
+                        choice = Choice(choice_text=choice_item,
+                                        question=question)
+                        choice.save()
+        else:
+            result['result'] = 'Add a question title'
+        return HttpResponse(json.dumps(result))
+
+#@login_required
+def view_form(request, user_id, pk):
+    if request.method == 'GET':
+        user = User.objects.get(id=user_id)
+        print(request.method)
+        print(user)
+        print(Form.objects.get(pk=pk))
+        form = Form.objects.get(id=pk)
+        questions = Question.objects.filter(form=form)
+        print(questions)
+        questions = list(questions)
+        #questions.reverse()
+        print(questions)
+        choices = Choice.objects.filter(question__in=questions)
+        context = {
+            'form': form,
+            'questions': questions,
+            'choices': choices
+        }
+        return render(request, 'survey/view_form.html', context)
+    elif request.method == 'POST':
+        text = 0
+        binary = 0
+        mcq_one = 0
+        mcq_many = 0
+        print(request.POST)
+        user = User.objects.get(id=user_id)
+        form = Form.objects.get(id=pk)
+        questions = Question.objects.filter(form=form)
+        choices = Choice.objects.filter(question__in=questions)
+        context = {
+            'form': form,
+            'questions': questions,
+            'choices': choices
+        }
+        print(context)
+        print(questions[0].question_type)
+        #return render(request, 'survey/home.html')
+        return redirect('survey:form-list')
+
+def delete_form(request, pk):
+    print(request.method)
+    print(Form.objects.get(pk=pk))
+    form = Form.objects.get(id=pk)
+    form.delete()
+    return redirect('survey:form-list')
+'''
+# unused in app
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class FormViewSet(viewsets.ModelViewSet):
+    queryset = Form.objects.all()
+    serializer_class = FormSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    '''
