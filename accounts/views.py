@@ -1,33 +1,27 @@
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils import six
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import six
-from django.utils.timezone import now
-
 from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
-    DeleteView,
-    FormView,
 )
+
+from core.models import OperationScheme
 from .models import (
     User,
     ActiveUser
 )
-from core.models import OperationScheme
-from .forms import AuthenticationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def activate(request, uidb64, token):
@@ -64,7 +58,7 @@ class UserCreateView(CreateView):
     template_name = 'accounts/new_register.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not OperationScheme.can_new_register():
+        if OperationScheme.can_new_register():
             return HttpResponse('아직 가입기간이 아닙니다')
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3

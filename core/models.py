@@ -1,27 +1,34 @@
 from django.db import models
-
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from .mixins import (
     TimeStampedMixin,
-    Instable,
+    Postable,
 )
 
 
-class Instagram(Instable):
+class Instagram(Postable):
     pass
 
 
 def get_feed_photo_path(instance, filename):
     user_id = instance.pk
-    return 'feed_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
+    return 'media/images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
 class FeedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
     instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _('사진')
+        verbose_name_plural = _('사진')
+
+
+class Comment(Postable):
+    instagram = models.ForeignKey(Instagram, related_name='comments', on_delete=models.CASCADE)
 
 
 class OperationScheme(models.Model):

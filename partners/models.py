@@ -1,8 +1,9 @@
 from django.db import models
-from accounts.validator import year_validator
-from accounts.models import User
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
+from accounts.models import User
+from accounts.validator import year_validator
 from core.models import Instagram, OperationScheme
 
 
@@ -27,10 +28,21 @@ class Partners(models.Model):
     class Meta:
         verbose_name = _('짝지')
         verbose_name_plural = _('짝지')
+        unique_together = ['partner_year', 'partner_semester', 'up_partner']
+        get_latest_by = ['-partner_year', 'partner_semester']
 
     def raise_score(self, score):
         self.score += score
         self.save()
+
+    @staticmethod
+    def related_partner(user):
+        return Partners.objects.filter(
+            Q(up_partner__user=user) |
+            Q(down_partner_1__user=user) |
+            Q(down_partner_2__user=user) |
+            Q(down_partner_3__user=user)
+        ).latest()
 
 
 class PartnerMeeting(Instagram):
@@ -42,9 +54,10 @@ class PartnerMeeting(Instagram):
         verbose_name = _('짝지 모임')
         verbose_name_plural = _('짝지 모임')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        latest_os = OperationScheme.latest()
-        coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
-        self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
-
+    def save(self):
+        if not self.pk:
+            # https://stackoverflow.com/questions/2307943/django-overriding-the-model-create-method
+            latest_os = OperationScheme.latest()
+            coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
+            self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
+        super().save()

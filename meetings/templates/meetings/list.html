@@ -1,0 +1,16 @@
+<html>
+<h1> 공지사항 </h1>
+<br>
+<br>
+<h3>공식모임 리스트 </h3>
+{% for meeting in officialmeeting_list %}
+<li>{{meeting.id}}. {{meeting.title}}({{meeting.author}})</li>
+{% endfor %}
+<br>
+<br>
+<br>
+<h3>커피교육 리스트 </h3>
+{% for education in coffee_education_list %}
+<li>{{education.id}}. {{education.title}}({{education.author}})</li>
+{% endfor %}
+</html>
