@@ -48,7 +48,6 @@ class FormCreate(LoginRequiredMixin, CreateView):
 @login_required
 def view_form(request, user_id, pk):
     if request.method == 'GET':
-        user = User.objects.get(id=user_id)
         form = Form.objects.get(id=pk)
         questions = Question.objects.filter(form=form)
         questions = list(questions)
