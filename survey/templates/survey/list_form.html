@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for item in lists %}
+    <div class="card">
+    <div class="card-block">
+      <div>
+        <div class="card">
+          <div class="card-block">
+            <h3 class="card-title">{{ item.user }}</h3>
+          </div>
+        </div>
+        {% for answer in item.user_answer %}
+          <div class="card">
+            <div class="card-block">
+              <li>Question : {{ answer.question }}</li>
+              <p class="card-text">answer : {{ answer }}</p>
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+  </div>
+  <!--<div class="form-group">
+    <button type="submit" class="btn btn-primary" value="continue">Submit</button>
+  </div>-->
+{% endfor %}
+<!--</form>-->
+{% endblock %}

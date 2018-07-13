@@ -7,7 +7,8 @@ from accounts.models import User
 class Form(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    owner = models.ForeignKey(User, default='1', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, default='1', on_delete=models.CASCADE, related_name='owner')
+    users = models.ManyToManyField(User, related_name='users')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -51,6 +52,12 @@ class Answer(models.Model):
     class Meta:
         abstract = True
 
+class UserAnswer(Answer):
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    answer = models.TextField(max_length=1000)
+
+    def __str__(self):
+        return self.answer
 
 class TextAnswer(Answer):
     answer_text = models.TextField(max_length=1000)

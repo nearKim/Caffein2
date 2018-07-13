@@ -2,7 +2,7 @@
 
 {% block content %}
 <!--<form action="#" method="POST" class="submit-form">{% csrf_token %}-->
-<form action="{% url 'survey:view-form' user_id=form.owner.id pk=form.id %}" method="POST" class="submit-form">{% csrf_token %}
+<form action="{% url 'survey:view-form' user_id=user.id pk=form.id %}" method="POST" class="submit-form">{% csrf_token %}
   <div class="card">
     <div class="card-block">
       <div>

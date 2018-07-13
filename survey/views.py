@@ -69,7 +69,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 import json
 
-from .models import Form, Question, Choice, Answer, TextAnswer
+from .models import Form, Question, Choice, UserAnswer
 #from .serializers import UserSerializer, FormSerializer, QuestionSerializer
 
 
@@ -91,11 +91,9 @@ class FormCreate(LoginRequiredMixin, CreateView):
         print(dict_post_data)
         if len(dict_post_data['questions']) > 0:
             form = Form.objects.create(title=dict_post_data['form_title'],
-                        description=dict_post_data['form_description'],
-                        owner=self.request.user)
+                                       description=dict_post_data['form_description'],
+                                       owner=self.request.user)
             print(form)
-            #form.save()
-
             result['result'] = 'Form saved successfully'
             for question_item in dict_post_data['questions']:
                 question = Question(question_text=question_item['text'],
@@ -121,10 +119,8 @@ def view_form(request, user_id, pk):
         print(Form.objects.get(pk=pk))
         form = Form.objects.get(id=pk)
         questions = Question.objects.filter(form=form)
-        print(questions)
         questions = list(questions)
         #questions.reverse()
-        print(questions)
         choices = Choice.objects.filter(question__in=questions)
         context = {
             'form': form,
@@ -133,24 +129,53 @@ def view_form(request, user_id, pk):
         }
         return render(request, 'survey/view_form.html', context)
     elif request.method == 'POST':
-        text = 0
-        binary = 0
-        mcq_one = 0
-        mcq_many = 0
         print(request.POST)
         user = User.objects.get(id=user_id)
+        print(user)
         form = Form.objects.get(id=pk)
+        form.users.add(user)
+        form.save()
         questions = Question.objects.filter(form=form)
-        choices = Choice.objects.filter(question__in=questions)
-        context = {
-            'form': form,
-            'questions': questions,
-            'choices': choices
-        }
-        print(context)
-        print(questions[0].question_type)
+        for question in questions:
+            if question.question_type == 'mcq_many':
+                all_answer = request.POST.getlist(question.question_text)
+                answer = ''
+                print(question.question_text)
+                print(all_answer)
+                for text in all_answer:
+                    answer += text + ','
+                answer = answer[:-1]
+            else:
+                answer = request.POST.get(question.question_text)
+            UserAnswer.objects.create(question=question,
+                                      answer=answer,
+                                      form=form,
+                                      user=user)
+        print(UserAnswer.objects.filter(form=form))
+        print(form.users.all())
+
         #return render(request, 'survey/home.html')
         return redirect('survey:form-list')
+
+def list_form(request, pk):
+    #user = User.objects.get(id=user_id)
+    form = Form.objects.get(id=pk)
+    question_len = len(form.question_set.all())
+    answers = UserAnswer.objects.filter(form=form)
+    users = form.users.all()
+    print(users)
+    #questions = Question.objects.filter(form=form)
+    lists = []
+    for user in users:
+        user_answer = list(answers.filter(user=user).order_by('created'))[-question_len:]
+        lists.append({
+            'user': user,
+            'user_answer': user_answer
+        })
+    context = {
+        'lists': lists,
+    }
+    return render(request, 'survey/list_form.html', context)
 
 def delete_form(request, pk):
     print(request.method)
