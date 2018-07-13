@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,6 +16,7 @@ class Meeting(Instagram):
     class Meta:
         verbose_name = _('모임')
         verbose_name_plural = _('모임')
+
 
     def can_participate(self):
         if self.max_participants == 0:
@@ -49,6 +51,9 @@ class OfficialMeeting(Meeting):
         verbose_name = _('공식 모임')
         verbose_name_plural = _('공식 모임')
 
+    def get_absolute_url(self):
+        return reverse('meetings:official-detail', args=[self.pk])
+
 
 class CoffeeEducation(Meeting):
     DRIP, CUPPING, ESPRESSO, ADMIN = 'd', 'c', 'e', 'a'
@@ -73,6 +78,9 @@ class CoffeeEducation(Meeting):
     class Meta:
         verbose_name = _('커피 교육')
         verbose_name_plural = _('커피 교육')
+
+    def get_absolute_url(self):
+        return reverse('meetings:education-detail', args=[self.pk])
 
 
 class CoffeeMeeting(Meeting):

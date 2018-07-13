@@ -24,7 +24,7 @@ from .models import (
 
 class EveryMeetingListView(ListView):
     model = OfficialMeeting
-    template_name = 'meetings/list.html'
+    template_name = 'meetings/meeting_list.html'
     ordering = ['-created']
 
     def get_context_data(self, *, object_list=None, **kwargs):

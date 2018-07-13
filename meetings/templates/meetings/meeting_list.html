@@ -4,13 +4,13 @@
 <br>
 <h3>공식모임 리스트 </h3>
 {% for meeting in officialmeeting_list %}
-<li>{{meeting.id}}. {{meeting.title}}({{meeting.author}})</li>
+<li>{{meeting.id}}.<a href="{{meeting.get_absolute_url}}">{{meeting.title}}</a> ({{meeting.author}})</li>
 {% endfor %}
 <br>
 <br>
 <br>
 <h3>커피교육 리스트 </h3>
 {% for education in coffee_education_list %}
-<li>{{education.id}}. {{education.title}}({{education.author}})</li>
+<li>{{education.id}}.<a href="{{education.get_absolute_url}}"> {{education.title}} </a> ({{education.author}})</li>
 {% endfor %}
 </html>
