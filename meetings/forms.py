@@ -39,10 +39,10 @@ class CoffeeEducationForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        super(OfficialMeetingForm, self).__init__(*args, **kwargs)
+        super(CoffeeEducationForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        instance = super(OfficialMeetingForm, self).save(commit=False)
+        instance = super(CoffeeEducationForm, self).save(commit=False)
         instance.author = self.request.user
         instance.save()
 

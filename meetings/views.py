@@ -20,6 +20,20 @@ from .models import (
 )
 
 
+# ListView for showing every meeting
+
+class EveryMeetingListView(ListView):
+    model = OfficialMeeting
+    template_name = 'meetings/list.html'
+    ordering = ['-created']
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        # TODO: Add CoffeeMeeting objects
+        context = super(EveryMeetingListView, self).get_context_data(**kwargs)
+        context['coffee_education_list'] = CoffeeEducation.objects.order_by('-created')
+        return context
+
+
 # CRUD for OfficialMeeting class
 
 class OfficialMeetingCreateUpdateMixin:
@@ -69,7 +83,7 @@ class OfficialMeetingDetailView(DetailView):
 
 class OfficialMeetingDeleteView(DeleteView):
     model = OfficialMeeting
-    success_url = reverse_lazy('meetings:meeting-list')
+    success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CRUD for CoffeeEducation class
@@ -77,7 +91,7 @@ class OfficialMeetingDeleteView(DeleteView):
 class CoffeeEducationCreateUpdateMixin:
     model = CoffeeEducation
     form_class = CoffeeEducationForm
-    success_url = reverse_lazy('meetings:meeting-list')
+    success_url = reverse_lazy('meetings:meetings-list')
 
     class Meta:
         abstract = True
@@ -121,6 +135,6 @@ class CoffeeEducationDetailView(DetailView):
 
 class CoffeeEducationDeleteView(DeleteView):
     model = CoffeeEducation
-    success_url = reverse_lazy('meetings:meeting-list')
+    success_url = reverse_lazy('meetings:meetings-list')
 
 # TODO: Add CRUD for CoffeeMeeting model
