@@ -13,6 +13,7 @@ from .models import Form, Question, Choice, UserAnswer
 
 class FormListView(LoginRequiredMixin, ListView):
     model = Form
+
     def get_queryset(self):
         return Form.objects.filter()
 
@@ -44,6 +45,7 @@ class FormCreate(LoginRequiredMixin, CreateView):
         else:
             result['result'] = 'Add a question title'
         return HttpResponse(json.dumps(result))
+
 
 @login_required
 def view_form(request, user_id, pk):
@@ -79,14 +81,15 @@ def view_form(request, user_id, pk):
                                       user=user)
         return redirect('survey:form-list')
 
+
 def list_form(request, pk):
     form = Form.objects.get(id=pk)
-    question_len = len(form.question_set.all())
+    #question_len = len(form.question_set.all())
     answers = UserAnswer.objects.filter(form=form)
     users = form.users.all()
     lists = []
     for user in users:
-        user_answer = list(answers.filter(user=user).order_by('created'))[-question_len:]
+        user_answer = list(answers.filter(user=user).order_by('created'))[-len(form.question_set.all()):]
         lists.append({
             'user': user,
             'user_answer': user_answer
@@ -96,8 +99,43 @@ def list_form(request, pk):
     }
     return render(request, 'survey/list_form.html', context)
 
+
 def delete_form(request, pk):
     # delete answer instance?
     form = Form.objects.get(id=pk)
     form.delete()
     return redirect('survey:form-list')
+
+
+def change_form_state(request, pk):
+    form = Form.objects.get(id=pk)
+    if form.opened:
+        form.opened = False
+    else:
+        form.opened = True
+    form.save()
+    return redirect('survey:form-list')
+
+'''
+def check_user(request, user_id, form_id):
+    form = Form.objects.get(id=form_id)
+    user = User.objects.get(id=user_id)
+    if form.users.get(user):
+        return True
+    else:
+        return False
+
+
+def check_answer(request, user_id, form_id):
+    form = Form.objects.get(id=form_id)
+    user = User.objects.get(id=user_id)
+    answers = UserAnswer.objects.filter(form=form)
+    user_answer = list(answers.filter(user=user).order_by('created'))[-len(form.question_set.all()):]
+    context = {
+        'lists': {
+            'user': user,
+            'user_answer': user_answer
+        }
+    }
+    return render(request, 'survey/list_form.html', context)
+'''

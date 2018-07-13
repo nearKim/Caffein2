@@ -9,6 +9,7 @@ class Form(models.Model):
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, default='1', on_delete=models.CASCADE, related_name='owner')
     users = models.ManyToManyField(User, related_name='users')
+    opened = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

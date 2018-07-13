@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="row">
 {% for item in lists %}
-    <div class="card">
+  <div class="card">
     <div class="card-block">
       <div>
         <div class="card">
@@ -18,11 +19,9 @@
             </div>
           </div>
         {% endfor %}
+      </div>
     </div>
   </div>
-  <!--<div class="form-group">
-    <button type="submit" class="btn btn-primary" value="continue">Submit</button>
-  </div>-->
 {% endfor %}
-<!--</form>-->
+</div>
 {% endblock %}
