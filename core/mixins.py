@@ -12,7 +12,7 @@ class TimeStampedMixin(models.Model):
         abstract = True
 
 
-class Instable(TimeStampedMixin):
+class Postable(TimeStampedMixin):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('작성자'))
     content = models.TextField(_('내용'), max_length=1000)
 
