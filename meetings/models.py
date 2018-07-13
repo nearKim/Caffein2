@@ -1,12 +1,15 @@
 from django.db import models
-from core.models import Instagram
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from core.models import Instagram
 
 
 class Meeting(Instagram):
     title = models.CharField(_('제목'), max_length=20, blank=True)
-    meeting_date = models.DateTimeField(_('날짜 및 시간'))
-    max_participants = models.SmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
+    # FIXME: Delete Default timezone and add datetime picker widget
+    meeting_date = models.DateTimeField(_('날짜 및 시간'), default=timezone.now())
+    max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
     class Meta:
@@ -21,6 +24,12 @@ class Meeting(Instagram):
 
     def count_participants(self):
         return self.participants.count()
+
+    def save(self, *args, **kwargs):
+        if not self.can_participate():
+            return
+        else:
+            super().save(*args, **kwargs)
 
 
 class OfficialMeeting(Meeting):

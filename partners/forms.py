@@ -1,8 +1,5 @@
 from django.forms import ModelForm, forms, ClearableFileInput
-from django.utils.translation import ugettext_lazy as _
-from multiupload.fields import MultiImageField
 
-from core.models import FeedPhotos
 from .models import (
     PartnerMeeting,
     Partners

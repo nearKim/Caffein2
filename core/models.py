@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,7 +14,7 @@ class Instagram(Instable):
 
 def get_feed_photo_path(instance, filename):
     user_id = instance.pk
-    return 'feed_images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
+    return 'media/images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
 
 
 class FeedPhotos(TimeStampedMixin):
