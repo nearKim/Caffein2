@@ -65,6 +65,7 @@ def view_form(request, user_id, pk):
         form = Form.objects.get(id=pk)
         form.users.add(user)
         form.save()
+        print(form.users.all())
         questions = Question.objects.filter(form=form)
         for question in questions:
             if question.question_type == 'mcq_many':
