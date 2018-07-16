@@ -30,6 +30,13 @@ class FeedPhotos(TimeStampedMixin):
 class Comment(Postable):
     instagram = models.ForeignKey(Instagram, related_name='comments', on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = _('댓글')
+        verbose_name_plural = _('댓글')
+
+    def __str__(self):
+        return self.content
+
 
 class OperationScheme(models.Model):
     BANK_CHOICES = (

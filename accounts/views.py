@@ -40,6 +40,16 @@ def activate(request, uidb64, token):
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
 
+# def redirect_to_survey(request, uidb64, token):
+#     try:
+#         uid = force_text(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=uid)
+#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+#     if user is not None:
+#         return Redirect('survey:new-form-create', pk=uid)
+
+
 class TokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         return (
