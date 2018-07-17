@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -17,14 +18,13 @@ from django.views.generic.edit import (
     UpdateView,
 )
 
+from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from core.models import OperationScheme
-from .models import (
-    User,
-    ActiveUser
-)
+from .models import ActiveUser
 
 
 def activate(request, uidb64, token):
+    User = get_user_model()
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -40,6 +40,16 @@ def activate(request, uidb64, token):
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
 
+# def redirect_to_survey(request, uidb64, token):
+#     try:
+#         uid = force_text(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk=uid)
+#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+#     if user is not None:
+#         return Redirect('survey:new-form-create', pk=uid)
+
+
 class TokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         return (
@@ -52,9 +62,8 @@ account_activation_token = TokenGenerator()
 
 
 class UserCreateView(CreateView):
-    model = User
-    fields = ['rule_confirm', 'email', 'password', 'name', 'phone', 'student_no', 'college', 'department', 'category',
-              'profile_pic', 'join_year', 'join_semester']
+    model = get_user_model()
+    form_class = CustomUserCreationForm
     template_name = 'accounts/new_register.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -83,16 +92,17 @@ class UserCreateView(CreateView):
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
+    model = get_user_model()
     fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
               'profile_pic', 'join_year', 'join_semester']
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
-    model = User
-    fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
-              'profile_pic']
+    model = get_user_model()
+    form_class = CustomUserChangeForm
+    # fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
+    #           'profile_pic']
 
 
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):

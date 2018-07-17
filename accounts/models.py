@@ -21,7 +21,8 @@ from .validator import (
     snumail_validator,
     student_no_validator,
     phone_validator,
-    year_validator
+    year_validator,
+    confirmation_validator
 )
 from django.utils.timezone import now
 from imagekit.models import ProcessedImageField
@@ -113,7 +114,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     join_semester = models.PositiveSmallIntegerField(_('가입 학기'), choices=SEMESTER_CHOICE, default=get_default_semester)
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
-    rule_confirm = models.BooleanField(_('약관 동의'), default=False)
+    rule_confirm = models.BooleanField(_('약관 동의'), default=False, validators=[confirmation_validator])
 
     is_active = models.BooleanField(_('활동 상태'), default=True)
     is_staff = models.BooleanField(_('운영진 여부'), default=False)

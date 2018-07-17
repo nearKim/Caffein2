@@ -1,6 +1,7 @@
+import re
+
 from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
-import re
 
 
 def phone_validator(value):
@@ -21,3 +22,8 @@ def year_validator(value):
 def snumail_validator(value):
     if not re.match(r'^(\w+@snu.ac.kr)$', value):
         raise ValidationError(_('서울대학교 이메일을 입력해 주세요.'))
+
+
+def confirmation_validator(value):
+    if value is False:
+        raise ValidationError(_('약관에 동의하셔야 합니다.'))
