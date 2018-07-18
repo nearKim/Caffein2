@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import User
@@ -53,6 +54,9 @@ class PartnerMeeting(Instagram):
     class Meta:
         verbose_name = _('짝지 모임')
         verbose_name_plural = _('짝지 모임')
+
+    def get_absoulute_url(self):
+        return reverse('partners:meeting-list')
 
     def save(self):
         if not self.pk:

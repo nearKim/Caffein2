@@ -18,7 +18,12 @@
 {% empty %}
 <p> 댓글이 없습니다!</p>
 {%endfor%}
-<a href="{% url 'core:comment-create' insta_pk=meeting.instagram_ptr_id %}">댓글 달기</a>
+<form action="{% url 'core:comment-create' insta_id=meeting.pk %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
+    <input type="submit" value="Send"/>
+</form>
 <hr>
 {% endfor %}
 

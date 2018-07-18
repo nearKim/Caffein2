@@ -1,11 +1,11 @@
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
-from django.views.generic.base import View
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
-    DeleteView)
+    DeleteView, FormMixin)
 
+from core.forms import CommentForm
 from core.models import FeedPhotos
 from .forms import PartnerMeetingForm
 from .models import (
@@ -18,10 +18,16 @@ class PartnerDetailView(DetailView):
     model = Partners
 
 
-class PartnerMeetingListView(ListView):
+class PartnerMeetingListView(FormMixin, ListView):
     # TODO: Add infinite scroll feature
     model = PartnerMeeting
+    form_class = CommentForm
     ordering = ['-created', '-modified']
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PartnerMeetingListView, self).get_context_data(**kwargs)
+        context['comment_form'] = self.get_form()
+        return context
 
 
 class PartnerMeetingDeleteView(DeleteView):

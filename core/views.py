@@ -1,5 +1,5 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
@@ -10,7 +10,7 @@ from django.views.generic.edit import (
     DeleteView
 )
 
-from core.models import Comment
+from core.models import Comment, Instagram
 
 
 def index(request):
@@ -25,9 +25,11 @@ class CommentCreateView(CreateView):
     fields = ['content']
 
     def form_valid(self, form):
-        form.author = self.request.user
-        form.instagram.pk = self.kwargs.get('insta_pk')
-        return super().form_valid(form)
+        form.save(commit=False)
+        form.instance.author = self.request.user
+        form.instance.instagram = Instagram.objects.get(pk=self.kwargs.get('insta_id'))
+        form.save()
+        return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
 class CommentDetailView(DetailView):
