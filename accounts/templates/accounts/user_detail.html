@@ -7,6 +7,11 @@
     {{object.name}}
 </h1>
 <p>{{object.phone}}</p>
+{% if object.profile_pic %}
+<p><img src="{{object.profile_pic.url}}"/> </p>
+{% else %}
+사용자 사진없음
+{% endif %}
 <p>{{object.student_no}}</p>
 <p>{{object.college}}</p>
 <p>{{object.department}}</p>

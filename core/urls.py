@@ -21,9 +21,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:login')), name='logout'),
 
     path('comment/create/<int:insta_id>/', CommentCreateView.as_view(), name='comment-create'),
-    path('comment/list/', CommentListView.as_view(), name='comment-list'),
-    path('comment/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
-    path('comment/update/<int:pk>/', CommentUpdateView.as_view(), name='comment-update'),
-    path('comment/delete/<int:pk>/', CommentDeleteView.as_view(), name='comment-delete'),
+    path('comment/update/<int:pk>/<slug:category>/', CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/delete/<int:pk>/<slug:category>/', CommentDeleteView.as_view(), name='comment-delete'),
 
 ]

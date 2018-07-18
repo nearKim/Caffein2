@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
@@ -43,8 +44,29 @@ class CommentListView(ListView):
 
 class CommentUpdateView(UpdateView):
     model = Comment
+    template_name_suffix = '_update_form'
     fields = ['content']
+
+    def get_success_url(self):
+        if self.kwargs['category'] == 'partner-meeting':
+            return reverse_lazy('partners:meeting-list')
+        elif self.kwargs['category'] == 'official-meeting':
+            # TODO: implement here
+            return None
+        elif self.kwargs['category'] == 'coffee-meeting':
+            # TODO: implement here
+            return None
 
 
 class CommentDeleteView(DeleteView):
     model = Comment
+
+    def get_success_url(self):
+        if self.kwargs['category'] == 'partner-meeting':
+            return reverse_lazy('partners:meeting-list')
+        elif self.kwargs['category'] == 'official-meeting':
+            # TODO: implement here
+            return None
+        elif self.kwargs['category'] == 'coffee-meeting':
+            # TODO: implement here
+            return None

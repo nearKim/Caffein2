@@ -1,0 +1,14 @@
+<h5>댓글:</h5>
+{% for comment in meeting.comments.all %}
+<p>작성일시: {{comment.created}} / 작성자: {{comment.author }} /내용: {{comment.content | linebreaks }}</p>
+{% empty %}
+<p> 댓글이 없습니다!</p>
+{% endfor %}
+<p>댓글 작성</p>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="댓글달기"/>
+</form>
+<hr>

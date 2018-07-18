@@ -9,16 +9,26 @@
 <p>작성시간: {{meeting.created}}</p>
 
 <p> 사진: </p>
-    {% for p in meeting.photos.all %}
-        <img src="{{p.image.url}}"/>
-    {% endfor %}
+{% for p in meeting.photos.all %}
+<img src="{{p.image.url}}"/>
+{% endfor %}
 <h5>댓글:</h5>
+
 {% for comment in meeting.comments.all %}
-<p>작성일시: {{comment.created}} / 작성자: {{comment.author }} /내용: {{comment.content | linebreaks }}</p>
+{% if comment.author.profile_pic %} <img src="{{comment.author.profile_pic.url}} "/>{%endif%} |
+작성자: {{comment.author }} |
+내용: {{comment.content}} |
+<form action="{% url 'core:comment-delete' pk=comment.pk category='partner-meeting' %}" method="post">{%csrf_token%}
+    <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+</form>
+<form action="{% url 'core:comment-update' pk=comment.pk category='partner-meeting'%}" method="post">{%csrf_token%}
+    <button>수정</button>
+</form>
+<br>
 {% empty %}
 <p> 댓글이 없습니다!</p>
 {%endfor%}
-<form action="{% url 'core:comment-create' insta_id=meeting.pk %}" method="post" enctype="multipart/form-data">
+<form action="{% url 'core:comment-create' insta_id=meeting.pk %}" method="post">
     {% csrf_token %}
     {{ comment_form.as_p }}
     <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
