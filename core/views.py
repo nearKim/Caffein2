@@ -33,19 +33,9 @@ class CommentCreateView(CreateView):
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
-class CommentDetailView(DetailView):
-    model = Comment
-
-
-class CommentListView(ListView):
-    model = Comment
-    ordering = ['-created', '-modified']
-
-
-class CommentUpdateView(UpdateView):
-    model = Comment
-    template_name_suffix = '_update_form'
-    fields = ['content']
+class SuccessUrlMixin:
+    class Meta:
+        abstract = True
 
     def get_success_url(self):
         if self.kwargs['category'] == 'partner-meeting':
@@ -58,7 +48,13 @@ class CommentUpdateView(UpdateView):
             return None
 
 
-class CommentDeleteView(DeleteView):
+class CommentUpdateView(SuccessUrlMixin, UpdateView):
+    model = Comment
+    template_name_suffix = '_update_form'
+    fields = ['content']
+
+
+class CommentDeleteView(SuccessUrlMixin, DeleteView):
     model = Comment
 
     def get_success_url(self):

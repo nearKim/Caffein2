@@ -8,9 +8,7 @@ from .views import (
     index,
     CommentCreateView,
     CommentDeleteView,
-    CommentListView,
     CommentUpdateView,
-    CommentDetailView
 )
 
 app_name = 'core'
