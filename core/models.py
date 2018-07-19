@@ -19,7 +19,7 @@ def get_feed_photo_path(instance, filename):
 
 class FeedPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
-    instagram = models.ForeignKey(Instagram, default=None, related_name='photos', verbose_name=_('인스타'),
+    instagram = models.ForeignKey('core.Instagram', default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
 
     class Meta:
@@ -35,8 +35,8 @@ class CommentManager(models.Manager):
 
 
 class Comment(Postable):
-    instagram = models.ForeignKey(Instagram, related_name='comments', on_delete=models.CASCADE)
-
+    instagram = models.ForeignKey('core.Instagram', default=None, related_name='comments', on_delete=models.CASCADE)
+    meeting = models.ForeignKey('meetings.Meeting', default=None, related_name='comments', on_delete=models.CASCADE)
     objects = CommentManager()
 
     class Meta:
@@ -45,6 +45,13 @@ class Comment(Postable):
 
     def __str__(self):
         return self.content
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.instagram is None and self.meeting is None:
+            # Don't save
+            return
+        super(Comment, self).save()
 
 
 class OperationScheme(models.Model):

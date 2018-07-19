@@ -47,7 +47,7 @@ class Partners(models.Model):
 
 
 class PartnerMeeting(Instagram):
-    partner = models.ForeignKey(Partners, on_delete=models.CASCADE)
+    partner = models.ForeignKey('partners.Partners', on_delete=models.CASCADE)
     num_coffee = models.SmallIntegerField(_('마신 커피 수'), default=0)
     num_eat = models.SmallIntegerField(_('먹은 식사 수'), default=0)
 

@@ -1,16 +1,33 @@
 <html>
 <h1>공지사항 상세페이지</h1>
-{% for p in officialmeeting.photos.all %}
+{% for p in object.photos.all %}
 {% if p.image %}
 <img src="{{p.image.url}}"/>
 {% endif %}
+{% endfor %}
+
+<p><strong>PK:</strong> {{object.pk}}</p>
+<p><strong>PK_meeting:</strong> {{object}}</p>
+<p><strong>작성자:</strong> {{object.author}}</p>
+<p><strong>제목:</strong> {{object.title}}</p>
+<p><strong>내용:</strong> {{object.content}}</p>
+<p><strong>모임종류:</strong> {{object.get_category_display}}</p>
+<p><strong>장소:</strong> {{object.location}}</p>
+<p><strong>날짜 및 시간:</strong> {{object.meeting_date}}</p>
+<p><strong>최대 참여가능인원:</strong> {{object.max_participants}}</p>
+<p><strong>참여자:</strong> {{object.participants}}</p>
+
+{% for comment in comments.all %}}
+{{comment.author}} |
+{{comment.content}}
+{% empty %}
+<p>댓글이 없습니다!</p>
 {%endfor%}
-<p><strong>작성자:</strong> {{officialmeeting.author}}</p>
-<p><strong>제목:</strong> {{officialmeeting.title}}</p>
-<p><strong>내용:</strong> {{officialmeeting.content}}</p>
-<p><strong>모임종류:</strong> {{officialmeeting.get_category_display}}</p>
-<p><strong>장소:</strong> {{officialmeeting.location}}</p>
-<p><strong>날짜 및 시간:</strong> {{officialmeeting.meeting_date}}</p>
-<p><strong>최대 참여가능인원:</strong> {{officialmeeting.max_participants}}</p>
-<p><strong>참여자:</strong> {{officialmeeting.participants}}</p>
+
+<form action="{% url 'core:comment-create' insta_id=object.pk %}" method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="hidden" name="next" value="{% url 'meetings:official-detail' pk=object.pk %}">
+    <input type="submit" value="Send"/>
+</form>
 </html>

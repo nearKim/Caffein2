@@ -18,6 +18,7 @@ class Meeting(Postable):
     class Meta:
         verbose_name = _('모임')
         verbose_name_plural = _('모임')
+        get_latest_by = ['-meeting_date']
 
     def can_participate(self):
         if self.max_participants == 0:
@@ -48,7 +49,8 @@ def get_meeting_photo_path(instance, filename):
 
 class MeetingPhotos(TimeStampedMixin):
     image = models.ImageField(upload_to=get_meeting_photo_path)
-    meeting = models.ForeignKey(Meeting, related_name='photos', verbose_name=_('모임'), on_delete=models.CASCADE)
+    meeting = models.ForeignKey('meetings.Meeting', related_name='photos', verbose_name=_('모임'),
+                                on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('모임 사진')

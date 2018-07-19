@@ -6,18 +6,18 @@ from django.views.generic import (
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
-    DeleteView
-)
+    DeleteView,
+    FormMixin)
 
-from core.models import FeedPhotos
+from core.forms import CommentForm
 from .forms import (
     OfficialMeetingForm,
     CoffeeEducationForm,
 )
 from .models import (
     OfficialMeeting,
-    CoffeeEducation
-)
+    CoffeeEducation,
+    MeetingPhotos)
 
 
 # ListView for showing every meeting
@@ -55,7 +55,7 @@ class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = FeedPhotos(instagram=instance, image=f)
+                photo = MeetingPhotos(meeting=instance, image=f)
                 photo.save()
         return super(OfficialMeetingCreateView, self).form_valid(form)
 
@@ -63,12 +63,12 @@ class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
 class OfficialMeetingUpdateView(OfficialMeetingCreateUpdateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
-        FeedPhotos.objects.filter(instagram=instance).delete()
+        MeetingPhotos.objects.filter(meeting=instance).delete()
 
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                feed_photo = FeedPhotos(instagram=instance, image=f)
-                feed_photo.save()
+                photo = MeetingPhotos(meeting=instance, image=f)
+                photo.save()
 
         return super(OfficialMeetingUpdateView, self).form_valid(form)
 
@@ -77,8 +77,15 @@ class OfficialMeetingListView(ListView):
     model = OfficialMeeting
 
 
-class OfficialMeetingDetailView(DetailView):
+class OfficialMeetingDetailView(FormMixin, DetailView):
     model = OfficialMeeting
+    form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(OfficialMeetingDetailView, self).get_context_data()
+        context['comments'] = self.object.comments
+        context['comment_form'] = self.get_form()
+        return context
 
 
 class OfficialMeetingDeleteView(DeleteView):
@@ -107,7 +114,7 @@ class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = FeedPhotos(instagram=instance, image=f)
+                photo = MeetingPhotos(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeEducationCreateView, self).form_valid(form)
 
@@ -115,12 +122,12 @@ class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
 class CoffeeEducationUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
-        FeedPhotos.objects.filter(instagram=instance).delete()
+        MeetingPhotos.objects.filter(meeting=instance).delete()
 
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                feed_photo = FeedPhotos(instagram=instance, image=f)
-                feed_photo.save()
+                photo = MeetingPhotos(meeting=instance, image=f)
+                photo.save()
 
         return super(CoffeeEducationUpdateView, self).form_valid(form)
 
