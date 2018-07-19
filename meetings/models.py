@@ -1,12 +1,14 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import Instagram
+from core.mixins import TimeStampedMixin, Postable
+from core.models import Comment
 
 
-class Meeting(Instagram):
+class Meeting(Postable):
     title = models.CharField(_('제목'), max_length=20, blank=True)
     # FIXME: Delete Default timezone and add datetime picker widget
     meeting_date = models.DateTimeField(_('날짜 및 시간'), default=timezone.now())
@@ -17,7 +19,6 @@ class Meeting(Instagram):
         verbose_name = _('모임')
         verbose_name_plural = _('모임')
 
-
     def can_participate(self):
         if self.max_participants == 0:
             return True
@@ -27,11 +28,31 @@ class Meeting(Instagram):
     def count_participants(self):
         return self.participants.count()
 
+    @property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter_by_instance(instance)
+        return qs
+
     def save(self, *args, **kwargs):
         if not self.can_participate():
             return
         else:
             super().save(*args, **kwargs)
+
+
+def get_meeting_photo_path(instance, filename):
+    user_id = instance.pk
+    return 'media/meeting/{:%Y/%m/%d}/{}/{}'.format(now(), user_id, filename)
+
+
+class MeetingPhotos(TimeStampedMixin):
+    image = models.ImageField(upload_to=get_meeting_photo_path)
+    meeting = models.ForeignKey(Meeting, related_name='photos', verbose_name=_('모임'), on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _('모임 사진')
+        verbose_name_plural = _('모임 사진')
 
 
 class OfficialMeeting(Meeting):

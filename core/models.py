@@ -23,12 +23,21 @@ class FeedPhotos(TimeStampedMixin):
                                   on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = _('사진')
-        verbose_name_plural = _('사진')
+        verbose_name = _('피드 사진')
+        verbose_name_plural = _('피드 사진')
+
+
+class CommentManager(models.Manager):
+    def filter_by_instance(self, instance):
+        obj_id = instance.id
+        qs = super(CommentManager, self).filter(id=obj_id)
+        return qs
 
 
 class Comment(Postable):
     instagram = models.ForeignKey(Instagram, related_name='comments', on_delete=models.CASCADE)
+
+    objects = CommentManager()
 
     class Meta:
         verbose_name = _('댓글')
