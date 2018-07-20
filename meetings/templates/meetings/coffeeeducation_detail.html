@@ -18,6 +18,15 @@
 
 {% for comment in comments.all %}
 <p>{{comment.author}} |{{comment.content}}</p>
+<form action="{% url 'core:comment-delete' pk=comment.pk  %}" method="post">{%csrf_token%}
+    {%csrf_token%}
+    <input type="hidden" name="next" value="{{request.path}}">
+    <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+</form>
+<form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{%csrf_token%}
+    {%csrf_token%}
+    <button>수정</button>
+</form>
 {% empty %}
 <p>댓글이 없습니다!</p>
 {%endfor%}

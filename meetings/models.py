@@ -20,6 +20,22 @@ class Meeting(Postable):
         verbose_name_plural = _('모임')
         get_latest_by = ['-meeting_date']
 
+    # For polymorphism
+    # https://stackoverflow.com/a/13306529
+    def get_class_name(self):
+        return str(self.__class__.__name__).lower()
+
+    def cast(self):
+        for name in dir(self):
+            try:
+                attr = getattr(self, name)
+                if isinstance(attr, self.__class__):
+                    return attr
+            except:
+                pass
+        return self
+
+    # General Use methods
     def can_participate(self):
         if self.max_participants == 0:
             return True

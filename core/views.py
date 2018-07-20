@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
@@ -38,42 +37,32 @@ class MeetingCommentCreateView(CreateView):
         form.save(commit=False)
         form.instance.author = self.request.user
         form.instance.meeting = Meeting.objects.get(pk=self.kwargs.get('pk'))
-        print("!!!!!!!!!!!!!!!!!!")
-        print(form.instance.meeting)
         form.save()
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
-class SuccessUrlMixin:
-    class Meta:
-        abstract = True
-
-    def get_success_url(self):
-        if self.kwargs['category'] == 'partner-meeting':
-            return reverse_lazy('partners:meeting-list')
-        elif self.kwargs['category'] == 'official-meeting':
-            # TODO: implement here
-            return None
-        elif self.kwargs['category'] == 'coffee-meeting':
-            # TODO: implement here
-            return None
-
-
-class CommentUpdateView(SuccessUrlMixin, UpdateView):
+class CommentUpdateView(UpdateView):
     model = Comment
     template_name_suffix = '_update_form'
     fields = ['content']
 
+    def get_success_url(self):
+        return Comment.objects.get(pk=self.kwargs['pk']).get_absolute_url()
 
-class CommentDeleteView(SuccessUrlMixin, DeleteView):
+    # def get_success_url(self):
+    #     from_path = self.kwargs['from']
+    #     if from_path == 'partner':
+    #         return reverse_lazy('partners:meeting-list')
+    #     elif from_path == 'official':
+    #         return reverse_lazy('meetings:official-detail')
+    #     elif from_path == 'education':
+    #         return reverse_lazy('meetings:education-detail')
+
+
+class CommentDeleteView(DeleteView):
     model = Comment
 
     def get_success_url(self):
-        if self.kwargs['category'] == 'partner-meeting':
-            return reverse_lazy('partners:meeting-list')
-        elif self.kwargs['category'] == 'official-meeting':
-            # TODO: implement here
-            return None
-        elif self.kwargs['category'] == 'coffee-meeting':
-            # TODO: implement here
-            return None
+        # 이전 페이지로 이동
+        to = self.request.POST.get('next', '/')
+        return to

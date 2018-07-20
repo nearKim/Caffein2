@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -47,6 +48,14 @@ class Comment(Postable):
 
     def __str__(self):
         return self.content
+
+    def get_absolute_url(self):
+        if self.instagram:
+            # partner:meeting-list로 redirect
+            return reverse('partners:meeting-list')
+        elif self.meeting:
+            # downcast후 각 클래스의 get_absolute_url로 redirect
+            return self.meeting.cast().get_absolute_url()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

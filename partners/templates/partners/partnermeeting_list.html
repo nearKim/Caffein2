@@ -18,13 +18,15 @@
 {% if comment.author.profile_pic %} <img src="{{comment.author.profile_pic.url}} "/>{%endif%} |
 작성자: {{comment.author }} |
 내용: {{comment.content}} |
-<form action="{% url 'core:comment-delete' pk=comment.pk category='partner-meeting' %}" method="post">{%csrf_token%}
+<form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post">{%csrf_token%}
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{request.path}}">
     <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
 </form>
-<form action="{% url 'core:comment-update' pk=comment.pk category='partner-meeting'%}" method="post">{%csrf_token%}
+<form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{%csrf_token%}
+    {% csrf_token %}
     <button>수정</button>
 </form>
-<br>
 {% empty %}
 <p> 댓글이 없습니다!</p>
 {%endfor%}
