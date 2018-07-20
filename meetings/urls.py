@@ -12,6 +12,7 @@ from .views import (
     CoffeeEducationDeleteView,
     CoffeeEducationListView,
     CoffeeEducationDetailView,
+    participate_meeting,
 )
 
 app_name = 'meetings'
@@ -29,5 +30,7 @@ urlpatterns = [
     path('education/delete/<int:pk>/', CoffeeEducationDeleteView.as_view(), name='education-delete'),
     path('education/<int:pk>/', CoffeeEducationDetailView.as_view(), name='education-detail'),
     path('education/', CoffeeEducationListView.as_view(), name='education-list'),
+
+    path('participate/<int:pk>/', participate_meeting, name='participate'),
 
 ]

@@ -13,18 +13,25 @@
 <p><strong>장소:</strong> {{object.location}}</p>
 <p><strong>날짜 및 시간:</strong> {{object.meeting_date}}</p>
 <p><strong>최대 참여가능인원:</strong> {{object.max_participants}}</p>
-<p><strong>참여자:</strong> {{object.participants}}</p>
-
+<hr>
+<p><strong>참여자:</strong> {% for participant in object.participants.all %} {{participant}} {%empty%} 참여자가 없네요 ㅠ {% endfor %}</p>
+{% if messages %}
+{% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+{% endif %}
+<form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{%csrf_token%}
+    <button>참여</button>
+</form>
+<hr>
 
 {% for comment in comments.all %}
 <p>{{comment.author}} |{{comment.content}}</p>
 <form action="{% url 'core:comment-delete' pk=comment.pk  %}" method="post">{%csrf_token%}
-    {%csrf_token%}
     <input type="hidden" name="next" value="{{request.path}}">
     <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
 </form>
 <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{%csrf_token%}
-    {%csrf_token%}
     <button>수정</button>
 </form>
 {% empty %}

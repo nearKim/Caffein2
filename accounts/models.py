@@ -161,7 +161,7 @@ class ActiveUser(models.Model):
         get_latest_by = ['-active_year', 'active_semester']
 
     def __str__(self):
-        return self.user.__str__()
+        return self.user.name
 
     @property
     def is_new(self):

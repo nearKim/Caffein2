@@ -45,6 +45,13 @@ class Meeting(Postable):
     def count_participants(self):
         return self.participants.count()
 
+    def participate_meeting(self, active_user):
+        if self.can_participate():
+            self.participants.add(active_user)
+            return True
+        else:
+            return False
+
     @property
     def comments(self):
         instance = self

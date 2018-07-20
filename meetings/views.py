@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -9,6 +11,7 @@ from django.views.generic.edit import (
     DeleteView,
     FormMixin)
 
+from accounts.models import ActiveUser
 from core.forms import CommentForm
 from .forms import (
     OfficialMeetingForm,
@@ -17,7 +20,7 @@ from .forms import (
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
-    MeetingPhotos)
+    MeetingPhotos, Meeting)
 
 
 # ListView for showing every meeting
@@ -154,4 +157,18 @@ class CoffeeEducationDeleteView(DeleteView):
     model = CoffeeEducation
     success_url = reverse_lazy('meetings:meetings-list')
 
+
 # TODO: Add CRUD for CoffeeMeeting model
+
+# Participate View
+def participate_meeting(request, pk):
+    if request.method == 'POST':
+        meeting = get_object_or_404(Meeting, pk=pk)
+        active_user = get_object_or_404(ActiveUser, user=request.user)
+        if active_user in meeting.participants.all():
+            messages.info(request, '취소 되었습니다.')
+            meeting.participants.remove(active_user)
+        else:
+            messages.info(request, '참여 했습니다.')
+            meeting.participate_meeting(active_user)
+        return redirect(meeting.cast())
