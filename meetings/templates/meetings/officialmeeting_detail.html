@@ -17,14 +17,13 @@
 <p><strong>최대 참여가능인원:</strong> {{object.max_participants}}</p>
 <p><strong>참여자:</strong> {{object.participants}}</p>
 
-{% for comment in comments.all %}}
-{{comment.author}} |
-{{comment.content}}
+{% for comment in comments.all %}
+<p>{{comment.author}} |{{comment.content}}</p>
 {% empty %}
 <p>댓글이 없습니다!</p>
 {%endfor%}
 
-<form action="{% url 'core:comment-create' insta_id=object.pk %}" method="post">
+<form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">
     {% csrf_token %}
     {{ comment_form.as_p }}
     <input type="hidden" name="next" value="{% url 'meetings:official-detail' pk=object.pk %}">

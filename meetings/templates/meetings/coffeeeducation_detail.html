@@ -1,17 +1,32 @@
 <html>
 <h1>커피교육 상세페이지</h1>
-{% for p in coffeeeducation.photos.all %}
+{% for p in object.photos.all %}
 {% if p.image %}
 <img src="{{p.image.url}}"/>
 {% endif %}
 {%endfor%}
-<p><strong>작성자:</strong> {{coffeeeducation.author}}</p>
-<p><strong>제목:</strong> {{coffeeeducation.title}}</p>
-<p><strong>내용:</strong> {{coffeeeducation.content}}</p>
-<p><strong>모임종류:</strong> {{coffeeeducation.get_category_display}}</p>
-<p><strong>난이도:</strong> {{coffeeeducation.get_difficulty_display}}</p>
-<p><strong>장소:</strong> {{coffeeeducation.location}}</p>
-<p><strong>날짜 및 시간:</strong> {{coffeeeducation.meeting_date}}</p>
-<p><strong>최대 참여가능인원:</strong> {{coffeeeducation.max_participants}}</p>
-<p><strong>참여자:</strong> {{coffeeeducation.participants}}</p>
+<p><strong>작성자:</strong> {{object.author}}</p>
+<p><strong>제목:</strong> {{object.title}}</p>
+<p><strong>내용:</strong> {{object.content}}</p>
+<p><strong>모임종류:</strong> {{object.get_category_display}}</p>
+<p><strong>난이도:</strong> {{object.get_difficulty_display}}</p>
+<p><strong>장소:</strong> {{object.location}}</p>
+<p><strong>날짜 및 시간:</strong> {{object.meeting_date}}</p>
+<p><strong>최대 참여가능인원:</strong> {{object.max_participants}}</p>
+<p><strong>참여자:</strong> {{object.participants}}</p>
+
+
+{% for comment in comments.all %}
+<p>{{comment.author}} |{{comment.content}}</p>
+{% empty %}
+<p>댓글이 없습니다!</p>
+{%endfor%}
+
+<form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="hidden" name="next" value="{% url 'meetings:education-detail' pk=object.pk %}">
+    <input type="submit" value="Send"/>
+</form>
+</html>
 </html>

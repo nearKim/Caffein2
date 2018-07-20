@@ -13,8 +13,8 @@ class Instagram(Postable):
 
 
 def get_feed_photo_path(instance, filename):
-    user_id = instance.pk
-    return 'media/images/{}/{:%Y/%m/%d}/{}'.format(user_id, now(), filename)
+    # FIXME: Uploader information must be set in the path
+    return 'media/feed/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
 class FeedPhotos(TimeStampedMixin):
@@ -35,8 +35,10 @@ class CommentManager(models.Manager):
 
 
 class Comment(Postable):
-    instagram = models.ForeignKey('core.Instagram', default=None, related_name='comments', on_delete=models.CASCADE)
-    meeting = models.ForeignKey('meetings.Meeting', default=None, related_name='comments', on_delete=models.CASCADE)
+    instagram = models.ForeignKey('core.Instagram', default=None, null=True, blank=True, related_name='comments',
+                                  on_delete=models.CASCADE)
+    meeting = models.ForeignKey('meetings.Meeting', default=None, null=True, blank=True, related_name='comments',
+                                on_delete=models.CASCADE)
     objects = CommentManager()
 
     class Meta:

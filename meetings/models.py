@@ -43,8 +43,7 @@ class Meeting(Postable):
 
 
 def get_meeting_photo_path(instance, filename):
-    user_id = instance.pk
-    return 'media/meeting/{:%Y/%m/%d}/{}/{}'.format(now(), user_id, filename)
+    return 'media/meeting/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
 class MeetingPhotos(TimeStampedMixin):

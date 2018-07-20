@@ -34,7 +34,7 @@ class EveryMeetingListView(ListView):
         return context
 
 
-# CRUD for OfficialMeeting class
+# Mixins
 
 class OfficialMeetingCreateUpdateMixin:
     model = OfficialMeeting
@@ -48,6 +48,34 @@ class OfficialMeetingCreateUpdateMixin:
         form_kwargs = super(OfficialMeetingCreateUpdateMixin, self).get_form_kwargs()
         form_kwargs['request'] = self.request
         return form_kwargs
+
+
+class CoffeeEducationCreateUpdateMixin:
+    model = CoffeeEducation
+    form_class = CoffeeEducationForm
+    success_url = reverse_lazy('meetings:meetings-list')
+
+    class Meta:
+        abstract = True
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CoffeeEducationCreateUpdateMixin, self).get_form_kwargs()
+        form_kwargs['request'] = self.request
+        return form_kwargs
+
+
+class AddContextDetailViewMixin:
+    def get_context_data(self, **kwargs):
+        context = super(AddContextDetailViewMixin, self).get_context_data()
+        context['comments'] = self.object.comments
+        context['comment_form'] = self.get_form()
+        return context
+
+    class Meta:
+        abstract = True
+
+
+# CRUD for OfficialMeeting class
 
 
 class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
@@ -77,15 +105,9 @@ class OfficialMeetingListView(ListView):
     model = OfficialMeeting
 
 
-class OfficialMeetingDetailView(FormMixin, DetailView):
+class OfficialMeetingDetailView(FormMixin, AddContextDetailViewMixin, DetailView):
     model = OfficialMeeting
     form_class = CommentForm
-
-    def get_context_data(self, **kwargs):
-        context = super(OfficialMeetingDetailView, self).get_context_data()
-        context['comments'] = self.object.comments
-        context['comment_form'] = self.get_form()
-        return context
 
 
 class OfficialMeetingDeleteView(DeleteView):
@@ -94,19 +116,6 @@ class OfficialMeetingDeleteView(DeleteView):
 
 
 # CRUD for CoffeeEducation class
-
-class CoffeeEducationCreateUpdateMixin:
-    model = CoffeeEducation
-    form_class = CoffeeEducationForm
-    success_url = reverse_lazy('meetings:meetings-list')
-
-    class Meta:
-        abstract = True
-
-    def get_form_kwargs(self):
-        form_kwargs = super(CoffeeEducationCreateUpdateMixin, self).get_form_kwargs()
-        form_kwargs['request'] = self.request
-        return form_kwargs
 
 
 class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
@@ -136,8 +145,9 @@ class CoffeeEducationListView(ListView):
     model = CoffeeEducation
 
 
-class CoffeeEducationDetailView(DetailView):
+class CoffeeEducationDetailView(FormMixin, AddContextDetailViewMixin, DetailView):
     model = CoffeeEducation
+    form_class = CommentForm
 
 
 class CoffeeEducationDeleteView(DeleteView):

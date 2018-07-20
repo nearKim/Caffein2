@@ -1,10 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    ListView,
-    DetailView,
-)
 from django.views.generic.edit import (
     CreateView,
     UpdateView,
@@ -12,6 +8,7 @@ from django.views.generic.edit import (
 )
 
 from core.models import Comment, Instagram
+from meetings.models import Meeting
 
 
 def index(request):
@@ -21,14 +18,28 @@ def index(request):
         return render(request, 'index.html')
 
 
-class CommentCreateView(CreateView):
+class InstagramCommentCreateView(CreateView):
     model = Comment
     fields = ['content']
 
     def form_valid(self, form):
         form.save(commit=False)
         form.instance.author = self.request.user
-        form.instance.instagram = Instagram.objects.get(pk=self.kwargs.get('insta_id'))
+        form.instance.instagram = Instagram.objects.get(pk=self.kwargs.get('pk'))
+        form.save()
+        return HttpResponseRedirect(self.request.POST.get('next', '/'))
+
+
+class MeetingCommentCreateView(CreateView):
+    model = Comment
+    fields = ['content']
+
+    def form_valid(self, form):
+        form.save(commit=False)
+        form.instance.author = self.request.user
+        form.instance.meeting = Meeting.objects.get(pk=self.kwargs.get('pk'))
+        print("!!!!!!!!!!!!!!!!!!")
+        print(form.instance.meeting)
         form.save()
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
