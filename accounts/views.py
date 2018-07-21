@@ -74,6 +74,11 @@ class UserCreateView(CreateView):
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context['os'] = OperationScheme.latest()
+        return context
+
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_active = False

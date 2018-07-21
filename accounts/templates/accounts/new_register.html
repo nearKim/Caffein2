@@ -1,12 +1,23 @@
-<html>
-<head>
-    카페인 가입 테스트 페이지
-</head>
-<body>
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save"/>
-</form>
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
 
-</body>
-</html>
+{% block content %}
+
+
+<div class="contact mbr-box mbr-section mbr-section--relative mbr-section--bg-adapted ">
+    <div class="container">
+        <h1>카페인 {{os.current_year}}년 {{os.current_semester}}학기 신규회원 가입 신청</h1>
+        <hr>
+        <h5>
+            다음은 '서울대학교 중앙 커피동아리 카페인'(이하 '카페인')의 가입 약관입니다. 모두 읽고 체크박스를 클릭해주세요.
+        </h5>
+        <!--FIXME: 약관 링크!-->
+        <a href="#">약관 보기</a>
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{ form | crispy }}
+            <input type="submit" class="btn btn-default" value="다음 단계로"/>
+        </form>
+
+    </div>
+</div>
+{% endblock %}}
