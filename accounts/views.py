@@ -67,8 +67,9 @@ class UserCreateView(CreateView):
     template_name = 'accounts/new_register.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if OperationScheme.can_new_register():
-            return HttpResponse('아직 가입기간이 아닙니다')
+        if not OperationScheme.can_new_register():
+            return render(request, 'accounts/cannot_register.html',
+                          context={'user': request.user, 'os': OperationScheme.latest()})
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
@@ -111,7 +112,8 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_old_register():
-            return HttpResponse('아직 가입기간이 아닙니다.')
+            return render(request, 'accounts/cannot_register.html',
+                          context={'user': request.user, 'os': OperationScheme.latest()})
         else:
             return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
 
@@ -127,7 +129,6 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 class PaymentView(View):
 
     def get(self, request, pk):
-        # FIXME: Retrieval of an ActiveUser based on user pk might return multiple rows. Add latest logic.
         active_user = ActiveUser.objects.get(user__pk=pk)
         latest_os = OperationScheme.latest()
         pay = latest_os.new_pay if active_user.is_new else latest_os.old_pay
