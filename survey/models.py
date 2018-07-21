@@ -1,23 +1,24 @@
 
 from django.db import models
 #from django.contrib.auth.models import User
-from accounts.models import User
+#from accounts.models import User
+from core.mixins import TimeStampedMixin
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
-class Form(models.Model):
+class Form(TimeStampedMixin):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, default='1', on_delete=models.CASCADE, related_name='owner')
     users = models.ManyToManyField(User, related_name='users')
     opened = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
 
 
-class Question(models.Model):
+class Question(TimeStampedMixin):
     question_text = models.CharField(max_length=200)
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     QUESTION_TYPE_CHOICES = (
@@ -27,28 +28,22 @@ class Question(models.Model):
         ('binary', 'Yes/No based answer')
     )
     question_type = models.CharField(max_length=10, choices=QUESTION_TYPE_CHOICES, default='text')
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.question_text
 
 
-class Choice(models.Model):
+class Choice(TimeStampedMixin):
     choice_text = models.CharField(max_length=200)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.choice_text
 
 
-class Answer(models.Model):
+class Answer(TimeStampedMixin):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

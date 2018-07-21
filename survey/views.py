@@ -83,6 +83,7 @@ def view_form(request, user_id, pk):
         return redirect('survey:form-list')
 
 
+@login_required
 def list_form(request, pk):
     form = Form.objects.get(id=pk)
     #question_len = len(form.question_set.all())
@@ -101,6 +102,7 @@ def list_form(request, pk):
     return render(request, 'survey/list_form.html', context)
 
 
+@login_required
 def delete_form(request, pk):
     # delete answer instance?
     form = Form.objects.get(id=pk)
@@ -108,6 +110,7 @@ def delete_form(request, pk):
     return redirect('survey:form-list')
 
 
+@login_required
 def change_form_state(request, pk):
     form = Form.objects.get(id=pk)
     if form.opened:

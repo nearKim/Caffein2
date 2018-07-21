@@ -15,7 +15,8 @@
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">{{ form.title }}</h4>
-      <p class="card-text">created : {{ form.created|date:"Y-m-d h:m" }}</p>
+      <p class="card-text">creator : {{ form.owner }}</p>
+      <p class="card-text">created : {{ form.created|date:"Y-m-d h:i:s" }}</p>
       <!--<p class="card-text">{{ form.description }}</p>-->
         <!--<a href="{% url 'survey:list-form' pk=form.id %}" class="btn btn-primary">View</a>-->
         <a href="{% url 'survey:view-form' user_id=user.id pk=form.id %}" class="btn btn-primary">Fill</a>
@@ -46,7 +47,8 @@
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">{{ form.title }}</h4>
-      <p class="card-text">created : {{ form.created|date:"Y-m-d h:m" }}</p>
+      <p class="card-text">creator : {{ form.owner }}</p>
+      <p class="card-text">created : {{ form.created|date:"Y-m-d h:i" }}</p>
         <!--<a href="{% url 'survey:list-form' pk=form.id %}" class="btn btn-primary">View</a>-->
         <a href="{% url 'survey:view-form' user_id=user.id pk=form.id %}" class="btn btn-primary">Fill</a>
         <a href="{% url 'survey:list-form' pk=form.id %}" class="btn btn-info">Result</a>
