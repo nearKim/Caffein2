@@ -4,8 +4,8 @@
 {% block content %}
 
 
-<div class="contact mbr-box mbr-section mbr-section--relative mbr-section--bg-adapted ">
-    <div class="container">
+<div class="contact">
+    <div class="container table-bordered">
         <h1>카페인 {{os.current_year}}년 {{os.current_semester}}학기 신규회원 가입 신청</h1>
         <hr>
         <h5>
@@ -15,8 +15,9 @@
         <a href="#">약관 보기</a>
         <form method="post" enctype="multipart/form-data">{% csrf_token %}
             {{ form | crispy }}
-            <input type="submit" class="btn btn-default" value="다음 단계로"/>
+            <input type="submit" class="btn btn-default center-block" value="다음 단계로"/>
         </form>
+        <br>
 
     </div>
 </div>

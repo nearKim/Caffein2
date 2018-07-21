@@ -52,19 +52,27 @@
         <nav>
             <ul class="box-primary-nav">
                 <li class="box-label">Caffe人</li>
-                {#FIXME: fix urls#}
                 <li><a href="{% url 'core:index' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                 {% if not request.user.is_anonymous %}
-                    <li><a href="{% url 'accounts:detail' user.id%}">나의 프로필</a></li>
-                {% endif %}
-                <li><a href="#">짝모</a></li>
+                <li><a href="{% url 'accounts:detail' user.id%}">나의 프로필</a></li>
+                <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
+                <!--FIXME: 사진첩? 다른기능?-->
                 <li><a href="#">사진첩</a></li>
-                {% if not request.user.is_anonymous %}
-                    <li><a href="{% url 'accounts:old-register' user.id%}">기존회원 재가입</a></li>
                 {% else %}
-                    <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
+                <!--FIXME: 다른기능?-->
+                <li><a href="#">공지사항</a></li>
+                <li><a href="#">동아리 소개</a></li>
+                <li><a href="#">운영진 소개</a></li>
+                <li><a href="#">사진첩</a></li>
                 {% endif %}
-                <li class="box-social"><a href="https://www.facebook.com/groups/snucaffein/"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                {% if not request.user.is_anonymous %}
+                <li><a href="{% url 'accounts:old-register' user.id%}">기존회원 재가입</a></li>
+                {% else %}
+                <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
+                {% endif %}
+                <li class="box-social"><a href="https://www.facebook.com/groups/snucaffein/"><i class="fa fa-facebook"
+                                                                                                aria-hidden="true"></i></a>
+                </li>
             </ul>
         </nav>
         <!-- end nav -->

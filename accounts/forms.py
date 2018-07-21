@@ -47,8 +47,8 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = get_user_model()
-        fields = ['rule_confirm', 'email', 'password', 'name', 'phone', 'student_no', 'college', 'department',
-                  'category', 'profile_pic', 'join_year', 'join_semester']
+        fields = ['email', 'password', 'name', 'phone', 'student_no', 'college', 'department',
+                  'category', 'profile_pic']
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
