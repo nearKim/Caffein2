@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,7 +6,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils import six
 from django.utils.encoding import force_bytes, force_text
@@ -31,23 +32,13 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user)
-        # TODO: Link to the survey app.
-        return HttpResponse(_('이메일 계정이 확인되었습니다. 이제 로그인 하실 수 있습니다.'))
+        # user.is_active = True
+        # user.save()
+        # login(request, user)
+        messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
+        return redirect('survey:new-view-form', kwargs={'pk': uid})
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
-
-
-# def redirect_to_survey(request, uidb64, token):
-#     try:
-#         uid = force_text(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
-#     if user is not None:
-#         return Redirect('survey:new-form-create', pk=uid)
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
