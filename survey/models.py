@@ -3,16 +3,18 @@ from django.db import models
 #from django.contrib.auth.models import User
 #from accounts.models import User
 from core.mixins import TimeStampedMixin
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from django.conf import settings
 
 class Form(TimeStampedMixin):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    owner = models.ForeignKey(User, default='1', on_delete=models.CASCADE, related_name='owner')
-    users = models.ManyToManyField(User, related_name='users')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, default='1', on_delete=models.CASCADE, related_name='owner')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='users')
     opened = models.BooleanField(default=True)
+    for_new = models.BooleanField(default=False)
+
+    def is_new(self):
+        return self.for_new
 
     def __str__(self):
         return self.title
@@ -43,7 +45,7 @@ class Choice(TimeStampedMixin):
 
 class Answer(TimeStampedMixin):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
