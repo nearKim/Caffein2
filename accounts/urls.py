@@ -6,8 +6,8 @@ from .views import (
     UserDetailView,
     UserUpdateView,
     ActiveUserCreateView,
-    PaymentView
-)
+    PaymentView,
+    old_register_done)
 
 app_name = 'accounts'
 
@@ -20,4 +20,5 @@ urlpatterns = [
     path('<int:pk>/update/', UserUpdateView.as_view(), name='update'),
     path('<int:pk>/pay/', PaymentView.as_view(), name='payment'),
     path('<int:pk>/old-register/', ActiveUserCreateView.as_view(), name='old-register'),
+    path('old-register/done', old_register_done, name='old-register-done'),
 ]

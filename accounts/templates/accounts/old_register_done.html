@@ -1,11 +1,9 @@
-<html>
-<head>
-    기존회원 재가입이 완료되었습니다.
-</head>
-<body>
-<p>{{object.user}}</p>
-<p>{{object.active_year}}</p>
-<p>{{object.active_semester}}</p>
-<p>{{object.is_paid}}</p>
-</body>
-</html>
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="contact text-center container">
+    <h1>기존회원 재가입 신청이 완료되었습니다.</h1>
+    <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
+</div>
+{% endblock %}}

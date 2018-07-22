@@ -5,8 +5,9 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy, reverse
 from django.utils import six
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -38,16 +39,6 @@ def activate(request, uidb64, token):
         return HttpResponse(_('이메일 계정이 확인되었습니다. 이제 로그인 하실 수 있습니다.'))
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
-
-
-# def redirect_to_survey(request, uidb64, token):
-#     try:
-#         uid = force_text(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
-#     if user is not None:
-#         return Redirect('survey:new-form-create', pk=uid)
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
@@ -114,6 +105,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     model = ActiveUser
     fields = []
+    template_name = 'accounts/old_register.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_old_register():
@@ -122,13 +114,26 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         else:
             return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form, pk):
+    def form_valid(self, form):
         latest_os = OperationScheme.latest()
         user = self.request.user
         form.instance.user = user
         form.instance.active_year = latest_os.current_year
         form.instance.active_semester = latest_os.current_semester
         return super(ActiveUserCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ActiveUserCreateView, self).get_context_data(**kwargs)
+        context['os'] = OperationScheme.latest()
+        return context
+
+    def get_success_url(self):
+        return reverse('accounts:old-register-done')
+
+
+def old_register_done(request):
+    if request.method == 'GET':
+        return render(request, 'accounts/old_register_done.html', context={'user': request.user})
 
 
 class PaymentView(View):
