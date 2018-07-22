@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -37,7 +38,7 @@ def activate(request, uidb64, token):
         # user.save()
         # login(request, user)
         messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
-        return redirect('survey:new-view-form', kwargs={'pk': uid})
+        return redirect('survey:new-view-form', user_id=uid)
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
@@ -118,10 +119,15 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         latest_os = OperationScheme.latest()
         user = self.request.user
+        current_year, current_semester = latest_os.current_year, latest_os.current_semester
         form.instance.user = user
-        form.instance.active_year = latest_os.current_year
-        form.instance.active_semester = latest_os.current_semester
-        return super(ActiveUserCreateView, self).form_valid(form)
+        form.instance.active_year = current_year
+        form.instance.active_semester = current_semester
+        if ActiveUser(user=user, active_year=current_year, active_semester=current_semester):
+            messages.error(self.request, _('이미 가입신청 하셨습니다.'))
+            return self.form_invalid(form)
+        else:
+            return super(ActiveUserCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(ActiveUserCreateView, self).get_context_data(**kwargs)

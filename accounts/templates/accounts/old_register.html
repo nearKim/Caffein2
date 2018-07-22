@@ -4,9 +4,17 @@
 {% block content %}
 
 <div class="contact">
-    <div class="container table-bordered">
+    <div class="container text-center table-bordered">
         <h1>카페인 {{os.current_year}}년 {{os.current_semester}}학기 기존회원 재가입 신청</h1>
         <hr>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li
+            {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <form method="post">{% csrf_token %}
             {{ form | crispy }}
             <input type="submit" class="btn btn-default center-block" value="재가입 할게요!"/>
