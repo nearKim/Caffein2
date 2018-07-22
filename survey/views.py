@@ -17,6 +17,14 @@ class FormListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Form.objects.filter()
 
+'''
+class NewFormListView(ListView):
+    model = Form
+    template_name = 'survey/new_view_form.html'
+
+    def get_queryset(self):
+        return Form.objects.get(for_new=True)
+'''
 
 class FormCreate(LoginRequiredMixin, CreateView):
     model = Form
@@ -27,10 +35,14 @@ class FormCreate(LoginRequiredMixin, CreateView):
         result = {"result": "", "error_reason": ""}
         unicode_body = request.body.decode('utf-8')
         dict_post_data = json.loads(unicode_body)
+        print(dict_post_data)
         if len(dict_post_data['questions']) > 0:
-            form = Form.objects.create(title=dict_post_data['form_title'],
-                                       description=dict_post_data['form_description'],
-                                       owner=self.request.user)
+            form = Form(title=dict_post_data['form_title'],
+                        description=dict_post_data['form_description'],
+                        owner=self.request.user)
+            if dict_post_data['for_new']:
+                form.for_new = True
+            form.save()
             result['result'] = 'Form saved successfully'
             for question_item in dict_post_data['questions']:
                 question = Question(question_text=question_item['text'],
@@ -45,7 +57,6 @@ class FormCreate(LoginRequiredMixin, CreateView):
         else:
             result['result'] = 'Add a question title'
         return HttpResponse(json.dumps(result))
-
 
 @login_required
 def view_form(request, user_id, pk):
@@ -65,7 +76,6 @@ def view_form(request, user_id, pk):
         form = Form.objects.get(id=pk)
         form.users.add(user)
         form.save()
-        print(form.users.all())
         questions = Question.objects.filter(form=form)
         for question in questions:
             if question.question_type == 'mcq_many':
@@ -83,6 +93,42 @@ def view_form(request, user_id, pk):
         return redirect('survey:form-list')
 
 
+def new_view_form(request, user_id):
+    if request.method == 'GET':
+        form = Form.objects.get(for_new=True)
+        questions = Question.objects.filter(form=form)
+        questions = list(questions)
+        choices = Choice.objects.filter(question__in=questions)
+        context = {
+            'user_id': user_id,
+            'form': form,
+            'questions': questions,
+            'choices': choices
+        }
+        return render(request, 'survey/new_view_form.html', context)
+    elif request.method == 'POST':
+        user = User.objects.get(id=user_id)
+        form = Form.objects.get(for_new=True)
+        form.users.add(user)
+        form.save()
+        questions = Question.objects.filter(form=form)
+        for question in questions:
+            if question.question_type == 'mcq_many':
+                all_answer = request.POST.getlist(question.question_text)
+                answer = ''
+                for text in all_answer:
+                    answer += text + ','
+                answer = answer[:-1]
+            else:
+                answer = request.POST.get(question.question_text)
+            UserAnswer.objects.create(question=question,
+                                      answer=answer,
+                                      form=form,
+                                      user=user)
+        return redirect('survey:form-list')
+
+
+@login_required
 def list_form(request, pk):
     form = Form.objects.get(id=pk)
     #question_len = len(form.question_set.all())
@@ -101,6 +147,7 @@ def list_form(request, pk):
     return render(request, 'survey/list_form.html', context)
 
 
+@login_required
 def delete_form(request, pk):
     # delete answer instance?
     form = Form.objects.get(id=pk)
@@ -108,6 +155,7 @@ def delete_form(request, pk):
     return redirect('survey:form-list')
 
 
+@login_required
 def change_form_state(request, pk):
     form = Form.objects.get(id=pk)
     if form.opened:
@@ -116,27 +164,3 @@ def change_form_state(request, pk):
         form.opened = True
     form.save()
     return redirect('survey:form-list')
-
-'''
-def check_user(request, user_id, form_id):
-    form = Form.objects.get(id=form_id)
-    user = User.objects.get(id=user_id)
-    if form.users.get(user):
-        return True
-    else:
-        return False
-
-
-def check_answer(request, user_id, form_id):
-    form = Form.objects.get(id=form_id)
-    user = User.objects.get(id=user_id)
-    answers = UserAnswer.objects.filter(form=form)
-    user_answer = list(answers.filter(user=user).order_by('created'))[-len(form.question_set.all()):]
-    context = {
-        'lists': {
-            'user': user,
-            'user_answer': user_answer
-        }
-    }
-    return render(request, 'survey/list_form.html', context)
-'''

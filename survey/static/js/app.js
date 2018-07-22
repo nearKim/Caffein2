@@ -76,13 +76,13 @@ var changeQuestionType = function(type) {
             html = "<div class=\"form-check answer-type\">"
             html += "<label class=\"form-check-label\">";
             html += "<input class=\"form-check-input\" type=\"radio\" value=\"yes\" disabled>";
-            html += "<span class=\"option-text\">Yes</span>";
+            html += "<span class=\"option-text\">예</span>";
             html += "</label>";
             html += "</div>";
             html += "<div class=\"form-check answer-type\">"
             html += "<label class=\"form-check-label\">";
             html += "<input class=\"form-check-input\" type=\"radio\" value=\"no\" disabled>";
-            html += "<span class=\"option-text\">No</span>";
+            html += "<span class=\"option-text\">아니오</span>";
             html += "</label>";
             html += "</div>";
             break;
@@ -155,8 +155,15 @@ $(document).ready(function() {
         requestObj['questions'] = formSubmit();
         requestObj['form_title'] = $('.form-title').val();
         requestObj['form_description'] = $('.form-description').val();
+        var obj = document.getElementsByName('for-new');
+	    for( i=0; i<obj.length; i++ ) {
+		if(obj[i].checked) {
+			    requestObj['for_new'] = obj[i].value;
+		    }
+	    }
+        //requestObj['for_new'] = $('.for-new').val();
         console.log(requestObj);
-        requestJson = JSON.stringify(requestObj);
+        var requestJson = JSON.stringify(requestObj);
         ajaxSubmit(requestJson);
 
     });

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -32,11 +33,11 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user)
-        # TODO: Link to the survey app.
-        return HttpResponse(_('이메일 계정이 확인되었습니다. 이제 로그인 하실 수 있습니다.'))
+        # user.is_active = True
+        # user.save()
+        # login(request, user)
+        messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
+        return redirect('survey:new-view-form', kwargs={'pk': uid})
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
