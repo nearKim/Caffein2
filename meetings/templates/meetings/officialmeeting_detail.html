@@ -1,48 +1,105 @@
-<html>
-<h1>공지사항 상세페이지</h1>
-{% for p in object.photos.all %}
-{% if p.image %}
-<img src="{{p.image.url}}"/>
-{% endif %}
-{% endfor %}
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load imagekit %}
 
-<p><strong>PK:</strong> {{object.pk}}</p>
-<p><strong>PK_meeting:</strong> {{object}}</p>
-<p><strong>작성자:</strong> {{object.author}}</p>
-<p><strong>제목:</strong> {{object.title}}</p>
-<p><strong>내용:</strong> {{object.content}}</p>
-<p><strong>모임종류:</strong> {{object.get_category_display}}</p>
-<p><strong>장소:</strong> {{object.location}}</p>
-<p><strong>날짜 및 시간:</strong> {{object.meeting_date}}</p>
-<p><strong>최대 참여가능인원:</strong> {{object.max_participants}}</p>
-<hr>
-<p><strong>참여자:</strong> {% for participant in object.participants.all %} {{participant}} {%empty%} 참여자가 없네요 ㅠ {% endfor %}</p>
-{% if messages %}
-{% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-{% endif %}
-<form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{%csrf_token%}
-    <button>참여</button>
-</form>
-<hr>
-{% for comment in comments.all %}
-<p>{{comment.author}} |{{comment.content}}</p>
-<form action="{% url 'core:comment-delete' pk=comment.pk  %}" method="post">{%csrf_token%}
-    <input type="hidden" name="next" value="{{request.path}}">
-    <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-</form>
-<form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{%csrf_token%}
-    <button>수정</button>
-</form>
-{% empty %}
-<p>댓글이 없습니다!</p>
-{%endfor%}
+{% block content %}
+<section class="contact">
+    <h1 class="text-center">공식 모임</h1>
+    <div class="libre-text-lg container">
+        <div class="row col-sm-6">
+            <h2>
+                제목: {{object.title}}
+            </h2>
+            <h4>
+                작성자: {{object.author}}
+            </h4>
+            {% for p in object.photos.all %}
+            {% if p.image %}
+            <img src="{{p.image.url}}"/>
+            {% endif %}
+            {% endfor %}
 
-<form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">
-    {% csrf_token %}
-    {{ comment_form.as_p }}
-    <input type="hidden" name="next" value="{% url 'meetings:official-detail' pk=object.pk %}">
-    <input type="submit" value="Send"/>
-</form>
-</html>
+            <p class="libre-text-lg mb-50">
+                내용: {{object.content}}
+            </p>
+            <p class="libre-text-lg mb-50">
+                종류: {{object.get_category_display}}
+            </p>
+            <p class="libre-text-lg mb-50">
+                장소: {{object.location}}
+            </p>
+
+
+        </div>
+        <div class="row col-sm-6">
+            <p class="libre-text-lg mb-50">
+                날짜 및 시간: {{object.meeting_date| date:"Y년 m월 d일 h시 i분"}}
+            </p>
+            <p class="libre-text-lg mb-50">
+                최대 참석가능인원:
+                {% with object.max_participants as max %}
+                {% if max == 0 %}
+                누구나
+                {% else %}
+                {{ max }}
+                {% endif %}
+                {% endwith %}
+            </p>
+            <p class="libre-text-lg mb-50">
+                참여자:
+                {% for participant in object.participants.all %}
+                {% if participant.user.profile_pic %}
+                {% thumbnail "25x25" participant.user.profile_pic %}
+                {% endif %}
+
+                {{ participant }},
+                {% empty %} 아직 참여자가 없네요
+                {% endfor %}
+                ( {{object.participants.count}} )명 <br>
+            </p>
+            <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{%csrf_token%}
+                <button class="btn btn-default center-block">참여</button>
+            </form>
+            <hr>
+
+            <!--댓글-->
+            <h3 class="text-center">댓글</h3>
+            {% for comment in comments.all %}
+
+            <div class="col-lg-9 ">
+                <p>
+                    {% if comment.author.profile_pic %}
+                    {% thumbnail "25x25 " comment.author.profile_pic %}
+                    {% endif %}
+                    {{comment.author.name}} {{comment.content}}
+                </p>
+            </div>
+            <div class="col-lg-3">
+                {% if user == comment.author %}
+                <form action="{% url 'core:comment-delete' pk=comment.pk  %}" method="post" style="display: inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{request.path}}">
+                    <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+                </form>
+                <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post" style="display: inline">
+                    {%csrf_token%}
+                    <button class="btn-xs">수정</button>
+                </form>
+                {% endif %}
+            </div>
+
+            {% empty %}
+            <p>댓글이 없습니다!</p>
+            {% endfor %}
+        </div>
+        <div class="row col-sm-6">
+
+            <form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
+                {{ comment_form | crispy}}
+                <input type="hidden" name="next" value="{% url 'meetings:official-detail' pk=object.pk %}">
+                <input type="submit" class="btn btn-default center-block" value="댓글 달기"/>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
