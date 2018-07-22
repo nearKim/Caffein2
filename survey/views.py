@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView
 from accounts.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 import json
 
 from .models import Form, Question, Choice, UserAnswer
@@ -17,14 +18,6 @@ class FormListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Form.objects.filter()
 
-'''
-class NewFormListView(ListView):
-    model = Form
-    template_name = 'survey/new_view_form.html'
-
-    def get_queryset(self):
-        return Form.objects.get(for_new=True)
-'''
 
 class FormCreate(LoginRequiredMixin, CreateView):
     model = Form
@@ -95,7 +88,10 @@ def view_form(request, user_id, pk):
 
 def new_view_form(request, user_id):
     if request.method == 'GET':
-        form = Form.objects.get(for_new=True)
+        try:
+            form = Form.objects.get(for_new=True, opened=True)
+        except ObjectDoesNotExist:
+            form = None
         questions = Question.objects.filter(form=form)
         questions = list(questions)
         choices = Choice.objects.filter(question__in=questions)
