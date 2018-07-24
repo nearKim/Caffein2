@@ -1,15 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils import six
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -27,11 +25,11 @@ from .models import ActiveUser
 
 
 def activate(request, uidb64, token):
-    User = get_user_model()
+    user = get_user_model()
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = user.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, user.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         # user.is_active = True
@@ -100,8 +98,6 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
     model = get_user_model()
     form_class = CustomUserChangeForm
-    # fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
-    #           'profile_pic']
 
 
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
