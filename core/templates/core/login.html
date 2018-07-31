@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="contact text-center mbr-box mbr-section mbr-section--relative mbr-section--bg-adapted">
+{% if next %}
+    {% if user.is_authenticated %}
+<p>이 페이지에 접근할 권한이 없습니다.</p>
+    {% else %}
+<p>로그인을 해주세요.</p>
+    {% endif %}
+{% endif %}
+
+<div class="container col-md-4 col-md-offset-4">
+    <h1>회원 로그인</h1>
+    <br>
+    <form method="post" class="form-horizontal" action="{% url 'core:login' %}">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <input type="submit" class="btn btn-default" value="로그인"/>
+        <input type="hidden" name="next" value="{{ next }}"/>
+    </form>
+</div>
+</div>
+{% endblock content %}

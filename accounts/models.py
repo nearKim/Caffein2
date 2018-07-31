@@ -108,6 +108,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                       processors=[Thumbnail(100, 100)],
                                       format='JPEG',
                                       options={'quality': 60},
+                                      verbose_name=_('프로필 사진'),
                                       null=True, blank=True)
 
     join_year = models.PositiveSmallIntegerField(_('가입 년도'), validators=[year_validator], default=now().year)

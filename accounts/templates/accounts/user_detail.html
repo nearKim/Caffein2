@@ -1,31 +1,54 @@
-<html>
-<head>
-    User Detail View TEST
-</head>
-<h1>
-    {{object.email}}
-    {{object.name}}
-</h1>
-<p>{{object.phone}}</p>
-{% if object.profile_pic %}
-<p><img src="{{object.profile_pic.url}}"/> </p>
-{% else %}
-사용자 사진없음
-{% endif %}
-<p>{{object.student_no}}</p>
-<p>{{object.college}}</p>
-<p>{{object.department}}</p>
-<p>{{object.category}}</p>
-<p>{{object.join_year}}</p>
-<p>{{object.join_semester}}</p>
-<p>{{object.rule_confirm}}</p>
-<b>
-    <p>Active User에 대한 정보</p>
-    <p>마지막 등록상태</p>
-    {% with active=object.active.latest %}
-<p>{{active.active_year}}</p>
-<p>{{active.active_semester}}</p>
-<p>{{active.is_paid}}</p>
-    {% endwith %}
-</b>
-</html>
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load imagekit %}
+
+{% block content %}
+<section class="contact text-center">
+    <h1>회원 프로필</h1>
+    <div class="libre-text-lg container">
+        <div class="row col-sm-6">
+
+            <p class="libre-text-lg mb-50">
+                사진
+                {% if user.profile_pic %}
+                {% thumbnail "300x300" user.profile_pic %}
+                {% else %}
+                <small>이 없네요.</small>
+                {% endif %}
+            </p>
+            <p class="libre-text-lg mb-50">
+                이름: <b>{{ user.name }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                이메일: <b>{{ user.email }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                핸드폰: <b>{{ user.phone }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                학번: <b>{{ user.student_no }}</b>
+            </p>
+        </div>
+        <div class="row col-sm-6">
+            <br>
+            <p class="libre-text-lg mb-50">
+                단과대: <b>{{ user.get_college_display }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                학과: <b>{{ user.get_department_display }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                분류: <b>{{ user.get_category_display }}</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                가입년도: <b>{{ user.join_year}}년</b>
+            </p>
+            <p class="libre-text-lg mb-50">
+                가입학기: <b>{{ user.get_join_semester_display|safe }}</b>
+            </p>
+        </div>
+    </div>
+    <a href="{% url 'accounts:update' user.id %}" class="btn btn-default">정보 수정</a>
+    <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
+</section>
+{% endblock content %}

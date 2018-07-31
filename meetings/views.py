@@ -70,6 +70,7 @@ class CoffeeEducationCreateUpdateMixin:
 class AddContextDetailViewMixin:
     def get_context_data(self, **kwargs):
         context = super(AddContextDetailViewMixin, self).get_context_data()
+        context['user'] = self.request.user
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context

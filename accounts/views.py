@@ -1,12 +1,15 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.db import IntegrityError
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy, reverse
 from django.utils import six
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -31,23 +34,13 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user)
-        # TODO: Link to the survey app.
-        return HttpResponse(_('이메일 계정이 확인되었습니다. 이제 로그인 하실 수 있습니다.'))
+        # user.is_active = True
+        # user.save()
+        # login(request, user)
+        messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
+        return redirect('survey:new-view-form', user_id=uid)
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
-
-
-# def redirect_to_survey(request, uidb64, token):
-#     try:
-#         uid = force_text(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
-#     if user is not None:
-#         return Redirect('survey:new-form-create', pk=uid)
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
@@ -67,11 +60,17 @@ class UserCreateView(CreateView):
     template_name = 'accounts/new_register.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if OperationScheme.can_new_register():
-            return HttpResponse('아직 가입기간이 아닙니다')
+        if not OperationScheme.can_new_register():
+            return render(request, 'accounts/cannot_register.html',
+                          context={'user': request.user, 'os': OperationScheme.latest()})
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context['os'] = OperationScheme.latest()
+        return context
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -108,26 +107,45 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     model = ActiveUser
     fields = []
+    template_name = 'accounts/old_register.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_old_register():
-            return HttpResponse('아직 가입기간이 아닙니다.')
+            return render(request, 'accounts/cannot_register.html',
+                          context={'user': request.user, 'os': OperationScheme.latest()})
         else:
             return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form, pk):
+    def form_valid(self, form):
         latest_os = OperationScheme.latest()
         user = self.request.user
+        current_year, current_semester = latest_os.current_year, latest_os.current_semester
         form.instance.user = user
-        form.instance.active_year = latest_os.current_year
-        form.instance.active_semester = latest_os.current_semester
-        return super(ActiveUserCreateView, self).form_valid(form)
+        form.instance.active_year = current_year
+        form.instance.active_semester = current_semester
+        if ActiveUser(user=user, active_year=current_year, active_semester=current_semester):
+            messages.error(self.request, _('이미 가입신청 하셨습니다.'))
+            return self.form_invalid(form)
+        else:
+            return super(ActiveUserCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ActiveUserCreateView, self).get_context_data(**kwargs)
+        context['os'] = OperationScheme.latest()
+        return context
+
+    def get_success_url(self):
+        return reverse('accounts:old-register-done')
+
+
+def old_register_done(request):
+    if request.method == 'GET':
+        return render(request, 'accounts/old_register_done.html', context={'user': request.user})
 
 
 class PaymentView(View):
 
     def get(self, request, pk):
-        # FIXME: Retrieval of an ActiveUser based on user pk might return multiple rows. Add latest logic.
         active_user = ActiveUser.objects.get(user__pk=pk)
         latest_os = OperationScheme.latest()
         pay = latest_os.new_pay if active_user.is_new else latest_os.old_pay

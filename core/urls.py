@@ -16,7 +16,7 @@ app_name = 'core'
 
 urlpatterns = [
     path('', index, name='index'),
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', LoginView.as_view(template_name='core/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:login')), name='logout'),
 
     path('comment/create/instagram/<int:pk>/', InstagramCommentCreateView.as_view(), name='instagram-comment-create'),

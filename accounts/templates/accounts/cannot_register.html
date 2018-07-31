@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+{% block content %}
+<section class="box-intro">
+    <div class="table-cell text-center">
+        <h1>아직 가입기간이 아닙니다.</h1>
+        {% if user.is_authenticated %}
+        <h3>기존회원 재가입 기간:
+            <b>{{os.old_register_start | date:"Y년 m월 d일"}} </b> ~
+            <b>{{os.old_register_end | date:"Y년 m월 d일"}}</b>
+        </h3>
+        {% else %}
+        <h3>신규회원 가입 기간:
+            <b>{{os.new_register_start | date:"Y년 m월 d일"}} </b> ~
+            <b>{{os.new_register_end | date:"Y년 m월 d일"}}</b>
+        </h3>
+        <h4><b>(가입 신청자가 많을 경우 조기 마감될 수 있습니다)</b></h4>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}
