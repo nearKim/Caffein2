@@ -1,0 +1,18 @@
+{% extends "base_cafe.html" %}
+{% block content %}
+    <h1>Cafe List</h1>
+
+    {% if cafe_list %}
+    <ul>
+
+      {% for cafe in cafe_list %}
+      <li>
+        <a href="{{ cafe.get_absolute_url }}">{{ cafe.title }}</a> ({{book.author}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no cafes.</p>
+    {% endif %}
+{% endblock %}
