@@ -1,0 +1,35 @@
+{% extends 'base_cafe.html' %}
+{% block content %}
+    {% if cafe.image.url != None %}
+        <img src="{{ cafe.image.url }}" alt="" height="300">
+    {% endif %}
+    <h1>이름: {{ cafe.name }}</h1>
+    {% if cafe.address != None %}
+    <p><strong>주소:</strong>{{ cafe.address }}</p>
+    {% endif %}
+    {% if cafe.phone != None %}
+    <p><strong>전화번호:</strong>{{ cafe.phone }}</p>
+    {% endif %}
+    {% if cafe.machine != None %}
+    <p><strong>머신:</strong>{{ cafe.machine }}</p>
+    {% endif %}
+    {% if cafe.grinder != None %}
+    <p><strong>그라인더:</strong>{{ cafe.grinder }}</p>
+    {% endif %}
+    <p><strong>가격대:</strong>{{ cafe.price }}</p>
+    {% if cafe.from_time != None %}
+    <p><strong>개점시간:</strong>{{ cafe.from_time }}</p>
+    {% endif %}
+    {% if cafe.to_time %}
+    <p><strong>폐점시간:</strong>{{ cafe.to_time }}</p>
+    {% endif %}
+    {% if cafe.closed_day != None %}
+    <p><strong>휴무일:</strong>{% if cafe.closed_frq != None %}{{ cafe.closed_frq }}{% endif %} {{ cafe.closed_day }}</p>
+    {% endif %}
+    {% if cafe.closed_holiday %}<p><strong>(공휴일 휴무)</strong></p>{% endif %}
+    <p><strong>작성자:</strong>{{ cafe.uploader }}</p>
+    {% if user == cafe.uploader or user.is_staff %}
+        <a href="{% url 'cafe:cafe-update' pk=cafe.id %}" class="btn btn-warning">update</a>
+        <a href="{% url 'cafe:cafe-delete' pk=cafe.id %}" class="btn btn-danger">delete</a>
+    {% endif %}
+{% endblock %}

@@ -1,5 +1,8 @@
+
 {% extends "base_cafe.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
+
     <h1>Cafe List</h1>
 
     {% if cafe_list %}
@@ -7,7 +10,7 @@
 
       {% for cafe in cafe_list %}
       <li>
-        <a href="{{ cafe.get_absolute_url }}">{{ cafe.title }}</a> ({{book.author}})
+        <a href="{{ cafe.get_absolute_url }}">{{ cafe.name }}</a>
       </li>
       {% endfor %}
 
