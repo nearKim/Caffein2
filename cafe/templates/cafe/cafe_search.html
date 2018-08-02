@@ -1,0 +1,43 @@
+{% extends 'base_cafe.html' %}
+{% block content %}
+<form action="{% url 'cafe:search-place' %}" method="post">
+{% csrf_token %}
+<input id="search" name="search" type="text" class="query-search"
+ placeholder="Search...">
+<input class="btn btn-primary" type="submit" value="submit">
+</form>
+{% for place in items %}
+    <div>
+    <a href="{{ place.link }}">{{ place.title }}</a>
+    </div>
+{% endfor %}
+
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>네이버 지도 API - 주소로 지도 표시하기</title>
+        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_y2F3mssJyRxB52SCJaN&submodules=geocoder"></script>
+    </head>
+    <body>
+    <!--<div class="search" style>
+        <input id="address" type="text" placeholder="검색할 주소" value="관악로 1">
+        <input id="submit" type="button" value="주소 검색">
+    </div>-->
+    <div id="map" style="width:100%;height:400px;"></div>
+    <script type="text/javascript">
+        //var items = JSON.parse("{{ items }}");
+        //var items = "{{ items }}"
+        //items = utf(items)
+        var items = {{ items | safe }};
+        console.log(items[0].mapx);
+        console.log(items);
+        window.appConfig = {
+            items: items,
+        }
+    </script>
+    <script type="text/javascript" src="../../static/js/map_search.js">
+    </script>
+    </body>
+    </html>
+{% endblock %}
