@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from accounts.models import User
 from core.mixins import TimeStampedMixin
+from django.core.validators import URLValidator
 
 
 def get_cafe_photo_path(instance, filename):
@@ -39,8 +40,7 @@ class Cafe(TimeStampedMixin):
     name = models.CharField(_('카페이름'), max_length=50, unique=True)
     address = models.CharField(_('주소'), max_length=100)
     description = models.TextField(_('설명'), null=True, blank=True)
-    phone = models.CharField(_('전화번호'), max_length=14, null=True, blank=True,
-                             help_text=_('0x-xxxx-xxxx 형식으로 입력해주세요'))
+    phone = models.CharField(_('전화번호'), max_length=14, null=True, blank=True)
     machine = models.CharField(_('에스프레소 머신'), max_length=100, null=True, blank=True)
     grinder = models.CharField(_('그라인더'), max_length=100, null=True, blank=True)
     price = models.CharField(_('가격대'), max_length=15, choices=PRICE_CATEGORY)
@@ -53,6 +53,12 @@ class Cafe(TimeStampedMixin):
     closed_holiday = models.BooleanField(_('공휴일 휴무 여부'), default=False)
     uploader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploader')
     image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
+
+    # naver api
+    link = models.TextField(_('링크'), validators=[URLValidator()], blank=True)
+    road_address = models.CharField(_('도로명주소'), max_length=100, null=True, blank=True)
+    mapx = models.IntegerField(_('x좌표'), null=True, blank=True)
+    mapy = models.IntegerField(_('y좌표'), null=True, blank=True)
 
     class Meta:
         ordering = ['-created']

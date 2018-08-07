@@ -1,25 +1,7 @@
 //var items = appConfig.items;
 //alert(appConfig.items[0])
-var items = appConfig.items;
-/*
-var max_x = 307362,
-    min_x = 307362,
-    max_y = 540205,
-    min_y = 540205;
-for(var item in items){
-    var x = item.mapx;
-    var y = item.mapy;
-    if(x < min_x) {
-        min_x = x;
-    } else if(x > max_x) {
-        max_x = x;
-    }
-    if(y < min_y) {
-        min_y = y;
-    } else if(y > max_y) {
-        max_y = y;
-    }
-};*/
+
+
 var map = new naver.maps.Map("map", {
     //center: new naver.maps.LatLng(37.3595316, 127.1052133),
     center: new naver.maps.Point(307362, 540205),
@@ -41,91 +23,104 @@ var map = new naver.maps.Map("map", {
         }),
     mapTypeControl: true
 });
-var bounds = map.getBounds();
+//var bounds = map.getBounds();
     //southWest = bounds.getSW(),
     //northEast = bounds.getNE(),
     //lngSpan = northEast.lng() - southWest.lng(),
     //latSpan = northEast.lat() - southWest.lat();
+if(items.length != 0) {
+    var items = appConfig.items;
+    var markers = [],
+        infoWindows = [],
+        positions = [];
 
-var markers = [],
-    infoWindows = [],
-    positions = [];
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var position = new naver.maps.Point(item.mapx, item.mapy);
+        var marker = new naver.maps.Marker({
+            map: map,
+            position: position,
+            title: i,
+            zIndex: 100
+        });
+        var contentString = [
+            '<div class="iw_inner">',
+            '<h3>' + item.title + '</h3>',
+            '<p>' + item.roadAddress + '</p>',
+            '<p>' + item.address + '</p>',
+            '<p>' + item.description + '</p>',
+            '<a href="' + item.link + '">' + item.link + '</a>',
+            '</div>'
+        ].join('');
+        var infoWindow = new naver.maps.InfoWindow({
+            content: contentString
+        });
+        markers.push(marker);
+        infoWindows.push(infoWindow);
+        positions.push(position);
+    }
+    ;
 
-for(var i = 0; i < items.length; i++) {
-    var item = items[i];
-    var position = new naver.maps.Point(item.mapx, item.mapy);
-    var marker = new naver.maps.Marker({
-        map: map,
-        position: position,
-        title: i,
-        zIndex: 100
+    naver.maps.Event.addListener(map, 'idle', function () {
+        updateMarkers(map, markers);
+
     });
-    var contentString = [
-        '<div class="iw_inner">',
-        '<h3>' + item.title + '</h3>',
-        '<p>' + item.roadAddress + '</p>',
-        '<p>' + item.address + '</p>',
-        '<p>' + item.description + '</p>',
-        '<a href="' + item.link + '">' + item.link + '</a>',
-        '</div>'
-    ].join('');
-    var infoWindow = new naver.maps.InfoWindow({
-        content: contentString
-    });
-    markers.push(marker);
-    infoWindows.push(infoWindow);
-    positions.push(position);
-};
-naver.maps.Event.addListener(map, 'idle', function() {
-    updateMarkers(map, markers);
-});
-map.fitBounds(positions);
-function updateMarkers(map, markers) {
 
-    var mapBounds = map.getBounds();
-    var marker, position;
+    if (items.length == 1) {
+        var position = new naver.maps.Point(items[0].mapx, items[0].mapy);
+        map.setCenter(position);
+        map.setZoom(10);
+    } else {
+        map.fitBounds(positions);
+    }
 
-    for (var i = 0; i < markers.length; i++) {
+    function updateMarkers(map, markers) {
 
-        marker = markers[i]
-        position = marker.getPosition();
-        //if (mapBounds.hasLatLng(position)) {
-        if (mapBounds.hasPoint(position)) {
-            showMarker(map, marker);
-        } else {
-            hideMarker(map, marker);
+        var mapBounds = map.getBounds();
+        var marker, position;
+
+        for (var i = 0; i < markers.length; i++) {
+
+            marker = markers[i]
+            position = marker.getPosition();
+            //if (mapBounds.hasLatLng(position)) {
+            if (mapBounds.hasPoint(position)) {
+                showMarker(map, marker);
+            } else {
+                hideMarker(map, marker);
+            }
         }
     }
-}
 
-function showMarker(map, marker) {
+    function showMarker(map, marker) {
 
-    if (marker.setMap()) return;
-    marker.setMap(map);
-}
+        if (marker.setMap()) return;
+        marker.setMap(map);
+    }
 
-function hideMarker(map, marker) {
+    function hideMarker(map, marker) {
 
-    if (!marker.setMap()) return;
-    marker.setMap(null);
-}
+        if (!marker.setMap()) return;
+        marker.setMap(null);
+    }
 
 // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-function getClickHandler(seq) {
-    return function(e) {
-        var marker = markers[seq],
-            infoWindow = infoWindows[seq];
+    function getClickHandler(seq) {
+        return function (e) {
+            var marker = markers[seq],
+                infoWindow = infoWindows[seq];
 
-        if (infoWindow.getMap()) {
-            infoWindow.close();
-        } else {
-            infoWindow.open(map, marker);
+            if (infoWindow.getMap()) {
+                infoWindow.close();
+            } else {
+                infoWindow.open(map, marker);
+            }
         }
     }
-}
 
-for (var i=0, ii=markers.length; i<ii; i++) {
-    naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
+    for (var i = 0, ii = markers.length; i < ii; i++) {
+        naver.maps.Event.addListener(markers[i], 'click', getClickHandler(i));
+    }
 }
 /*
 

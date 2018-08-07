@@ -2,8 +2,7 @@
 
 {% block content %}
 <!--<form action="#" method="POST" class="submit-form">{% csrf_token %}-->
-{% if form %}
-<form action="{% url 'survey:new-view-form' user_id=user_id %}" method="POST" class="submit-form">{% csrf_token %}
+<form action="{% url 'survey:survey-fill' user_id=user.id pk=form.id %}" method="POST" class="submit-form">{% csrf_token %}
   <div class="card">
     <div class="card-block">
       <div>
@@ -21,7 +20,7 @@
         <div class="form-group">
           <input type="text" class="form-control" name="{{ question.question_text }}" placeholder="Text answer">
         </div>
-        {% elif question.question_type == 'mcq_one' %}
+        {% elif question.question_type == 'choice_one' %}
         <div class="form-check answer-type">
           {% for choice in choices %}
             {% if choice.question == question %}
@@ -33,7 +32,7 @@
             {% endif %}
           {% endfor %}
         </div>
-        {% elif question.question_type == 'mcq_many' %}
+        {% elif question.question_type == 'choice_many' %}
         <div class="form-check answer-type">
           {% for choice in choices %}
             {% if choice.question == question %}
@@ -65,7 +64,4 @@
     <button type="submit" class="btn btn-primary" value="continue">제출</button>
   </div>
 </form>
-{% else %}
-    <h3>신입회원 기간이 아닙니다.</h3>
-{% endif %}
 {% endblock %}

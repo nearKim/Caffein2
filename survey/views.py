@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.list import ListView
@@ -8,51 +7,52 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 import json
-
 from .models import Form, Question, Choice, UserAnswer
 
 
 class FormListView(LoginRequiredMixin, ListView):
     model = Form
-
-    def get_queryset(self):
-        return Form.objects.filter()
+    template_name = 'survey/survey_list.html'
 
 
 class FormCreate(LoginRequiredMixin, CreateView):
     model = Form
-    template_name = 'survey/form_create.html'
+    template_name = 'survey/survey_create.html'
     fields = '__all__'
 
     def post(self, request):
         result = {"result": "", "error_reason": ""}
         unicode_body = request.body.decode('utf-8')
         dict_post_data = json.loads(unicode_body)
-        print(dict_post_data)
+        # 질문 제목을 정상적으로 입력한 경우
         if len(dict_post_data['questions']) > 0:
             form = Form(title=dict_post_data['form_title'],
                         description=dict_post_data['form_description'],
                         owner=self.request.user)
-            if dict_post_data['for_new']:
+            # 신입가입 양식인 경우
+            if dict_post_data['for_new'] == 'True':
                 form.for_new = True
             form.save()
-            result['result'] = 'Form saved successfully'
+            result['result'] = '정상적으로 저장되었습니다.'
             for question_item in dict_post_data['questions']:
                 question = Question(question_text=question_item['text'],
                                     question_type=question_item['type'],
                                     form=form)
                 question.save()
-                if question_item['type'] == 'mcq_one' or question_item['type'] == 'mcq_many':
+                if question_item['type'] == 'choice_one' or question_item['type'] == 'choice_many':
                     for choice_item in question_item['options']:
                         choice = Choice(choice_text=choice_item,
                                         question=question)
                         choice.save()
+        # 질문 제목을 입력하지 않은 경
         else:
-            result['result'] = 'Add a question title'
+            result['result'] = '질문 제목을 입력해주세요.'
         return HttpResponse(json.dumps(result))
 
+
+# user id와 form의 pk를 넘겨받음. 해당 form의 question, choice를 반환하거나, 결과 제출.
 @login_required
-def view_form(request, user_id, pk):
+def survey_fill(request, user_id, pk):
     if request.method == 'GET':
         form = Form.objects.get(id=pk)
         questions = Question.objects.filter(form=form)
@@ -63,7 +63,7 @@ def view_form(request, user_id, pk):
             'questions': questions,
             'choices': choices
         }
-        return render(request, 'survey/view_form.html', context)
+        return render(request, 'survey/survey_fill.html', context)
     elif request.method == 'POST':
         user = User.objects.get(id=user_id)
         form = Form.objects.get(id=pk)
@@ -71,7 +71,7 @@ def view_form(request, user_id, pk):
         form.save()
         questions = Question.objects.filter(form=form)
         for question in questions:
-            if question.question_type == 'mcq_many':
+            if question.question_type == 'choice_many':
                 all_answer = request.POST.getlist(question.question_text)
                 answer = ''
                 for text in all_answer:
@@ -83,33 +83,38 @@ def view_form(request, user_id, pk):
                                       answer=answer,
                                       form=form,
                                       user=user)
-        return redirect('survey:form-list')
+        return redirect('survey:survey-list')
 
 
-def new_view_form(request, user_id):
+# 신입 가입을 위한 함수. 로그인이 필요 없이 동작.
+def survey_fill_new(request, user_id):
     if request.method == 'GET':
         try:
-            form = Form.objects.get(for_new=True, opened=True)
-        except ObjectDoesNotExist:
+            # 가장 최근의 신입양식을 보여줌
+            form = Form.objects.filter(for_new=True, opened=True)[0]
+            questions = Question.objects.filter(form=form)
+            choices = Choice.objects.filter(question__in=questions)
+        # 신입 가입을 위한 양식이 없는 경우 예외처리
+        except (ObjectDoesNotExist, IndexError):
             form = None
-        questions = Question.objects.filter(form=form)
-        questions = list(questions)
-        choices = Choice.objects.filter(question__in=questions)
+            questions = ''
+            choices = ''
         context = {
             'user_id': user_id,
             'form': form,
             'questions': questions,
             'choices': choices
         }
-        return render(request, 'survey/new_view_form.html', context)
+        return render(request, 'survey/survey_fill_new.html', context)
     elif request.method == 'POST':
         user = User.objects.get(id=user_id)
-        form = Form.objects.get(for_new=True)
+        form = Form.objects.filter(for_new=True, opened=True)[0]
         form.users.add(user)
         form.save()
         questions = Question.objects.filter(form=form)
+        # choice_many의 경우 여러 응답을 표시
         for question in questions:
-            if question.question_type == 'mcq_many':
+            if question.question_type == 'choice_many':
                 all_answer = request.POST.getlist(question.question_text)
                 answer = ''
                 for text in all_answer:
@@ -121,13 +126,13 @@ def new_view_form(request, user_id):
                                       answer=answer,
                                       form=form,
                                       user=user)
-        return redirect('survey:form-list')
+        return redirect('survey:survey-list')
 
 
+# 응답 결과를 표시. 같은 form에 같은 user가 복수의 응답을 한 경우에는 최신 응답만 표시
 @login_required
-def list_form(request, pk):
+def survey_result(request, pk):
     form = Form.objects.get(id=pk)
-    #question_len = len(form.question_set.all())
     answers = UserAnswer.objects.filter(form=form)
     users = form.users.all()
     lists = []
@@ -140,17 +145,17 @@ def list_form(request, pk):
     context = {
         'lists': lists,
     }
-    return render(request, 'survey/list_form.html', context)
+    return render(request, 'survey/survey_result.html', context)
 
 
 @login_required
 def delete_form(request, pk):
-    # delete answer instance?
     form = Form.objects.get(id=pk)
     form.delete()
-    return redirect('survey:form-list')
+    return redirect('survey:survey-list')
 
 
+# form의 상태를 open, close로 변화
 @login_required
 def change_form_state(request, pk):
     form = Form.objects.get(id=pk)
@@ -159,4 +164,4 @@ def change_form_state(request, pk):
     else:
         form.opened = True
     form.save()
-    return redirect('survey:form-list')
+    return redirect('survey:survey-list')
