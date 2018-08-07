@@ -15,7 +15,7 @@ var formSubmit = function() {
         if (question_text.trim().length > 0) {
             questObj['text'] = question_text;
             questObj['type'] = $(this).find('.question-type').val();
-            if (questObj['type'] == 'mcq_one' || questObj['type'] == 'mcq_many') {
+            if (questObj['type'] == 'choice_one' || questObj['type'] == 'choice_many') {
                 var options = $(this).find('.option');
                 var options_array = [];
                 options.each(function(option) {
@@ -65,8 +65,8 @@ var changeQuestionType = function(type) {
         case 'text':
             // html = "<input type=\"text\" class=\"form-control answer-type\" placeholder=\"Text answer\">";
             break;
-        case 'mcq_one':
-        case 'mcq_many':
+        case 'choice_one':
+        case 'choice_many':
             html = "<div class=\"answer-type\">";
             html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Option 1\" value=\"Option 1\">";
             html += "</div>";

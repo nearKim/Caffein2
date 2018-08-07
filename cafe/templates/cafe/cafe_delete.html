@@ -1,0 +1,7 @@
+{% extends 'base_cafe.html' %}
+{% block content %}
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+    <button type="submit" value="Confirm" class="btn btn-danger">confirm</button>
+</form>
+{% endblock %}
