@@ -1,8 +1,9 @@
-from cafe.models import Cafe
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+
+from cafe.models import Cafe
 
 
 @login_required

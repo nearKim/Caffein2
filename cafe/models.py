@@ -1,10 +1,11 @@
+from django.core.validators import URLValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse
+
 from accounts.models import User
 from core.mixins import TimeStampedMixin
-from django.core.validators import URLValidator
 
 
 def get_cafe_photo_path(instance, filename):

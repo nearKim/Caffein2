@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from .views import survey_fill, survey_fill_new, FormListView, FormCreate, delete_form, survey_result, change_form_state
+
 app_name = 'survey'
 
 urlpatterns = [

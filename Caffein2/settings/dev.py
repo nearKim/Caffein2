@@ -1,4 +1,3 @@
-from .base import *
 from django.contrib.messages import constants
 
 DEBUG = True

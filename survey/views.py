@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
-from accounts.models import User
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-import json
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+
+from accounts.models import User
 from .models import Form, Question, Choice, UserAnswer
 
 

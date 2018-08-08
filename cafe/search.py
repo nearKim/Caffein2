@@ -1,8 +1,9 @@
-import urllib.request
-from django.shortcuts import render
 import json
-from django.views.decorators.csrf import csrf_exempt
+import urllib.request
+
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 # FIXME : 실제 활용 시에는 secret 파일로 숨김
 client_id = "R8CudDUPo54uScENakHk"

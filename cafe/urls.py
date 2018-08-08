@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import CafeListView, CafeDetailView, index, CafeCreateView, CafeDeleteView, CafeUpdateView
+
 from cafe.search import search_place
+from .views import CafeListView, CafeDetailView, index, CafeCreateView, CafeDeleteView, CafeUpdateView
+
 app_name = 'cafe'
 
 urlpatterns = [

@@ -1,6 +1,7 @@
-from django.db import models
-from core.mixins import TimeStampedMixin
 from django.conf import settings
+from django.db import models
+
+from core.mixins import TimeStampedMixin
 
 
 class Form(TimeStampedMixin):
