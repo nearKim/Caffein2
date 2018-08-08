@@ -16,11 +16,11 @@ from core.forms import CommentForm
 from .forms import (
     OfficialMeetingForm,
     CoffeeEducationForm,
-)
+    CoffeeMeetingForm)
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
-    MeetingPhotos, Meeting)
+    MeetingPhotos, Meeting, CoffeeMeeting)
 
 
 # ListView for showing every meeting
@@ -160,6 +160,26 @@ class CoffeeEducationDeleteView(DeleteView):
 
 
 # TODO: Add CRUD for CoffeeMeeting model
+# CoffeeMeeting View
+class CoffeeMeetingCreateView(CreateView):
+    pass
+
+
+class CoffeeMeetingDeleteView(DeleteView):
+    pass
+
+
+class CoffeeMeetingUpdateView(UpdateView):
+    pass
+
+
+class CoffeeMeetingListView(ListView):
+    pass
+
+
+class CoffeeMeetingDetailView(DetailView):
+    pass
+
 
 # Participate View
 def participate_meeting(request, pk):

@@ -129,5 +129,8 @@ class CoffeeEducation(Meeting):
 
 
 class CoffeeMeeting(Meeting):
-    pass
-    # TODO: Add cafe app
+    cafe = models.ForeignKey('cafe.Cafe', on_delete=models.SET_NULL, verbose_name=_('카페'))
+
+    class Meta:
+        verbose_name = _('커모')
+        verbose_name_plural = _('커모')
