@@ -3,7 +3,7 @@
 {% block content %}
 
 <span class="messages"></span>
-<form action="{% url 'survey:form-create' %}" method="POST" class="create-form">{% csrf_token %}
+<form action="{% url 'survey:survey-create' %}" method="POST" class="create-form">{% csrf_token %}
   <div class="form-group">
     <button type="submit" class="btn btn-success">저장</button>
   </div>
@@ -39,8 +39,8 @@
         <div class="form-group">
           <select class="question-type custom-select" name="question-type">
             <option value="text" selected>텍스트</option>
-            <option value="mcq_one">1개 선택</option>
-            <option value="mcq_many">다중 선택</option>
+            <option value="choice_one">1개 선택</option>
+            <option value="choice_many">다중 선택</option>
             <option value="binary">예/아니오</option>
           </select>
         </div>

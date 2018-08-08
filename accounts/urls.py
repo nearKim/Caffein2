@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from django.urls import path, reverse_lazy
+from django.urls import path
+
 from .views import (
     UserCreateView,
     activate,

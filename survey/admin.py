@@ -23,8 +23,8 @@ admin.site.register(Question, QuestionAdmin)
 '''
 from django.contrib import admin
 
-from .models import Form, Question, Choice, TextAnswer, McqOneAnswer, \
-    McqManyAnswer, BinaryAnswer
+from .models import Form, Question, Choice, TextAnswer, ChoiceOneAnswer, \
+    ChoiceManyAnswer, BinaryAnswer
 
 
 class FormAdmin(admin.ModelAdmin):
@@ -59,6 +59,6 @@ admin.site.register(Form, FormAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice, ChoiceAdmin)
 admin.site.register(TextAnswer, TextAnswerAdmin)
-admin.site.register(McqOneAnswer, McqOneAnswerAdmin)
-admin.site.register(McqManyAnswer, McqManyAnswerAdmin)
+admin.site.register(ChoiceOneAnswer, McqOneAnswerAdmin)
+admin.site.register(ChoiceManyAnswer, McqManyAnswerAdmin)
 admin.site.register(BinaryAnswer, BinaryAnswerAdmin)
