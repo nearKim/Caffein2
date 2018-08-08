@@ -1,15 +1,13 @@
 # Secret information
-secrets.json
+/Caffein2/secrets.json
 
 # Media Files
 /Caffein2/media/*
-/feed_images/*
-feed_images/
 Caffein2/media/
 
 # Virtual env
-/caffein2-env/*
-caffein2-env/
+/myenv/*
+myenv/
 
 # sqlite3 DB
 /Caffein2/db.sqlite3
