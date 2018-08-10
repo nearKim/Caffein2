@@ -16,7 +16,7 @@ from core.forms import CommentForm
 from .forms import (
     OfficialMeetingForm,
     CoffeeEducationForm,
-    CoffeeMeetingForm)
+    )
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
