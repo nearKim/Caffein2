@@ -5,8 +5,8 @@ from django.forms import (
 
 from .models import (
     OfficialMeeting,
-    CoffeeEducation
-)
+    CoffeeEducation,
+    CoffeeMeeting)
 
 
 class OfficialMeetingForm(ModelForm):
@@ -34,8 +34,7 @@ class CoffeeEducationForm(ModelForm):
         model = CoffeeEducation
         fields = ['title', 'content', 'category', 'difficulty', 'location', 'meeting_date', 'max_participants']
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}),
-                             required=False)
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
