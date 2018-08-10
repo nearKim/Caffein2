@@ -14,9 +14,14 @@
             src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_y2F3mssJyRxB52SCJaN&submodules=geocoder"></script>
     <div id="map" style="width:100%;height:400px;"></div>
     <script type="text/javascript">
-            window.appConfig ={
-                places:{{ places | safe }},
-            }
+        {# https://codewithbenefit.com/pass-variables-from-flask-python-server-to-javascript-files-e3366b947f7c#}
+        window.appConfig = {
+            places: {% if places %}
+                    {{ places | safe }}
+                    {% else %}
+                    ['init']
+                    {% endif %}
+        }
     </script>
     <script type="text/javascript" src="{% static 'cafe/js/map_search.js' %}"></script>
 {% endblock %}

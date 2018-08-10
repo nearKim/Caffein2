@@ -28,18 +28,16 @@ let map = new naver.maps.Map("map", {
 // places의 결과 개수에 따라 분기해야 한
 switch (places.length) {
     case 0:
-        console.log("0")
         alert('검색 결과가 없습니다.')
         break
     case 1:
-        console.log("1")
+        // GET을 통해 들어온 경우 지도만 보여준다.
+        if(places[0] === 'init') break
         let position = new naver.maps.Point(places[0].mapx, places[0].mapy)
         map.setCenter(position)
         map.setZoom(10)
         break
     default:
-        console.log("other")
-        console.log(places)
         places.forEach(place => {
             let position = new naver.maps.Point(place.mapx, place.mapy)
             let contentString = [
