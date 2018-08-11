@@ -28,7 +28,8 @@ let map = new naver.maps.Map("map", {
 // places의 결과 개수에 따라 분기해야 한
 switch (places.length) {
     case 0:
-        alert('검색 결과가 없습니다.')
+        // 초기화면의 경우, 검색 결과가 없는 경우, 빈칸을 입력한 경우 아무것도 보여주지 않는다.
+        // TODO: 검색 결과가 없는 경우 alert창을 띄워주는 것이 좋다.
         break
     case 1:
         // GET을 통해 들어온 경우 지도만 보여준다.
@@ -88,6 +89,7 @@ function updateMarkers(map, markers) {
 function showMarker(map, marker) {
     if (marker.setMap()) return;
     marker.setMap(map);
+    console.log(marker)
 }
 
 function hideMarker(map, marker) {
