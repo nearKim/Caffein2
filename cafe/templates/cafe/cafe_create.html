@@ -9,8 +9,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<h1> 카페 등록 </h1>
+<h3> 카페 이름/주소를 검색한 후 지도에 나타나는 핀을 클릭해주세요. </h3>
+<h3> 정보가 잘못된 경우 고쳐주세요 </h3>
+<br>
 {% include 'cafe/cafe_search.html' %}
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form | crispy }}

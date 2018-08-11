@@ -44,7 +44,7 @@ class Cafe(TimeStampedMixin):
     phone = models.CharField(_('전화번호'), max_length=14, null=True, blank=True)
     machine = models.CharField(_('에스프레소 머신'), max_length=100, null=True, blank=True)
     grinder = models.CharField(_('그라인더'), max_length=100, null=True, blank=True)
-    price = models.CharField(_('가격대'), max_length=15, choices=PRICE_CATEGORY)
+    price = models.CharField(_('가격대'), max_length=15, choices=PRICE_CATEGORY, null=True, blank=True)
 
     from_time = models.TimeField(_('개점시간'), null=True, blank=True)
     to_time = models.TimeField(_('폐점시간'), null=True, blank=True)
@@ -56,7 +56,7 @@ class Cafe(TimeStampedMixin):
     image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
 
     # naver api
-    link = models.TextField(_('링크'), validators=[URLValidator()], blank=True)
+    link = models.CharField(_('홈페이지'), validators=[URLValidator()], blank=True, max_length=260)
     road_address = models.CharField(_('도로명주소'), max_length=100, null=True, blank=True)
     mapx = models.IntegerField(_('x좌표'), null=True, blank=True)
     mapy = models.IntegerField(_('y좌표'), null=True, blank=True)

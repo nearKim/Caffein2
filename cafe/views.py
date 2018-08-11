@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
+from cafe.forms import CafeCreateUpdateForm
 from cafe.models import Cafe
 
 
@@ -32,15 +33,13 @@ class CafeDeleteView(DeleteView, LoginRequiredMixin):
 
 class CafeUpdateView(UpdateView, LoginRequiredMixin):
     model = Cafe
-    fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price',
-              'from_time', 'to_time', 'closed_day', 'closed_frq', 'closed_holiday', 'image']
+    form_class = CafeCreateUpdateForm
     template_name = 'cafe/cafe_update.html'
 
 
 class CafeCreateView(CreateView, LoginRequiredMixin):
     model = Cafe
-    fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price',
-              'from_time', 'to_time', 'closed_day', 'closed_frq', 'closed_holiday', 'image']
+    form_class = CafeCreateUpdateForm
     template_name = 'cafe/cafe_create.html'
 
     # uploader 자동 생성

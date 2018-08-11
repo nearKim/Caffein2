@@ -42,24 +42,39 @@ switch (places.length) {
         places.forEach(place => {
             let position = new naver.maps.Point(place.mapx, place.mapy)
             let contentString = [
-                '<div class="iw_inner">',
+                '<div class="iw_inner" >',
                 '<h3>' + place.title + '</h3>',
                 '<p>' + place.roadAddress + '</p>',
                 '<p>' + place.address + '</p>',
                 '<p>' + place.description + '</p>',
-                '<a href="' + place.link + '">' + place.link + '</a>',
                 '</div>'
             ].join('');
 
+            // 전역 배열들에 데이터를 푸시한다.
             positions.push(position)
             markers.push(new naver.maps.Marker({
                 map: map,
                 position: position,
+                zIndex: 100,
                 title: place.title,
-                zIndex: 100
+
+                //  자동 필드 추가를 위해 마커에 지역정보를 포함시킨다
+                address: place.address ? place.address : place.roadAddress,
+                // 지번주소가 없다면 디폴트로 도로명주소가 주소에 삽입된다. 이경우 도로명주소를 따로 저장할 필요는 없다.
+                roadAddress: place.address ? place.roadAddress : null,
+                description: place.description ? place.description : '',
+                telephone: place.telephone ? place.telephone : '',
+                link: place.link
             }))
             infoWindows.push(new naver.maps.InfoWindow({
-                content: contentString
+                content: contentString,
+
+                backgroundColor: "#eee",
+                anchorSize: new naver.maps.Size(30, 30),
+                anchorSkew: true,
+                anchorColor: "#eee",
+
+                pixelOffset: new naver.maps.Point(20, -20)
             }))
         })
 
@@ -71,10 +86,23 @@ switch (places.length) {
 
 markers.forEach((marker, index) => naver.maps.Event.addListener(marker, 'click', () => {
     // TODO: infoWindow의 인덱스와 marker의 인덱스가 항상 동일해야 한다. 보장되는지 확인 필요.
-    // TODO: marker에 클릭 리스너 등록 필요
     let infoWindow = infoWindows[index]
     infoWindow.getMap() ? infoWindow.close() : infoWindow.open(map, marker)
-    document.getElementById('selected-marker').innerText = infoWindow.contentElement.innerText
+
+    // Cafe create에서 이 페이지가 로드되었을 경우 각 폼을 자동으로 채워준다
+    if ($('input[name="name"]').length) {
+        // 네이버 지역정보 쿼리 결과는 title이 <b> 태그로 둘러쌓여있다. 태그를 제거해준다.
+        $($('input[name="name"]')).val((marker.title).replace(/<\/?[^>]+(>|$)/g, ""))
+        $($('input[name="address"]')).val(marker.address)
+        $($('input[name="phone"]')).val(marker.telephone)
+        $($('textarea[name="description"]')).val(marker.description)
+        $($('input[name="link"]')).val(marker.link)
+        // 이하 Hidden Input
+        $($('input[name="road_address"]')).val(marker.roadAddress)
+        $($('input[name="mapx"]')).val(marker.position.x)
+        $($('input[name="mapy"]')).val(marker.position.y)
+    }
+
 }))
 
 function updateMarkers(map, markers) {
@@ -89,20 +117,9 @@ function updateMarkers(map, markers) {
 function showMarker(map, marker) {
     if (marker.setMap()) return;
     marker.setMap(map);
-    console.log(marker)
 }
 
 function hideMarker(map, marker) {
     if (!marker.setMap()) return;
     marker.setMap(null);
 }
-
-// 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-// function getClickHandler(seq) {
-//     return e => {
-//         var marker = markers[seq]
-//         var infoWindow = infoWindows[seq]
-//         infoWindow.getMap() ? infoWindow.close() : infoWindow.open(map, marker)
-//     }
-// }
-
