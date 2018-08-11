@@ -1,12 +1,11 @@
 {% load static %}
 
 <div id="naver-map-search">
-{#FIXME: 현재 엔터키로 검색시 검색이 안되는 버그가 존재. #}
     {# Search Bar #}
     <form id="form-search-place" search-url="{% url 'cafe:search-place' %}" method="get">
         {% csrf_token %}
         <input id="input-search-place"  type="text" class="query-search"
-               placeholder="Search...">
+               placeholder="카페이름을 입력해주세요.">
         <button id="btn-search-place"  type="button" class="btn btn-primary">검색</button>
     </form>
 
