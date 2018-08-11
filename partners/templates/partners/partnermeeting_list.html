@@ -3,40 +3,40 @@
 <html>
 <h1>짝모 리스트</h1>
 {% for meeting in object_list %}
-<p>PK: {{meeting.pk}}</p>
-<p>작성자: {{meeting.author}}</p>
-<p>내용: {{meeting.content}}</p>
-<p>작성시간: {{meeting.created}}</p>
+    <p>PK: {{ meeting.pk }}</p>
+    <p>작성자: {{ meeting.author }}</p>
+    <p>내용: {{ meeting.content }}</p>
+    <p>작성시간: {{ meeting.created }}</p>
 
-<p> 사진: </p>
-{% for p in meeting.photos.all %}
-<img src="{{p.image.url}}"/>
-{% endfor %}
-<h5>댓글:</h5>
+    <p> 사진: </p>
+    {% for p in meeting.photos.all %}
+        <img src="{{ p.image.url }}"/>
+    {% endfor %}
+    <h5>댓글:</h5>
 
-{% for comment in meeting.comments.all %}
-{% if comment.author.profile_pic %} <img src="{{comment.author.profile_pic.url}} "/>{%endif%} |
-작성자: {{comment.author }} |
-내용: {{comment.content}} |
-<form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post">{%csrf_token%}
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{request.path}}">
-    <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-</form>
-<form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{%csrf_token%}
-    {% csrf_token %}
-    <button>수정</button>
-</form>
-{% empty %}
-<p> 댓글이 없습니다!</p>
-{%endfor%}
-<form action="{% url 'core:instagram-comment-create' pk=meeting.pk %}" method="post">
-    {% csrf_token %}
-    {{ comment_form.as_p }}
-    <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
-    <input type="submit" value="Send"/>
-</form>
-<hr>
+    {% for comment in meeting.comments.all %}
+        {% if comment.author.profile_pic %} <img src="{{ comment.author.profile_pic.url }} "/>{% endif %} |
+        작성자: {{ comment.author }} |
+        내용: {{ comment.content }} |
+        <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post">{% csrf_token %}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+        </form>
+        <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{% csrf_token %}
+            {% csrf_token %}
+            <button>수정</button>
+        </form>
+    {% empty %}
+        <p> 댓글이 없습니다!</p>
+    {% endfor %}
+    <form action="{% url 'core:instagram-comment-create' pk=meeting.pk %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
+        <input type="submit" value="Send"/>
+    </form>
+    <hr>
 {% endfor %}
 
 </html>

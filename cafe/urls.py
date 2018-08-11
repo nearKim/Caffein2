@@ -12,5 +12,5 @@ urlpatterns = [
     path('create', CafeCreateView.as_view(), name='cafe-create'),
     path('update/<int:pk>', CafeUpdateView.as_view(), name='cafe-update'),
     path('delete/<int:pk>', CafeDeleteView.as_view(), name='cafe-delete'),
-    path('search', search_place, name='search-place')
+    path('ajax/search-place', search_place, name='search-place')
 ]

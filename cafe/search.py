@@ -2,6 +2,7 @@ import json
 import urllib.request
 
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -13,11 +14,13 @@ client_secret = "1uo8grDpdo"
 @login_required
 @csrf_exempt
 def search_place(request):
-    if request.method == "POST":
-        place = request.POST.get('search', '')
-        # 빈칸 검색시
+    if request.method == "GET":
+        # AJAX 리퀘스트에서 data에 search_term이 담겨 넘어온다.
+        place = request.GET.get('search_term', '')
+        # 초기화면 또는 빈칸 검색시
         if place == '':
-            return render(request, 'cafe/cafe_search.html')
+            return render(request, 'cafe/cafe_search.html', context={'places':''})
+
         encText = urllib.parse.quote(place)
         url = "https://openapi.naver.com/v1/search/local?display=20&query=" + encText  # json 결과
 
@@ -35,6 +38,7 @@ def search_place(request):
             return render(request, 'cafe/cafe_search.html', context={'places': places})
         # 에러 발생시
         else:
-            return render(request, 'cafe/cafe_search.html')
+            return render(request, 'cafe/cafe_search.html', context={'places':''})
     else:
-        return render(request, 'cafe/cafe_search.html')
+        # 네이버 API는 오직 GET요청만을 허용합니다
+        raise Http404

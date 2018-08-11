@@ -27,7 +27,6 @@ class CafeDetailView(DetailView, LoginRequiredMixin):
 
 class CafeDeleteView(DeleteView, LoginRequiredMixin):
     model = Cafe
-    success_url = '/cafe/'
     template_name = 'cafe/cafe_delete.html'
 
 
@@ -35,7 +34,6 @@ class CafeUpdateView(UpdateView, LoginRequiredMixin):
     model = Cafe
     fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price',
               'from_time', 'to_time', 'closed_day', 'closed_frq', 'closed_holiday', 'image']
-    success_url = '/cafe/'
     template_name = 'cafe/cafe_update.html'
 
 
@@ -43,7 +41,6 @@ class CafeCreateView(CreateView, LoginRequiredMixin):
     model = Cafe
     fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price',
               'from_time', 'to_time', 'closed_day', 'closed_frq', 'closed_holiday', 'image']
-    success_url = '/cafe/'
     template_name = 'cafe/cafe_create.html'
 
     # uploader 자동 생성
