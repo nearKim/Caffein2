@@ -1,28 +1,81 @@
-{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<div id="naver-map-search">
-    {# Search Bar #}
-    <form id="form-search-place" search-url="{% url 'cafe:search-place' %}" method="get">
-        {% csrf_token %}
-        <input id="input-search-place"  type="text" class="query-search"
-               placeholder="카페이름을 입력해주세요.">
-        <button id="btn-search-place"  type="button" class="btn btn-primary">검색</button>
-    </form>
-
-    {# Naver Map #}
-    <script type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_y2F3mssJyRxB52SCJaN&submodules=geocoder"></script>
-    <div id="map" style="width:100%;height:400px;"></div>
-    <div id="selected-marker"></div>
-    <hr>
-
-    {# JavaScript #}
-    <script type="text/javascript">
-        {# https://codewithbenefit.com/pass-variables-from-flask-python-server-to-javascript-files-e3366b947f7c#}
-        window.appConfig = {
-            places: {% if places %}{{ places | safe }}{% else %} '' {% endif %}
-        }
-    </script>
-    <script id="map-search" type="text/javascript" src="{% static 'cafe/js/map_search.js' %}"></script>
-
+</head>
+<body>
+<form id="form-search-cafe" action="{% url 'cafe:cafe-search' %}" method="get" accept-charset="utf-8">
+    {% csrf_token %}
+    <input id="input-search-cafe" class="searchfield" name="search-term" type="text" placeholder="카페 이름이나 주소를 적어주세요.">
+    <button id="btn-search-cafe" class="btn btn-default" type="submit">
+        검색
+    </button>
+</form>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>카페 이름</th>
+            <th>카페 주소</th>
+            <th>설명</th>
+            <th>전화번호</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for cafe in cafe_list %}
+            <tr class="clickable-row active" create-url={% url 'meetings:coffee-meeting-create' cafe.id %}>
+                <td>{{ cafe.name }}</td>
+                <td>{{ cafe.address }}</td>
+                <td>{{ cafe.description }}</td>
+                <td>{{ cafe.phone }}</td>
+            </tr>
+        {% empty %}
+            <div class="alert alert-warning">
+                <strong>검색 결과가 없습니다!</strong>
+            </div>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
+<button id="btn-cafe-selected" class="btn btn-lg btn-primary" disabled>카페를 선택해주세요</button>
+
+<script type="text/javascript">
+    let url = null
+    $(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+
+            url = $(this).attr("create-url")
+            $("#btn-cafe-selected").prop("disabled", false)
+            $("#btn-cafe-selected").text("여기서 커모 열기!")
+        });
+    });
+    $(document).on('click', '#btn-cafe-selected', e => {
+        window.location = url
+
+    })
+
+
+    {#$(document).on('click', '#btn-search-cafe', e => {#}
+    {#    e.preventDefault()#}
+    {#    let url = $("#form-search-cafe").attr("search-url")#}
+    {#    let search_term = $("#input-search-cafe").val()#}
+    {#    let cafe_list = "{{ cafe_list | safe}}"#}
+    {#    $.ajax({#}
+    {#        url: url,#}
+    {#        type: 'GET',#}
+    {#        context: document.body,#}
+    {#        data: {#}
+    {#            'search_term': search_term#}
+    {#        },#}
+    {#        success: data => {#}
+    {#            console.log(data)#}
+    {#            console.log(cafe_list)#}
+    {#        }#}
+    {#    })})#}
+</script>
+</body>
+</html>

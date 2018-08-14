@@ -13,13 +13,14 @@
 <h3> 카페 이름/주소를 검색한 후 지도에 나타나는 핀을 클릭해주세요. </h3>
 <h3> 정보가 잘못된 경우 고쳐주세요 </h3>
 <br>
-{% include 'cafe/cafe_search.html' %}
+{% include 'cafe/place_search.html' %}
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form | crispy }}
     <input id="btn-create-cafe" type="submit" class="btn btn-default center-block"
            value="카페 등록"/>
+    {#TODO: 등록 후 커모열기 버튼을 추가#}
 </form>
 </body>
 <script>

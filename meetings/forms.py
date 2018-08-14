@@ -46,3 +46,23 @@ class CoffeeEducationForm(ModelForm):
         instance.save()
 
         return instance
+
+
+class CoffeeMeetingForm(ModelForm):
+    class Meta:
+        model = CoffeeMeeting
+        fields = ['title', 'content', 'cafe', 'meeting_date', 'max_participants']
+
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(CoffeeMeetingForm, self).__init__(*args, **kwargs)
+        self.fields['cafe'].initial = kwargs.pop('cafe', None)
+        self.fields['cafe'].disabled = True
+
+    def save(self, commit=True):
+        instance = super(CoffeeMeetingForm, self).save(commit=False)
+        instance.author = self.request.user
+        instance.save()
+        return instance

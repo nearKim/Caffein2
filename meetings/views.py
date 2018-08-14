@@ -12,11 +12,12 @@ from django.views.generic.edit import (
     FormMixin)
 
 from accounts.models import ActiveUser
+from cafe.models import Cafe
 from core.forms import CommentForm
 from .forms import (
     OfficialMeetingForm,
     CoffeeEducationForm,
-    )
+    CoffeeMeetingForm)
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
@@ -67,6 +68,20 @@ class CoffeeEducationCreateUpdateMixin:
         return form_kwargs
 
 
+# class CoffeeMeetingCreateUpdateMixin:
+#     model = CoffeeMeeting
+#     form_class = CoffeeMeetingForm
+#     success_url = NotImplemented
+#
+#     class Meta:
+#         abstract = True
+#
+#     def get_form_kwargs(self):
+#         form_kwargs = super(CoffeeMeetingCreateUpdateMixin, self).get_form_kwargs()
+#         form_kwargs['request'] = self.request
+#         return form_kwargs
+
+
 class AddContextDetailViewMixin:
     def get_context_data(self, **kwargs):
         context = super(AddContextDetailViewMixin, self).get_context_data()
@@ -80,7 +95,6 @@ class AddContextDetailViewMixin:
 
 
 # CRUD for OfficialMeeting class
-
 
 class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
     def form_valid(self, form):
@@ -162,14 +176,35 @@ class CoffeeEducationDeleteView(DeleteView):
 # TODO: Add CRUD for CoffeeMeeting model
 # CoffeeMeeting View
 class CoffeeMeetingCreateView(CreateView):
-    pass
+    model = CoffeeMeeting
+    form_class = CoffeeMeetingForm
+    success_url = reverse_lazy('meetings:coffee-meeting-detail')
+
+    def get_initial(self):
+        cafe = get_object_or_404(Cafe, pk=self.kwargs.get('pk'))
+        return {
+            'cafe': cafe
+        }
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
+        form_kwargs['request'] = self.request
+        return form_kwargs
+
+        # 커모 모델의 각 어트리뷰트들을 뿌려준다
+
+        # 현재 카페인 db에 저장된 카페 검색 폼을 보여준다
+        # 검색 결과가 없을 시 카페를 등록할 수 있게하는 버튼을 추가한다
+        # 커모가 생성되면 커모상세 페이지로 리다이렉트 한다
 
 
 class CoffeeMeetingDeleteView(DeleteView):
+    model = CoffeeMeeting
     pass
 
 
 class CoffeeMeetingUpdateView(UpdateView):
+    model = CoffeeMeeting
     pass
 
 

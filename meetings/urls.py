@@ -7,11 +7,19 @@ from .views import (
     OfficialMeetingDeleteView,
     OfficialMeetingDetailView,
     OfficialMeetingListView,
+
     CoffeeEducationCreateView,
     CoffeeEducationUpdateView,
     CoffeeEducationDeleteView,
     CoffeeEducationListView,
     CoffeeEducationDetailView,
+
+    CoffeeMeetingCreateView,
+    CoffeeMeetingDetailView,
+    CoffeeMeetingListView,
+    CoffeeMeetingDeleteView,
+    CoffeeMeetingUpdateView,
+
     participate_meeting,
 )
 
@@ -30,6 +38,11 @@ urlpatterns = [
     path('education/delete/<int:pk>/', CoffeeEducationDeleteView.as_view(), name='education-delete'),
     path('education/<int:pk>/', CoffeeEducationDetailView.as_view(), name='education-detail'),
     path('education/', CoffeeEducationListView.as_view(), name='education-list'),
+
+    path('coffee-meeting/create/<int:pk>', CoffeeMeetingCreateView.as_view(), name='coffee-meeting-create'),
+    path('coffee-meeting/update/<int:pk>', CoffeeMeetingUpdateView.as_view(), name='coffee-meeting-update'),
+    path('coffee-meeting/delete/<int:pk>', CoffeeMeetingDeleteView.as_view(), name='coffee-meeting-delete'),
+    path('coffee-meeting/<int:pk>', CoffeeMeetingDetailView.as_view(), name='coffee-meeting-detail'),
 
     path('participate/<int:pk>/', participate_meeting, name='participate'),
 
