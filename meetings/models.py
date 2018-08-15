@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -133,3 +135,13 @@ class CoffeeMeeting(Meeting):
     class Meta:
         verbose_name = _('커모')
         verbose_name_plural = _('커모')
+
+    def get_absolute_url(self):
+        return reverse('meetings:coffee-meeting-detail', args=[self.pk])
+
+    def __str__(self):
+        korean_time = timezone.localtime(self.meeting_date)
+        parsed_time = re.search('^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})', korean_time.__str__())
+        # 카페이름(커모시간)을 반환한다.
+        # ex) 커피프레지던트(2018-08-18 13:00)
+        return '{}({})'.format(self.cafe.name, parsed_time.group(1))

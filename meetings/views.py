@@ -178,14 +178,17 @@ class CoffeeEducationDeleteView(DeleteView):
 class CoffeeMeetingCreateView(CreateView):
     model = CoffeeMeeting
     form_class = CoffeeMeetingForm
-    success_url = reverse_lazy('meetings:coffee-meeting-detail')
 
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
         form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
         # form_kwargs['cafe_pk'] = self.kwargs['pk']
+        print(form_kwargs)
         return form_kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         instance = form.save()
@@ -212,8 +215,16 @@ class CoffeeMeetingListView(ListView):
     pass
 
 
-class CoffeeMeetingDetailView(DetailView):
-    pass
+class CoffeeMeetingDetailView(FormMixin, DetailView):
+    model = CoffeeMeeting
+    form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CoffeeMeetingDetailView, self).get_context_data()
+        context['user'] = self.request.user
+        context['comments'] = self.object.comments
+        context['comment_form'] = self.get_form()
+        return context
 
 
 # Participate View
