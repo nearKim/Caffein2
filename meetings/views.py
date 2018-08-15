@@ -180,22 +180,22 @@ class CoffeeMeetingCreateView(CreateView):
     form_class = CoffeeMeetingForm
     success_url = reverse_lazy('meetings:coffee-meeting-detail')
 
-    def get_initial(self):
-        cafe = get_object_or_404(Cafe, pk=self.kwargs.get('pk'))
-        return {
-            'cafe': cafe
-        }
-
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
+        form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        # form_kwargs['cafe_pk'] = self.kwargs['pk']
         return form_kwargs
 
-        # 커모 모델의 각 어트리뷰트들을 뿌려준다
-
-        # 현재 카페인 db에 저장된 카페 검색 폼을 보여준다
-        # 검색 결과가 없을 시 카페를 등록할 수 있게하는 버튼을 추가한다
-        # 커모가 생성되면 커모상세 페이지로 리다이렉트 한다
+    def form_valid(self, form):
+        instance = form.save()
+        # instance.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        # instance.save()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                photo = MeetingPhotos(meeting=instance, image=f)
+                photo.save()
+        return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 
 class CoffeeMeetingDeleteView(DeleteView):
