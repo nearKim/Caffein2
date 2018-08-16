@@ -28,7 +28,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password')}),
+            'fields': ('email', 'password1', 'password2')}),
         (_('개인정보'), {'fields': ('name', 'phone', 'profile_pic')}),
         (_('학적정보'), {'fields': ('student_no', 'college', 'department', 'category')}),
         (_('권한'), {'fields': ('is_active', 'is_staff')}),

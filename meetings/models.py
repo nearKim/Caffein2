@@ -11,7 +11,7 @@ from core.models import Comment
 
 
 class Meeting(Postable):
-    title = models.CharField(_('제목'), max_length=20, blank=True)
+    title = models.CharField(_('제목'), max_length=50, blank=True)
     meeting_date = models.DateTimeField(_('날짜 및 시간'))
     max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
@@ -41,6 +41,7 @@ class Meeting(Postable):
         if self.max_participants == 0:
             return True
         else:
+            # print(self.max_participants)
             return self.max_participants > self.participants.count()
 
     def count_participants(self):
@@ -59,11 +60,6 @@ class Meeting(Postable):
         qs = Comment.objects.filter_by_instance(instance)
         return qs
 
-    def save(self, *args, **kwargs):
-        if not self.can_participate():
-            return
-        else:
-            super().save(*args, **kwargs)
 
 
 def get_meeting_photo_path(instance, filename):
@@ -139,9 +135,9 @@ class CoffeeMeeting(Meeting):
     def get_absolute_url(self):
         return reverse('meetings:coffee-meeting-detail', args=[self.pk])
 
-    def __str__(self):
-        korean_time = timezone.localtime(self.meeting_date)
-        parsed_time = re.search('^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})', korean_time.__str__())
-        # 카페이름(커모시간)을 반환한다.
-        # ex) 커피프레지던트(2018-08-18 13:00)
-        return '{}({})'.format(self.cafe.name, parsed_time.group(1))
+    # def __str__(self):
+    #     korean_time = timezone.localtime(self.meeting_date)
+    #     parsed_time = re.search('^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})', korean_time.__str__())
+    #     # 카페이름(커모시간)을 반환한다.
+    #     # ex) 커피프레지던트(2018-08-18 13:00)
+    #     return '{}({})'.format(self.cafe.name, parsed_time.group(1))

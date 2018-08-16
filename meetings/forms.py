@@ -77,5 +77,6 @@ class CoffeeMeetingForm(ModelForm):
     def save(self, commit=True):
         instance = super(CoffeeMeetingForm, self).save(commit=False)
         instance.author = self.request.user
+        instance.cafe = self.cafe
         instance.save()
         return instance

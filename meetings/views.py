@@ -35,6 +35,7 @@ class EveryMeetingListView(ListView):
         # TODO: Add CoffeeMeeting objects
         context = super(EveryMeetingListView, self).get_context_data(**kwargs)
         context['coffee_education_list'] = CoffeeEducation.objects.order_by('-created')
+        context['coffee_meeting_list'] = CoffeeMeeting.objects.order_by('-created')
         return context
 
 
@@ -183,17 +184,16 @@ class CoffeeMeetingCreateView(CreateView):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
         form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
-        # form_kwargs['cafe_pk'] = self.kwargs['pk']
-        print(form_kwargs)
         return form_kwargs
 
     def get_success_url(self):
-        return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])
 
     def form_valid(self, form):
         instance = form.save()
-        # instance.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
-        # instance.save()
+        # 커모의 작성자는 디폴트로 참여해야 한다.
+        author_active = ActiveUser.objects.filter(user=instance.author).latest()
+        instance.participants.add(author_active)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 photo = MeetingPhotos(meeting=instance, image=f)
@@ -203,12 +203,16 @@ class CoffeeMeetingCreateView(CreateView):
 
 class CoffeeMeetingDeleteView(DeleteView):
     model = CoffeeMeeting
-    pass
+    success_url = reverse_lazy('meetings:meetings-list')
 
 
 class CoffeeMeetingUpdateView(UpdateView):
     model = CoffeeMeeting
-    pass
+    fields = '__all__'
+    template_name_suffix = '_update_form'
+
+    def get_success_url(self):
+        return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])
 
 
 class CoffeeMeetingListView(ListView):
@@ -231,11 +235,15 @@ class CoffeeMeetingDetailView(FormMixin, DetailView):
 def participate_meeting(request, pk):
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
-        active_user = get_object_or_404(ActiveUser, user=request.user)
-        if active_user in meeting.participants.all():
-            messages.info(request, '취소 되었습니다.')
-            meeting.participants.remove(active_user)
+        if meeting.can_participate():
+            active_user = get_object_or_404(ActiveUser, user=request.user)
+            if active_user in meeting.participants.all():
+                messages.info(request, '취소 되었습니다.')
+                meeting.participants.remove(active_user)
+            else:
+                messages.info(request, '참여 했습니다.')
+                meeting.participate_meeting(active_user)
+            return redirect(meeting.cast())
         else:
-            messages.info(request, '참여 했습니다.')
-            meeting.participate_meeting(active_user)
-        return redirect(meeting.cast())
+            messages.error(request, '참여 인원이 다 찼습니다.')
+            return redirect(meeting.cast())
