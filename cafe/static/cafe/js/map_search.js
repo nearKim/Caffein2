@@ -1,10 +1,13 @@
 // 초기화 및 상수 선언
-let markers = []
-let infoWindows = []
-let positions = []
-let places = appConfig.places
+// https://stackoverflow.com/a/41948157
+{
+    var markers = []
+    var infoWindows = []
+    var positions = []
+    var places = appConfig.places
+}
 
-let map = new naver.maps.Map("map", {
+map = new naver.maps.Map("map", {
     // 서울대학교
     center: new naver.maps.Point(307362, 540205),
     zoom: 10,

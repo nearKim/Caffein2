@@ -32,7 +32,6 @@ class EveryMeetingListView(ListView):
     ordering = ['-created']
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        # TODO: Add CoffeeMeeting objects
         context = super(EveryMeetingListView, self).get_context_data(**kwargs)
         context['coffee_education_list'] = CoffeeEducation.objects.order_by('-created')
         context['coffee_meeting_list'] = CoffeeMeeting.objects.order_by('-created')
@@ -184,6 +183,7 @@ class CoffeeMeetingCreateView(CreateView):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
         form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        form_kwargs['read_only'] = True
         return form_kwargs
 
     def get_success_url(self):
@@ -208,8 +208,24 @@ class CoffeeMeetingDeleteView(DeleteView):
 
 class CoffeeMeetingUpdateView(UpdateView):
     model = CoffeeMeeting
-    fields = '__all__'
+    form_class = CoffeeMeetingForm
     template_name_suffix = '_update_form'
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CoffeeMeetingUpdateView, self).get_form_kwargs()
+        form_kwargs['request'] = self.request
+        form_kwargs['cafe'] = self.object.cafe
+        # 수정할 때는 CoffeeMeetingForm에서 cafe 어트리뷰트를 수정할 수 있어야 한다
+        form_kwargs['read_only'] = False
+        return form_kwargs
+
+    def form_valid(self, form):
+        instance = form.save()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                photo = MeetingPhotos(meeting=instance, image=f)
+                photo.save()
+        return super(CoffeeMeetingUpdateView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])

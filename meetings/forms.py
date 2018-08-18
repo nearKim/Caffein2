@@ -62,12 +62,18 @@ class CoffeeMeetingForm(ModelForm):
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
 
     def __init__(self, *args, **kwargs):
+        # kwargs에서 form을 만드는데 필요없는 view에서 넘겨준 부가정보를 먼저 빼낸다
         self.request = kwargs.pop('request', None)
         self.cafe = kwargs.pop('cafe')
+        read_only = kwargs.pop('read_only')
         super(CoffeeMeetingForm, self).__init__(*args, **kwargs)
-        # self.target_cafe = get_object_or_404(Cafe, pk=cafe_pk)
+
+        # form을 생성하고 필요한 처리를 한다
         self.fields['cafe'].initial = self.cafe
-        self.fields['cafe'].widget.attrs['readonly'] = True
+
+        # UpdateView에서 넘어온 경우 cafe를 활성화한다
+        if read_only:
+            self.fields['cafe'].widget.attrs['readonly'] = True
         self.fields['meeting_date'].input_formats = ["%Y-%m-%d %I:%M %p"]
 
     def clean_cafe(self):

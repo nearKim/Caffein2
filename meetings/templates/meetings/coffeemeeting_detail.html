@@ -102,20 +102,26 @@
             </div>
             <div class="row col-sm-6">
 
-                <form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
+                <form action="{% url 'core:meeting-comment-create' pk=coffeemeeting.pk %}"
+                      method="post">{% csrf_token %}
                     {{ comment_form | crispy }}
                     <input type="hidden" name="next" value="{% url 'meetings:coffee-meeting-detail' pk=object.pk %}">
                     <input id="comment-create" type="submit" class="btn btn-default center-block" value="댓글 달기"/>
                 </form>
             </div>
-            <div id="container-btn" class="row col-sm-6">
-                <a href="{% url 'meetings:coffee-meeting-update' pk=object.pk %}">
-                    {#                    <button type="button" class="btn btn-default">수정하기</button>#}
-                    수정하기
-                </a>
-                <button type="button" class="btn btn-default" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제하기</button>
-            </div>
+            {% if user.is_authenticated and user == coffeemeeting.author %}
+                <div id="container-btn" class="container col-sm-6">
+                    <a href="{% url 'meetings:coffee-meeting-update' pk=coffeemeeting.pk %}">
+                        <button class="btn btn-default">수정하기</button>
+                    </a>
+                    <form method="post"
+                          action="{% url 'meetings:coffee-meeting-delete' pk=coffeemeeting.pk %}"> {% csrf_token %}
+                        <input type="submit" value="삭제하기" class="btn btn-default"
+                               onclick="return confirm('정말로 삭제하시겠습니까?')">
+                    </form>
 
+                </div>
+            {% endif %}
         </div>
     </section>
 {% endblock %}
