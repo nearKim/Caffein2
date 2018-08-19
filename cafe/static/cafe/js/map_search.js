@@ -1,11 +1,8 @@
-// 초기화 및 상수 선언
-// https://stackoverflow.com/a/41948157
-{
-    var markers = []
-    var infoWindows = []
-    var positions = []
-    var places = appConfig.places
-}
+// 초기화
+// markers는 place_search에 선언된 전역변수를 사용한다
+infoWindows = appConfig.infoWindows
+positions = appConfig.positions
+places = appConfig.places
 
 map = new naver.maps.Map("map", {
     // 서울대학교
@@ -55,7 +52,7 @@ switch (places.length) {
 
             // 전역 배열들에 데이터를 푸시한다.
             positions.push(position)
-            markers.push(new naver.maps.Marker({
+            appConfig.markers.push(new naver.maps.Marker({
                 map: map,
                 position: position,
                 zIndex: 100,
@@ -82,12 +79,12 @@ switch (places.length) {
         })
 
         map.fitBounds(positions)
-        naver.maps.Event.addListener(map, 'idle', () => updateMarkers(map, markers))
+        naver.maps.Event.addListener(map, 'idle', () => updateMarkers(map, appConfig.markers))
 
 
 }
 
-markers.forEach((marker, index) => naver.maps.Event.addListener(marker, 'click', () => {
+appConfig.markers.forEach((marker, index) => naver.maps.Event.addListener(marker, 'click', () => {
     // TODO: infoWindow의 인덱스와 marker의 인덱스가 항상 동일해야 한다. 보장되는지 확인 필요.
     let infoWindow = infoWindows[index]
     infoWindow.getMap() ? infoWindow.close() : infoWindow.open(map, marker)
@@ -105,7 +102,8 @@ markers.forEach((marker, index) => naver.maps.Event.addListener(marker, 'click',
         $($('input[name="mapx"]')).val(marker.position.x)
         $($('input[name="mapy"]')).val(marker.position.y)
     }
-
+    // Officialmeeting create이나 CoffeeEducation Create에서 넘어온 경우 location 폼을 채워준다
+        $($('input[name="location"]')).val((marker.title).replace(/<\/?[^>]+(>|$)/g, ""))
 }))
 
 function updateMarkers(map, markers) {

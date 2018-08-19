@@ -1,5 +1,16 @@
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Send"/>
-</form>
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <section class="contact">
+        <div class="container">
+            <h1 class="text-center"> 짝모 올리기!</h1>
+            <hr>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input type="submit" class="btn center-block btn-default" value="Send"/>
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -116,7 +116,7 @@
                     </a>
                     <form method="post"
                           action="{% url 'meetings:coffee-meeting-delete' pk=coffeemeeting.pk %}"> {% csrf_token %}
-                        <input type="submit" value="삭제하기" class="btn btn-default"
+                        <input type="submit" value="삭제하기" class="btn btn-default" style="display: inline"
                                onclick="return confirm('정말로 삭제하시겠습니까?')">
                     </form>
 
