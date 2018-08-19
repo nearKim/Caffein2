@@ -1,4 +1,7 @@
-from django.urls import reverse_lazy
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import (
     CreateView,
@@ -6,7 +9,7 @@ from django.views.generic.edit import (
     DeleteView, FormMixin)
 
 from core.forms import CommentForm
-from core.models import FeedPhotos
+from core.models import FeedPhotos, OperationScheme
 from .forms import PartnerMeetingForm
 from .models import (
     PartnerMeeting,
@@ -16,6 +19,14 @@ from .models import (
 
 class PartnerDetailView(DetailView):
     model = Partners
+
+    def get(self, request, **kwargs):
+        try:
+            self.model.objects.get(pk=kwargs['pk'])
+            return super(PartnerDetailView, self).get(request, **kwargs)
+        except self.model.DoesNotExist:
+            messages.error(self.request, '배정된 짝지가 없습니다.')
+            return redirect(reverse('core:index'))
 
 
 class PartnerMeetingListView(FormMixin, ListView):
@@ -62,6 +73,26 @@ class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
 
 
 class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
+    def get(self, request, **kwargs):
+        # 유저가 속한 최신의 짝지 객체를 가져온다.
+        try:
+            latest_partner = Partners.related_partner(request.user)
+            current_os = OperationScheme.latest()
+            # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
+            if latest_partner is None:
+                raise Http404
+                # 다른경우 신학기 시작 후 기존회원의 옛날 짝지 데이터를 가져온 것이므로 에러 메세지를 띄우고 index로 보낸다.
+            elif not (current_os.current_year == latest_partner.partner_year) and (
+                    current_os.current_semester == latest_partner.current_semester):
+                raise Http404
+            else:
+                return super(PartnerMeetingCreateView, self).get(self, request, **kwargs)
+        except Http404:
+            # 만일 짝지 객체가 없으면 신입회원이므로 에러 메세지를 띄우고 index로 보낸다.
+            messages.error(request, '아직 짝지가 배정되지 않았습니다.')
+            return redirect(reverse('core:index'))
+        pass
+
     def form_valid(self, form):
         instance = form.save()
         if self.request.FILES:

@@ -38,12 +38,17 @@ class Partners(models.Model):
 
     @staticmethod
     def related_partner(user):
-        return Partners.objects.filter(
-            Q(up_partner__user=user) |
-            Q(down_partner_1__user=user) |
-            Q(down_partner_2__user=user) |
-            Q(down_partner_3__user=user)
-        ).latest()
+        # input 파라미터 user가 속한 짝지 중 가장 최신의 객체를 반환합니다.
+        try:
+            related = Partners.objects.filter(
+                Q(up_partner__user=user) |
+                Q(down_partner_1__user=user) |
+                Q(down_partner_2__user=user) |
+                Q(down_partner_3__user=user)
+            ).latest()
+        except Partners.DoesNotExist:
+            related = None
+        return related
 
 
 class PartnerMeeting(Instagram):
