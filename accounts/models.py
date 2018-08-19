@@ -104,6 +104,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     department = models.CharField(_('학과'), choices=DEPARTMENT_CHOICES, max_length=2)
 
     category = models.CharField(_('분류'), max_length=1, choices=STUDENT_CATEGORY)
+    # TODO: 디폴트 이미지가 있으면 좋을듯
     profile_pic = ProcessedImageField(upload_to=get_profile_path,
                                       processors=[Thumbnail(100, 100)],
                                       format='JPEG',
@@ -166,8 +167,9 @@ class ActiveUser(models.Model):
 
     @property
     def is_new(self):
-        """Return whether this active user is a newbie or not"""
+        # 신입회원 여부를 리턴한다
         return self.user.get_join_year_semester() == (self.active_year, self.active_semester)
 
     def get_absolute_url(self):
+        # FIXME: implement here
         return HttpResponse('Success!')

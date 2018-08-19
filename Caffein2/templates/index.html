@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="{% static "assets/css/animsition.min.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/style.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/owl.carousel.css" %}">
-    <link rel="stylesheet" href="{% static "assets/css/owl.theme.css"%}">
+    <link rel="stylesheet" href="{% static "assets/css/owl.theme.css" %}">
+
 
     <!-- Fontawesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
@@ -38,7 +39,8 @@
         <div class="box-header">
             <div class="box-logo">
                 {#FIXME: fix Logo.png#}
-                <a href="{% url 'core:index' %}"><img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
+                <a href="{% url 'core:index' %}"><img src="{% static "assets/img/logo.png" %}" width="80"
+                                                      alt="Logo"></a>
             </div>
             <!-- box-nav -->
             <a class="box-primary-nav-trigger" href="#0">
@@ -54,21 +56,21 @@
                 <li class="box-label">Caffe人</li>
                 <li><a href="{% url 'core:index' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                 {% if not request.user.is_anonymous %}
-                <li><a href="{% url 'accounts:detail' user.id%}">나의 프로필</a></li>
-                <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
-                <!--FIXME: 사진첩? 다른기능?-->
-                <li><a href="#">사진첩</a></li>
+                    <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a></li>
+                    <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
+                    <!--FIXME: 사진첩? 다른기능?-->
+                    <li><a href="#">사진첩</a></li>
                 {% else %}
-                <!--FIXME: 다른기능?-->
-                <li><a href="#">공지사항</a></li>
-                <li><a href="#">동아리 소개</a></li>
-                <li><a href="#">운영진 소개</a></li>
-                <li><a href="#">사진첩</a></li>
+                    <!--FIXME: 다른기능?-->
+                    <li><a href="#">공지사항</a></li>
+                    <li><a href="#">동아리 소개</a></li>
+                    <li><a href="#">운영진 소개</a></li>
+                    <li><a href="#">사진첩</a></li>
                 {% endif %}
                 {% if not request.user.is_anonymous %}
-                <li><a href="{% url 'accounts:old-register' user.id%}">기존회원 재가입</a></li>
+                    <li><a href="{% url 'accounts:old-register' user.id %}">기존회원 재가입</a></li>
                 {% else %}
-                <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
+                    <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
                 {% endif %}
                 <li class="box-social"><a href="https://www.facebook.com/groups/snucaffein/"><i class="fa fa-facebook"
                                                                                                 aria-hidden="true"></i></a>
@@ -108,7 +110,8 @@
                     {#FIXME: replace this fucking about.png to coffee image#}
                     <img src="assets/img/about.png" alt="Khaki HTML Template" width="300">
                     <div class="km-space"></div>
-                    <h5 class="lead">서울대학교 중앙 커피동아리 Caffe人은 2007년 설립된 국내 최초의 커피 동아리입니다. 우리는 함께 커피를 배우고, 커피를 나누고, 커피를 마시며 서로를 알아갑니다.</h5>
+                    <h5 class="lead">서울대학교 중앙 커피동아리 Caffe人은 2007년 설립된 국내 최초의 커피 동아리입니다. 우리는 함께 커피를 배우고, 커피를 나누고, 커피를 마시며
+                        서로를 알아갑니다.</h5>
                     <h2><strong>우리 같이 커피 한 잔 할래요?</strong></h2>
                 </div>
             </div><!-- description text -->
@@ -122,28 +125,36 @@
                 <div class="col-xs-12 col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-users"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='700' data-delay='10' data-increment="10">100</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='700' data-delay='10'
+                             data-increment="10">100
+                        </div>
                         <div class="count-name-intro">함께한 사람들</div>
                     </div>
                 </div>
                 <div class="col-xs-12  col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-bubble"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='200' data-delay='10' data-increment="5">200</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='200' data-delay='10'
+                             data-increment="5">200
+                        </div>
                         <div class="count-name-intro">커피 모임</div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-camera"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='1000' data-delay='10' data-increment="5">1000</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='1000' data-delay='10'
+                             data-increment="5">1000
+                        </div>
                         <div class="count-name-intro">사진</div>
                     </div>
                 </div>
                 <div class="col-xs-12  col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-coffee-cup"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='99999' data-delay='10' data-increment="10">99999</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='99999' data-delay='10'
+                             data-increment="10">99999
+                        </div>
                         <div class="count-name-intro">그리고 셀수없는 커피들</div>
                     </div>
                 </div>
@@ -153,7 +164,8 @@
 
     <!-- TEAM -->
     <section id="team" class="team mbr-box mbr-section mbr-section--relative">
-        <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1"
+             xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0 L50 100 L100 0 Z" fill="#ffeedb" stroke="#ffeedb"></path>
         </svg>
         <div class="container">
@@ -162,7 +174,8 @@
                     <div class="section-title-parralax">
                         <div class="process-numbers">01</div>
                         <h2>Our Team</h2>
-                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                            eiusmod
                             tempor incididunt ut labore et dolore magna aliqua.
                         </p>
                     </div>
@@ -172,9 +185,13 @@
                 <!-- single member -->
                 <div class="team-member col-md-4 col-sm-4 text-center">
                     <div class="member-thumb">
-                        <div class="cover"><div class="cover-inner-left"></div></div>
+                        <div class="cover">
+                            <div class="cover-inner-left"></div>
+                        </div>
                         <img src="assets/img/team/member-1.jpg" alt="Team Member" class="img-responsive">
-                        <div class="team_cover"><div class="team_cover_inner"></div></div>
+                        <div class="team_cover">
+                            <div class="team_cover_inner"></div>
+                        </div>
                         <div class="overlay">
                             <h6>Nice to meet! </h6>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus, a iaculis diam.</p>
@@ -193,9 +210,13 @@
                 <!-- single member -->
                 <div class="team-member col-md-4 col-sm-4 text-center">
                     <div class="member-thumb">
-                        <div class="cover"><div class="cover-inner-middle"></div></div>
+                        <div class="cover">
+                            <div class="cover-inner-middle"></div>
+                        </div>
                         <img src="assets/img/team/member-2.jpg" alt="Team Member" class="img-responsive">
-                        <div class="team_cover"><div class="team_cover_inner"></div></div>
+                        <div class="team_cover">
+                            <div class="team_cover_inner"></div>
+                        </div>
                         <div class="overlay">
                             <h6>HELLO &amp; WELCOME! </h6>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus, a iaculis diam.</p>
@@ -214,9 +235,13 @@
                 <!-- single member -->
                 <div class="team-member col-md-4 col-sm-4 text-center ">
                     <div class="member-thumb">
-                        <div class="cover"><div class="cover-inner-right"></div></div>
+                        <div class="cover">
+                            <div class="cover-inner-right"></div>
+                        </div>
                         <img src="assets/img/team/member-3.jpg" alt="Team Member" class="img-responsive">
-                        <div class="team_cover"><div class="team_cover_inner"></div></div>
+                        <div class="team_cover">
+                            <div class="team_cover_inner"></div>
+                        </div>
                         <div class="overlay">
                             <h6>HI FRIEND! </h6>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit lacus, a iaculis diam.</p>
@@ -245,7 +270,8 @@
                             <i class="lnr lnr-diamond"></i>
                         </div>
                         <h6>creative design</h6>
-                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                            printer took a galley of type and scrambled it to make a type specimen book.</p>
                     </div>
                 </div>
                 <!-- End features-item -->
@@ -255,7 +281,8 @@
                             <i class="lnr lnr-rocket"></i>
                         </div>
                         <h6>well organized</h6>
-                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.e</p>
+                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                            printer took a galley of type and scrambled it to make a type specimen book.e</p>
                     </div>
                 </div>
                 <!-- End features-item -->
@@ -266,7 +293,8 @@
                             <i class="lnr lnr-mustache"></i>
                         </div>
                         <h6>easy to customize</h6>
-                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                            printer took a galley of type and scrambled it to make a type specimen book.</p>
                     </div>
                 </div>
                 <!-- End features-item -->
@@ -277,7 +305,8 @@
                             <i class="lnr lnr-phone"></i>
                         </div>
                         <h6>support 24/7</h6>
-                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                            printer took a galley of type and scrambled it to make a type specimen book.</p>
                     </div>
                 </div>
                 <!-- End features-item -->
@@ -286,7 +315,9 @@
     </div>
 
     <!-- SERVICES PARALAX -->
-    <section id="services" class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background"  style="background-image: url(assets/img/services.jpg);">
+    <section id="services"
+             class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background"
+             style="background-image: url(assets/img/services.jpg);">
         <div class="section-overlay"></div>
         <div class="container">
             <div class="row center">
@@ -294,7 +325,8 @@
                     <div class="section-title-parralax">
                         <div class="process-numbers">02</div>
                         <h2>services</h2>
-                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                            eiusmod
                             tempor incididunt ut labore et dolore magna aliqua.
                         </p>
                     </div>
@@ -344,7 +376,8 @@
                     <div class="section-title mb-100">
                         <div class="process-numbers">03</div>
                         <h2>portfolio</h2>
-                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                            eiusmod
                             tempor incididunt ut labore et dolore magna aliqua.</p>
                     </div>
                 </div>
@@ -505,7 +538,8 @@
 
     <!-- CLIENTS -->
     <div id="clients" class="clients mt-100 mbr-box mbr-section mbr-section--relative">
-        <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1"
+             xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0 L50 100 L100 0 Z" fill="#fff" stroke="#fff"></path>
         </svg>
         <div class="container">
@@ -525,7 +559,8 @@
     </div>
 
     <!-- PRICING -->
-    <section id="pricing" class="pricing mbr-box mbr-section mbr-section--relative mbr-section--full-height mbr-section--bg-adapted">
+    <section id="pricing"
+             class="pricing mbr-box mbr-section mbr-section--relative mbr-section--full-height mbr-section--bg-adapted">
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 col-sm-12">
@@ -533,7 +568,8 @@
                         <div class="section-title mb-100">
                             <div class="process-numbers">04</div>
                             <h2>our prices</h2>
-                            <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                            <p class="module-subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                                eiusmod
                                 tempor incididunt ut labore et dolore magna aliqua.</p>
                         </div>
                     </div>
@@ -546,13 +582,16 @@
                         <div class="plan_title"><h6>Basic</h6></div>
                         <div class="plan_price">
                             <i class="fa fa-usd" aria-hidden="true"></i>
-                            <div class="numscroller" data-slno='1' data-min='0' data-max='29' data-delay='20' data-increment="5">29</div>
+                            <div class="numscroller" data-slno='1' data-min='0' data-max='29' data-delay='20'
+                                 data-increment="5">29
+                            </div>
                         </div>
                         <ul class="list">
                             <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
                             <li><strong>Three</strong>year support & updates</li>
                         </ul>
-                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right"
+                                                                                   aria-hidden="true"></i></a>
                     </div>
                 </div>
 
@@ -561,13 +600,16 @@
                         <div class="plan_title"><h6>Standard</h6></div>
                         <div class="plan_price">
                             <i class="fa fa-usd" aria-hidden="true"></i>
-                            <div class="numscroller" data-slno='1' data-min='0' data-max='79' data-delay='15' data-increment="5">79</div>
+                            <div class="numscroller" data-slno='1' data-min='0' data-max='79' data-delay='15'
+                                 data-increment="5">79
+                            </div>
                         </div>
                         <ul class="list">
                             <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
                             <li><strong>Two</strong>year support & updates</li>
                         </ul>
-                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right"
+                                                                                   aria-hidden="true"></i></a>
                     </div>
                 </div>
 
@@ -576,13 +618,16 @@
                         <div class="plan_title"><h6>Advanced</h6></div>
                         <div class="plan_price">
                             <i class="fa fa-usd" aria-hidden="true"></i>
-                            <div class="numscroller" data-slno='1' data-min='0' data-max='199' data-delay='13' data-increment="5">199</div>
+                            <div class="numscroller" data-slno='1' data-min='0' data-max='199' data-delay='13'
+                                 data-increment="5">199
+                            </div>
                         </div>
                         <ul class="list">
                             <li>Lorem Ipsum is simply dummy text of the printing and typesetting industry</li>
                             <li><strong>Three</strong>year support & updates</li>
                         </ul>
-                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                        <a href="blog-inner.html" class="default-btn"> See More <i class="fa fa-angle-double-right"
+                                                                                   aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -590,24 +635,29 @@
     </section>
 
     <!-- Testimonials -->
-    <section id="testimonials" class="testimonials mt-100 mb-100 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background" style="background-image: url(assets/img/testimonials.jpg);">
+    <section id="testimonials"
+             class="testimonials mt-100 mb-100 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background"
+             style="background-image: url(assets/img/testimonials.jpg);">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="flexslider">
                         <ul class="slides">
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial1.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="assets/img/testimonial1.jpg"
+                                                         alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Lorem ipsum dolor sit amet, nullam lucia nisi."</h5>
                                 <p class="author">Tanislav Robert, Product Designer.</p>
                             </li>
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial2.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="assets/img/testimonial2.jpg"
+                                                         alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Nunc vel maximus purus. Nullam ac urna ornare."</h5>
                                 <p class="author">Tanislav Alexandru, Founder @ WocTech.</p>
                             </li>
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial3.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="assets/img/testimonial3.jpg"
+                                                         alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Nullam ac urna ornare, ultrices nisl ut, lacinia nisi."</h5>
                                 <p class="author">Calota Oana, Pixel Guru</p>
                             </li>
@@ -626,11 +676,13 @@
                     <h4> let's work together</h4>
                     <p class="libre-text mt-50">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua.Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
+                        tempor incididunt ut labore et dolore magna aliqua.Far far away, behind the word mountains, far
+                        from the countries Vokalia and Consonantia,
                         there live the blind texts.
                     </p>
 
-                    <a href="contact.html" class="default-btn"> Get in touch <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                    <a href="contact.html" class="default-btn"> Get in touch <i class="fa fa-angle-double-right"
+                                                                                aria-hidden="true"></i></a>
                 </div>
             </div>
 
@@ -647,7 +699,8 @@
                                 <input type="text" name="email">
                                 <span>Enter your email adress</span>
                             </div>
-                            <button id="submit_btn" class="default-btn"> Send <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+                            <button id="submit_btn" class="default-btn"> Send <i class="fa fa-angle-double-right"
+                                                                                 aria-hidden="true"></i></button>
 
                         </form>
                     </div>
@@ -660,7 +713,8 @@
 
 <!-- Footer -->
 <footer class="main-footer">
-    <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1" xmlns="http://www.w3.org/2000/svg" class="svgcolor-light">
+    <svg preserveAspectRatio="none" viewBox="0 0 100 102" height="100" width="100%" version="1.1"
+         xmlns="http://www.w3.org/2000/svg" class="svgcolor-light">
         <path d="M0 0 L50 100 L100 0 Z" fill="#fff" stroke="#fff"></path>
     </svg>
     <div class="container">
@@ -668,8 +722,11 @@
             <!-- Start Contact Widget -->
             <div class="col-md-6 col-xs-12">
                 <div class="footer-widget contact-widget">
-                    <img src="{% static "assets/img/footerlogo.png" %}" class="logo-footer img-responsive" alt="Footer Logo" />
-                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
+                    <img src="{% static "assets/img/footerlogo.png" %}" class="logo-footer img-responsive"
+                         alt="Footer Logo"/>
+                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
+                        deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non
+                        provident</p>
                     <ul class="social-icons">
                         <li>
                             <a class="facebook" href="#"><i class="fa fa-facebook"></i></a>
@@ -712,7 +769,7 @@
         <div class="copyright-section">
             <div class="row">
                 <div class="col-md-6">
-                    <p>&copy; 2016 Karmo -  All Rights Reserved <a href="#">Tanislav Robert</a> </p>
+                    <p>&copy; 2016 Karmo - All Rights Reserved <a href="#">Tanislav Robert</a></p>
                 </div><!-- .col-md-6 -->
             </div><!-- .row -->
         </div>
@@ -736,7 +793,7 @@
 <script type="text/javascript" src="{% static "assets/js/owl.carousel.min.js" %}"></script>
 
 <script type="text/javascript">
-    $(window).load(function() {
+    $(window).load(function () {
         new WOW().init();
 
         // initialise flexslider
@@ -759,7 +816,7 @@
             filter: '*',
         });
 
-        $('.portfolio_filter a').click(function(){
+        $('.portfolio_filter a').click(function () {
             $('.portfolio_filter .active').removeClass('active');
             $(this).addClass('active');
 
@@ -768,7 +825,7 @@
                 filter: selector,
                 animationOptions: {
                     duration: 500,
-                    animationEngine : "jquery"
+                    animationEngine: "jquery"
                 }
             });
             return false;

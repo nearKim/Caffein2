@@ -1,8 +1,13 @@
+from django.conf import settings
 from django.forms import (
     ModelForm,
     forms,
-    ClearableFileInput)
+    ClearableFileInput,
+    DateTimeInput,
+    HiddenInput)
+from django.shortcuts import get_object_or_404
 
+from cafe.models import Cafe
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
@@ -45,4 +50,39 @@ class CoffeeEducationForm(ModelForm):
         instance.author = self.request.user
         instance.save()
 
+        return instance
+
+
+class CoffeeMeetingForm(ModelForm):
+    class Meta:
+        model = CoffeeMeeting
+        fields = ['title', 'content', 'cafe', 'meeting_date', 'max_participants']
+        widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
+
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        # kwargs에서 form을 만드는데 필요없는 view에서 넘겨준 부가정보를 먼저 빼낸다
+        self.request = kwargs.pop('request', None)
+        self.cafe = kwargs.pop('cafe')
+        read_only = kwargs.pop('read_only')
+        super(CoffeeMeetingForm, self).__init__(*args, **kwargs)
+
+        # form을 생성하고 필요한 처리를 한다
+        self.fields['cafe'].initial = self.cafe
+
+        # UpdateView에서 넘어온 경우 cafe를 활성화한다
+        if read_only:
+            self.fields['cafe'].widget.attrs['readonly'] = True
+        self.fields['meeting_date'].input_formats = ["%Y-%m-%d %I:%M %p"]
+
+    def clean_cafe(self):
+        # 카페의 경우 항상 url 인자로 넘어온 카페를 리턴해야 한다
+        return self.cafe
+
+    def save(self, commit=True):
+        instance = super(CoffeeMeetingForm, self).save(commit=False)
+        instance.author = self.request.user
+        instance.cafe = self.cafe
+        instance.save()
         return instance

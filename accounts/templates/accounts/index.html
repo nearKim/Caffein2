@@ -1,23 +1,30 @@
 {% extends 'index.html' %}
 {% block content %}
-<section class="box-intro">
-    <div class="table-cell text-center">
-        <h2>{{ user.name }}님 안녕하세요.</h2>
-        <br>
-        <br>
-        <br>
-        <div id="coffee" class="btn-group-lg">
-            <a href="#" class="btn">커모 보기</a>
-            <a href="#" class="btn">커모 열기</a>
+    <section class="box-intro">
+        <div class="table-cell text-center">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <h2>{{ user.name }}님 안녕하세요.</h2>
+            <br>
+            <br>
+            <br>
+            <div id="coffee" class="btn-group-lg">
+                <a href="#" class="btn">커모 보기</a>
+                <a href="#" class="btn">커모 열기</a>
+            </div>
+            <div id="partner" class="btn-group-lg">
+                <a href="{% url 'partners:detail' user.id %}" class="btn">짝모 현황</a>
+                <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>
+            </div>
+            <br>
+            <div id="logout" class="btn-sm">
+                <a href="logout">로그아웃</a>
+            </div>
         </div>
-        <div id="partner" class="btn-group-lg">
-            <a href="{% url 'partners:detail' user.id %}" class="btn">짝모 현황</a>
-            <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>
-        </div>
-        <br>
-        <div id="logout" class="btn-sm">
-            <a href="logout">로그아웃</a>
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
