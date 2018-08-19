@@ -24,7 +24,8 @@
         <p><strong>폐점시간:</strong>{{ cafe.to_time }}</p>
     {% endif %}
     {% if cafe.closed_day != None %}
-        <p><strong>휴무일:</strong>{% if cafe.closed_frq != None %}{{ cafe.get_closed_frq_display }}{% endif %} {{ cafe.get_closed_day_display }}</p>
+        <p><strong>휴무일:</strong>{% if cafe.closed_frq != None %}
+            {{ cafe.get_closed_frq_display }}{% endif %} {{ cafe.get_closed_day_display }}</p>
     {% endif %}
     {% if cafe.closed_holiday %}<p><strong>(공휴일 휴무)</strong></p>{% endif %}
     <p><strong>작성자:</strong>{{ cafe.uploader }}</p>
