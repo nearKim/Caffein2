@@ -20,7 +20,7 @@
 <div class="container">
 
     <hr>
-    <form method="post">{% csrf_token %}
+    <form method="post"  enctype="multipart/form-data">{% csrf_token %}
         {{ form | crispy }}
         <input type="submit" class="btn btn-default center-block" value="커모 열기!"/>
     </form>
