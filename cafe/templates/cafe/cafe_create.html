@@ -18,7 +18,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     {% block title %}
-    <title>카페 등록</title>
+        <title>카페 등록</title>
     {% endblock title %}
 </head>
 <body>
@@ -45,37 +45,46 @@
 {% endblock cafe_form %}
 </body>
 <script>
-{% block script %}
-    $(document).on('click', '#btn-search-place', e => {
-        e.preventDefault()
-        let url = $("#form-search-place").attr("search-url")
-        let search_term = $("#input-search-place").val()
-        {# 전달받은 search_term으로 #}
-        $.ajax({
-            url: url,
-            type: 'GET',
-            context: document.body,
-            data: {
-                'search_term': search_term
-            },
-            success: (data) => {
-                {# naver-map-search div태그의 html을 통째로 교체한다 #}
-                $("#naver-map-search").replaceWith(data)
-                $("#naver-map-search").find("script").each((i) => {
-                    {# cafe_search의 자바스크립트를 실행한다 #}
-                    eval($(this).text());
-                })
-            }
-
-        })
-    })
-    $(document).on('keypress', '#input-search-place', e => {
-        {# 엔터키를 누른 경우 버튼 클릭과 동일한 효과를 준다 #}
-        if (e.which === 13) {
+    {% block script %}
+        $(document).on('click', '#btn-search-place', e => {
             e.preventDefault()
-            $("#btn-search-place").click()
-        }
-    })
-{% endblock script %}
+            let url = $("#form-search-place").attr("search-url")
+            let search_term = $("#input-search-place").val()
+            {# 전달받은 search_term으로 #}
+            $.ajax({
+                url: url,
+                type: 'GET',
+                context: document.body,
+                data: {
+                    'search_term': search_term
+                },
+                success: (data) => {
+                    {# naver-map-search div태그의 html을 통째로 교체한다 #}
+                    $("#naver-map-search").replaceWith(data)
+                    $("#naver-map-search").find("script").each((i) => {
+                        {# cafe_search의 자바스크립트를 실행한다 #}
+                        eval($(this).text());
+                    })
+                }
+
+            })
+        })
+        $(document).on('keypress', '#input-search-place', e => {
+            {# 엔터키를 누른 경우 버튼 클릭과 동일한 효과를 준다 #}
+            if (e.which === 13) {
+                e.preventDefault()
+                $("#btn-search-place").click()
+            }
+        })
+        {# 모든 시간선택 위젯은 id를 inline_datetimepicker로 통일한다#}
+        $(document).ready(function () {
+            $("#inline_datetimepicker").datetimepicker({
+                inline: true,
+                sideBySide: true,
+                format: 'YYYY-MM-DD hh:mm a',
+            });
+
+        });
+    {% endblock script %}
 </script>
 </html>

@@ -1,13 +1,10 @@
-from django.conf import settings
 from django.forms import (
     ModelForm,
     forms,
     ClearableFileInput,
     DateTimeInput,
     HiddenInput)
-from django.shortcuts import get_object_or_404
 
-from cafe.models import Cafe
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
@@ -17,14 +14,17 @@ from .models import (
 class OfficialMeetingForm(ModelForm):
     class Meta:
         model = OfficialMeeting
-        fields = ['title', 'content', 'category', 'location', 'meeting_date', 'max_participants']
+        fields = ['title', 'content', 'category', 'location', 'meeting_date', 'max_participants', 'mapx', 'mapy']
+        widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}),
-                             required=False)
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(OfficialMeetingForm, self).__init__(*args, **kwargs)
+        self.fields['meeting_date'].input_formats = ["%Y-%m-%d %I:%M %p"]
+        self.fields['mapx'].widget = HiddenInput()
+        self.fields['mapy'].widget = HiddenInput()
 
     def save(self, commit=True):
         instance = super(OfficialMeetingForm, self).save(commit=False)
@@ -37,13 +37,17 @@ class OfficialMeetingForm(ModelForm):
 class CoffeeEducationForm(ModelForm):
     class Meta:
         model = CoffeeEducation
-        fields = ['title', 'content', 'category', 'difficulty', 'location', 'meeting_date', 'max_participants']
+        fields = ['title', 'content', 'category', 'difficulty', 'location', 'meeting_date', 'max_participants', 'mapx', 'mapy']
+        widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
 
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super(CoffeeEducationForm, self).__init__(*args, **kwargs)
+        self.fields['meeting_date'].input_formats = ["%Y-%m-%d %I:%M %p"]
+        self.fields['mapx'].widget = HiddenInput()
+        self.fields['mapy'].widget = HiddenInput()
 
     def save(self, commit=True):
         instance = super(CoffeeEducationForm, self).save(commit=False)
@@ -66,9 +70,9 @@ class CoffeeMeetingForm(ModelForm):
         self.request = kwargs.pop('request', None)
         self.cafe = kwargs.pop('cafe')
         read_only = kwargs.pop('read_only')
-        super(CoffeeMeetingForm, self).__init__(*args, **kwargs)
 
         # form을 생성하고 필요한 처리를 한다
+        super(CoffeeMeetingForm, self).__init__(*args, **kwargs)
         self.fields['cafe'].initial = self.cafe
 
         # UpdateView에서 넘어온 경우 cafe를 활성화한다

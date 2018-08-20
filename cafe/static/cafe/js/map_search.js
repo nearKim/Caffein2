@@ -102,8 +102,10 @@ appConfig.markers.forEach((marker, index) => naver.maps.Event.addListener(marker
         $($('input[name="mapx"]')).val(marker.position.x)
         $($('input[name="mapy"]')).val(marker.position.y)
     }
-    // Officialmeeting create이나 CoffeeEducation Create에서 넘어온 경우 location 폼을 채워준다
+    // Officialmeeting create이나 CoffeeEducation Create에서 넘어온 경우 location, mapx, mapy 폼을 채워준다
         $($('input[name="location"]')).val((marker.title).replace(/<\/?[^>]+(>|$)/g, ""))
+        $($('input[name="mapx"]')).val(marker.position.x)
+        $($('input[name="mapy"]')).val(marker.position.y)
 }))
 
 function updateMarkers(map, markers) {
