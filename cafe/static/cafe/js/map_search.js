@@ -35,8 +35,38 @@ switch (places.length) {
         // GET을 통해 들어온 경우 지도만 보여준다.
         if (places[0] === 'init') break
         let position = new naver.maps.Point(places[0].mapx, places[0].mapy)
+        let contentString = [
+            '<div class="iw_inner" >',
+            '<h3>' + places[0].title + '</h3>',
+            '<p>' + places[0].roadAddress + '</p>',
+            '<p>' + places[0].address + '</p>',
+            '<p>' + places[0].description + '</p>',
+            '</div>'
+        ].join('');
         map.setCenter(position)
         map.setZoom(10)
+        appConfig.markers.push(new naver.maps.Marker({
+            map: map,
+            position: position,
+            zIndex: 100,
+            // 정보 추가
+            title: places[0].title,
+            address: places[0].address ? places[0].address : places[0].roadAddress,
+            roadAddress: places[0].address ? places[0].roadAddress : null,
+            description: places[0].description ? places[0].description : '',
+            telephone: places[0].telephone ? places[0].telephone : '',
+            link: places[0].link
+        }))
+        infoWindows.push(new naver.maps.InfoWindow({
+            content: contentString,
+
+            backgroundColor: "#eee",
+            anchorSize: new naver.maps.Size(30, 30),
+            anchorSkew: true,
+            anchorColor: "#eee",
+
+            pixelOffset: new naver.maps.Point(20, -20)
+        }))
         break
     default:
         places.forEach(place => {
@@ -103,9 +133,9 @@ appConfig.markers.forEach((marker, index) => naver.maps.Event.addListener(marker
         $($('input[name="mapy"]')).val(marker.position.y)
     }
     // Officialmeeting create이나 CoffeeEducation Create에서 넘어온 경우 location, mapx, mapy 폼을 채워준다
-        $($('input[name="location"]')).val((marker.title).replace(/<\/?[^>]+(>|$)/g, ""))
-        $($('input[name="mapx"]')).val(marker.position.x)
-        $($('input[name="mapy"]')).val(marker.position.y)
+    $($('input[name="location"]')).val((marker.title).replace(/<\/?[^>]+(>|$)/g, ""))
+    $($('input[name="mapx"]')).val(marker.position.x)
+    $($('input[name="mapy"]')).val(marker.position.y)
 }))
 
 function updateMarkers(map, markers) {
