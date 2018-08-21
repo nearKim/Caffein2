@@ -4,8 +4,11 @@
 {% load static %}
 
 {% block content %}
+    <!--네이버맵 자바스크립트 로딩-->
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_y2F3mssJyRxB52SCJaN&submodules=geocoder"></script>
+
+    <!--본문-->
     <section class="contact">
         <h1 class="text-center">커피 교육</h1>
         <div class="libre-text-lg container">
@@ -35,12 +38,15 @@
                 <p class="libre-text-lg mb-50">
                     장소: <b>{{ object.location }}</b>
                 </p>
+
+                <!--네이버맵 뷰-->
                 <script type="text/javascript">
                     let x = "{{ object.mapx }}"
                     let y = "{{ object.mapy }}"
                     let location_title = "<h3>{{ object.location }}</h3>"
                 </script>
                 <script type="text/javascript" src="{% static 'meetings/js/navermap_view.js' %}"></script>
+
             </div>
             <div class="row col-sm-6">
                 <p class="libre-text-lg mb-50">
@@ -66,56 +72,19 @@
                         {{ participant }},
                     {% empty %} 아직 참여자가 없네요
                     {% endfor %}
-                    ( {{ object.participants.count }} )명 <br>
+                    ({{ object.participants.count }})명 <br>
                 </p>
 
+                <!--참여 버튼-->
                 <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
                     <button class="btn btn-default center-block">참여</button>
                 </form>
                 <hr>
 
                 <!--댓글-->
-                <h3 class="text-center">댓글</h3>
-                {% for comment in comments.all %}
-
-                    <div class="col-lg-9 ">
-                        <p>
-                            {% if comment.author.profile_pic %}
-                                {% thumbnail "25x25 " comment.author.profile_pic %}
-                            {% endif %}
-                            {{ comment.author.name }} {{ comment.content }}
-                        </p>
-                    </div>
-                    <div class="col-lg-3">
-                        {% if user == comment.author %}
-                            <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post"
-                                  style="display: inline">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.path }}">
-                                <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-                            </form>
-                            <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post"
-                                  style="display: inline">
-                                {% csrf_token %}
-                                <button class="btn-xs">수정</button>
-                            </form>
-                        {% endif %}
-                    </div>
-
-                {% empty %}
-                    <p>댓글이 없습니다!</p>
-                {% endfor %}
-
+                {% include 'comments/comment_view_create.html' with goto='meetings:education-detail' %}
+                {# TODO: 운영진이면 수정/삭제 할 수 있는 버튼#}
             </div>
-            <div class="row col-sm-6">
-
-                <form action="{% url 'core:meeting-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
-                    {{ comment_form | crispy }}
-                    <input type="hidden" name="next" value="{% url 'meetings:education-detail' pk=object.pk %}">
-                    <input type="submit" class="btn btn-default center-block" value="댓글 달기"/>
-                </form>
-            </div>
-
         </div>
     </section>
 {% endblock %}

@@ -1,79 +1,10 @@
-import re
-
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
-from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from core.mixins import TimeStampedMixin, Postable
-from core.models import Comment
-
-
-class Meeting(Postable):
-    title = models.CharField(_('제목'), max_length=50, blank=True)
-    meeting_date = models.DateTimeField(_('날짜 및 시간'))
-    max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
-    participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
-
-    class Meta:
-        verbose_name = _('모임')
-        verbose_name_plural = _('모임')
-        get_latest_by = ['-meeting_date']
-
-    # For polymorphism
-    # https://stackoverflow.com/a/13306529
-    def get_class_name(self):
-        return str(self.__class__.__name__).lower()
-
-    def cast(self):
-        for name in dir(self):
-            try:
-                attr = getattr(self, name)
-                if isinstance(attr, self.__class__):
-                    return attr
-            except:
-                pass
-        return self
-
-    # General Use methods
-    def can_participate(self):
-        if self.max_participants == 0:
-            return True
-        else:
-            # print(self.max_participants)
-            return self.max_participants > self.participants.count()
-
-    def count_participants(self):
-        return self.participants.count()
-
-    def participate_meeting(self, active_user):
-        if self.can_participate():
-            self.participants.add(active_user)
-            return True
-        else:
-            return False
-
-    @property
-    def comments(self):
-        instance = self
-        qs = Comment.objects.filter_by_instance(instance)
-        return qs
-
-
-
-def get_meeting_photo_path(instance, filename):
-    return 'media/meeting/{:%Y/%m/%d}/{}'.format(now(), filename)
-
-
-class MeetingPhotos(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_meeting_photo_path)
-    meeting = models.ForeignKey('meetings.Meeting', related_name='photos', verbose_name=_('모임'),
-                                on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = _('모임 사진')
-        verbose_name_plural = _('모임 사진')
+from comments.models import Comment
+from core.models import Meeting
 
 
 class OfficialMeeting(Meeting):
