@@ -5,6 +5,7 @@ django-appconf==1.0.2
 django-crispy-forms==1.7.2
 django-imagekit==4.0.2
 django-multiupload==0.5.2
+django-tables2==1.21.2
 docopt==0.6.2
 idna==2.7
 pilkit==2.0

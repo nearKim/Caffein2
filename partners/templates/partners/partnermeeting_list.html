@@ -1,42 +1,57 @@
+{% extends 'index.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% load imagekit %}
-<html>
-<h1>짝모 리스트</h1>
-{% for meeting in object_list %}
-    <p>PK: {{ meeting.pk }}</p>
-    <p>작성자: {{ meeting.author }}</p>
-    <p>내용: {{ meeting.content }}</p>
-    <p>작성시간: {{ meeting.created }}</p>
+{% block content %}
+    <div class="container">
+        <h1 class="jumbotron">짝모 리스트</h1>
 
-    <p> 사진: </p>
-    {% for p in meeting.photos.all %}
-        <img src="{{ p.image.url }}"/>
-    {% endfor %}
-    <h5>댓글:</h5>
+        {% for meeting in object_list %}
+            <p> {% if meeting.author.profile_pic %}
+                {% thumbnail "50x50" meeting.author.profile_pic %} {% endif %} {{ meeting.author }}</p>
+            <p class="lead">{{ meeting.content }}</p>
+            <p>작성시간: {{ meeting.created | date:"m월 d일 A h시 i분" }}</p>
+            {#            <p> 사진: </p>#}
+            {% for p in meeting.photos.all %}
+                <img src="{{ p.image.url }}"/>
+            {% endfor %}
 
-    {% for comment in meeting.comments.all %}
-        {% if comment.author.profile_pic %} <img src="{{ comment.author.profile_pic.url }} "/>{% endif %} |
-        작성자: {{ comment.author }} |
-        내용: {{ comment.content }} |
-        <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post">{% csrf_token %}
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-        </form>
-        <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post">{% csrf_token %}
-            {% csrf_token %}
-            <button>수정</button>
-        </form>
-    {% empty %}
-        <p> 댓글이 없습니다!</p>
-    {% endfor %}
-    <form action="{% url 'core:instagram-comment-create' pk=meeting.pk %}" method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
-        <input type="submit" value="Send"/>
-    </form>
-    <hr>
-{% endfor %}
 
-</html>
+            {% for comment in meeting.comments.all %}
+                <div class="col-lg-9 ">
+                    <p>
+                        {% if comment.author.profile_pic %}
+                            {% thumbnail "25x25 " comment.author.profile_pic %}
+                        {% endif %}
+                        {{ comment.author.name }} {{ comment.content }}
+                    </p>
+                </div>
+                <div class="col-lg-3">
+                {% if user == comment.author %}
+                    <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post"
+                          style="display: inline">{% csrf_token %}
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+                    </form>
+                    <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post"
+                          style="display: inline">{% csrf_token %}
+                        {% csrf_token %}
+                        <button class="btn-xs">수정</button>
+                    </form>
+                {% endif %}
+                </div>
+            {% empty %}
+                <p> 댓글이 없습니다!</p>
+            {% endfor %}
+            <form action="{% url 'core:instagram-comment-create' pk=meeting.pk %}" method="post">
+                {% csrf_token %}
+                {{ comment_form | crispy }}
+                <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
+                <input type="submit" class="btn btn-default center-block" value="Send"/>
+            </form>
+            <hr>
+        {% endfor %}
+
+    </div>
+{% endblock %}

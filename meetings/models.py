@@ -86,8 +86,10 @@ class OfficialMeeting(Meeting):
     )
 
     category = models.CharField(_('분류'), max_length=1, choices=EVENT_CATEGORY)
-    # TODO: Add navermap / googlemap functionality
+    # 네이버맵
     location = models.CharField(_('행사 장소'), max_length=50, blank=True)
+    mapx = models.IntegerField(_('x좌표'), null=True, blank=True)
+    mapy = models.IntegerField(_('y좌표'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('공식 모임')
@@ -114,8 +116,11 @@ class CoffeeEducation(Meeting):
 
     category = models.CharField(_('분류'), max_length=1, choices=EDUCATION_CHOICES)
     difficulty = models.CharField(_('난이도'), max_length=1, choices=DIFFICULTY_CHOICES)
-    # TODO: Add navermap / googlemap functionality
-    location = models.CharField(_('장소'), max_length=50, blank=True)
+
+    # 네이버맵
+    location = models.CharField(_('교육 장소'), max_length=50, blank=True)
+    mapx = models.IntegerField(_('x좌표'), null=True, blank=True)
+    mapy = models.IntegerField(_('y좌표'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('커피 교육')

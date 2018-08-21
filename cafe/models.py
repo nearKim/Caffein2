@@ -63,6 +63,7 @@ class Cafe(TimeStampedMixin):
 
     class Meta:
         ordering = ['-created']
+        unique_together = ['name', 'address']
 
     def __str__(self):
         return self.name

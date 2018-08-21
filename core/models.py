@@ -85,9 +85,9 @@ class OperationScheme(models.Model):
     semester_end = models.DateField(_('학기 종료일'), blank=True, null=True, default=None)
 
     new_register_start = models.DateTimeField(_('신입 가입 시작일'))
-    new_register_end = models.DateTimeField(_('신입 가입 종료일'))
+    new_register_end = models.DateTimeField(_('신입 가입 종료일'), blank=True, null=True)
     old_register_start = models.DateTimeField(_('기존 가입 시작일'))
-    old_register_end = models.DateTimeField(_('기존 가입 종료일'))
+    old_register_end = models.DateTimeField(_('기존 가입 종료일'), blank=True, null=True)
 
     coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0, help_text=_('실수형 점수입니다. 예: 2.0'))
     eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))

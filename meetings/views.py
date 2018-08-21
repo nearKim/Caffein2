@@ -25,7 +25,6 @@ from .models import (
 
 
 # ListView for showing every meeting
-
 class EveryMeetingListView(ListView):
     model = OfficialMeeting
     template_name = 'meetings/meeting_list.html'
@@ -39,7 +38,6 @@ class EveryMeetingListView(ListView):
 
 
 # Mixins
-
 class OfficialMeetingCreateUpdateMixin:
     model = OfficialMeeting
     form_class = OfficialMeetingForm
@@ -68,18 +66,15 @@ class CoffeeEducationCreateUpdateMixin:
         return form_kwargs
 
 
-# class CoffeeMeetingCreateUpdateMixin:
-#     model = CoffeeMeeting
-#     form_class = CoffeeMeetingForm
-#     success_url = NotImplemented
-#
-#     class Meta:
-#         abstract = True
-#
-#     def get_form_kwargs(self):
-#         form_kwargs = super(CoffeeMeetingCreateUpdateMixin, self).get_form_kwargs()
-#         form_kwargs['request'] = self.request
-#         return form_kwargs
+class CoffeeMeetingCreateUpdateMixin:
+    model = CoffeeMeeting
+    form_class = CoffeeMeetingForm
+
+    class Meta:
+        abstract = True
+
+    def get_success_url(self):
+        return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])
 
 
 class AddContextDetailViewMixin:
@@ -123,9 +118,16 @@ class OfficialMeetingListView(ListView):
     model = OfficialMeeting
 
 
-class OfficialMeetingDetailView(FormMixin, AddContextDetailViewMixin, DetailView):
+class OfficialMeetingDetailView(FormMixin, DetailView):
     model = OfficialMeeting
     form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(OfficialMeetingDetailView, self).get_context_data()
+        context['user'] = self.request.user
+        context['comments'] = self.object.comments
+        context['comment_form'] = self.get_form()
+        return context
 
 
 class OfficialMeetingDeleteView(DeleteView):
@@ -134,8 +136,6 @@ class OfficialMeetingDeleteView(DeleteView):
 
 
 # CRUD for CoffeeEducation class
-
-
 class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
@@ -163,9 +163,16 @@ class CoffeeEducationListView(ListView):
     model = CoffeeEducation
 
 
-class CoffeeEducationDetailView(FormMixin, AddContextDetailViewMixin, DetailView):
+class CoffeeEducationDetailView(FormMixin, DetailView):
     model = CoffeeEducation
     form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super(CoffeeEducationDetailView, self).get_context_data()
+        context['user'] = self.request.user
+        context['comments'] = self.object.comments
+        context['comment_form'] = self.get_form()
+        return context
 
 
 class CoffeeEducationDeleteView(DeleteView):
@@ -173,21 +180,14 @@ class CoffeeEducationDeleteView(DeleteView):
     success_url = reverse_lazy('meetings:meetings-list')
 
 
-# TODO: Add CRUD for CoffeeMeeting model
 # CoffeeMeeting View
-class CoffeeMeetingCreateView(CreateView):
-    model = CoffeeMeeting
-    form_class = CoffeeMeetingForm
-
+class CoffeeMeetingCreateView(CoffeeMeetingCreateUpdateMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
         form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
         form_kwargs['read_only'] = True
         return form_kwargs
-
-    def get_success_url(self):
-        return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])
 
     def form_valid(self, form):
         instance = form.save()
@@ -201,14 +201,7 @@ class CoffeeMeetingCreateView(CreateView):
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 
-class CoffeeMeetingDeleteView(DeleteView):
-    model = CoffeeMeeting
-    success_url = reverse_lazy('meetings:meetings-list')
-
-
-class CoffeeMeetingUpdateView(UpdateView):
-    model = CoffeeMeeting
-    form_class = CoffeeMeetingForm
+class CoffeeMeetingUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def get_form_kwargs(self):
@@ -227,8 +220,10 @@ class CoffeeMeetingUpdateView(UpdateView):
                 photo.save()
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
 
-    def get_success_url(self):
-        return reverse_lazy('meetings:coffee-meeting-detail', args=[self.object.pk])
+
+class CoffeeMeetingDeleteView(DeleteView):
+    model = CoffeeMeeting
+    success_url = reverse_lazy('meetings:meetings-list')
 
 
 class CoffeeMeetingListView(ListView):
@@ -249,6 +244,7 @@ class CoffeeMeetingDetailView(FormMixin, DetailView):
 
 # Participate View
 def participate_meeting(request, pk):
+    # TODO: 참여자를 스캔하여 짝지가 있으면 자동으로 점수 상향
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
         if meeting.can_participate():
