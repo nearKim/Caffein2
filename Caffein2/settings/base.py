@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'meetings',
     'partners',
     'survey',
+    'comments',
     # 3rd party apps
     'imagekit',
     'crispy_forms',
