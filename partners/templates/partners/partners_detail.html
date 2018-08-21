@@ -1,18 +1,30 @@
-<html>
-<head>
-    <h1>짝지 정보</h1>
-</head>
-<p>{{partners.partner_year}}</p>
-<p>{{partners.get_partner_semester_display}}</p>
-<p>{{partners.up_partner}}</p>
-{% if partners.down_partner_1 %}
-<p>{{partners.down_partner_1}}</p>
-{% endif %}
-{% if partners.down_partner_2 %}
-<p>{{partners.down_partner_2}}</p>
-{% endif %}
-{% if partners.down_partner_3 %}
-<p>{{partners.down_partner_3}}</p>
-{% endif %}
-<h3>현재 점수는: {{partners.score}} 입니다</h3>
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load imagekit %}
+{% load static %}
+
+{% block content %}
+    <section class="contact">
+        <div class="container text-center">
+            <h1>짝지 정보</h1>
+            <hr>
+            <p class="lead">
+                {{ partners.partner_year }} 년 {{ partners.get_partner_semester_display }} {{ user.name }}님의 짝지 정보
+            </p>
+            <p>위짝지: {{ partners.up_partner }} ({{ partners.up_partner.user.phone }})</p>
+            {% if partners.down_partner_1 %}
+                <p>첫번째 아래짝지: {{ partners.down_partner_1 }}</p>
+            {% endif %}
+            {% if partners.down_partner_2 %}
+                <p>두번째 아래짝지: {{ partners.down_partner_2 }}</p>
+            {% endif %}
+            {% if partners.down_partner_3 %}
+                <p>세번째 아래짝지: {{ partners.down_partner_3 }}</p>
+            {% endif %}
+            <h3>현재 점수는: {{ partners.score }} 입니다</h3>
+            {# TODO: 뒤로가기 버튼, 짝모했어요 버튼 #}
+        </div>
+    </section>
+{% endblock %}
+
 </html>

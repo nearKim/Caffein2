@@ -8,7 +8,7 @@ from django.views.generic.edit import (
     UpdateView,
     DeleteView, FormMixin)
 
-from core.forms import CommentForm
+from comments.forms import CommentForm
 from core.models import FeedPhotos, OperationScheme
 from .forms import PartnerMeetingForm
 from .models import (

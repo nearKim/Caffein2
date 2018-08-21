@@ -1,7 +1,9 @@
 from django.db import models
-from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+
+from comments.models import Comment
+from core.mixins import Postable, TimeStampedMixin
 
 from .mixins import (
     TimeStampedMixin,
@@ -9,13 +11,78 @@ from .mixins import (
 )
 
 
+def get_feed_photo_path(instance, filename):
+    # FIXME: Uploader information must be set in the path
+    return 'media/feed/{:%Y/%m/%d}/{}'.format(now(), filename)
+
+
+def get_meeting_photo_path(instance, filename):
+    return 'media/meeting/{:%Y/%m/%d}/{}'.format(now(), filename)
+
+
 class Instagram(Postable):
     pass
 
 
-def get_feed_photo_path(instance, filename):
-    # FIXME: Uploader information must be set in the path
-    return 'media/feed/{:%Y/%m/%d}/{}'.format(now(), filename)
+class Meeting(Postable):
+    title = models.CharField(_('제목'), max_length=50, blank=True)
+    meeting_date = models.DateTimeField(_('날짜 및 시간'))
+    max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
+    participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
+
+    class Meta:
+        verbose_name = _('모임')
+        verbose_name_plural = _('모임')
+        get_latest_by = ['-meeting_date']
+
+    # For polymorphism
+    # https://stackoverflow.com/a/13306529
+    def get_class_name(self):
+        return str(self.__class__.__name__).lower()
+
+    def cast(self):
+        for name in dir(self):
+            try:
+                attr = getattr(self, name)
+                if isinstance(attr, self.__class__):
+                    return attr
+            except:
+                pass
+        return self
+
+    # General Use methods
+    def can_participate(self):
+        if self.max_participants == 0:
+            return True
+        else:
+            # print(self.max_participants)
+            return self.max_participants > self.participants.count()
+
+    def count_participants(self):
+        return self.participants.count()
+
+    def participate_meeting(self, active_user):
+        if self.can_participate():
+            self.participants.add(active_user)
+            return True
+        else:
+            return False
+
+    @property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter_by_instance(instance)
+        return qs
+
+
+class MeetingPhotos(TimeStampedMixin):
+    image = models.ImageField(upload_to=get_meeting_photo_path)
+    meeting = models.ForeignKey('core.Meeting', related_name='photos', verbose_name=_('모임'),
+                                on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _('모임 사진')
+        verbose_name_plural = _('모임 사진')
 
 
 class FeedPhotos(TimeStampedMixin):
@@ -26,43 +93,6 @@ class FeedPhotos(TimeStampedMixin):
     class Meta:
         verbose_name = _('피드 사진')
         verbose_name_plural = _('피드 사진')
-
-
-class CommentManager(models.Manager):
-    def filter_by_instance(self, instance):
-        obj_id = instance.id
-        qs = super(CommentManager, self).filter(id=obj_id)
-        return qs
-
-
-class Comment(Postable):
-    instagram = models.ForeignKey('core.Instagram', default=None, null=True, blank=True, related_name='comments',
-                                  on_delete=models.CASCADE)
-    meeting = models.ForeignKey('meetings.Meeting', default=None, null=True, blank=True, related_name='comments',
-                                on_delete=models.CASCADE)
-    objects = CommentManager()
-
-    class Meta:
-        verbose_name = _('댓글')
-        verbose_name_plural = _('댓글')
-
-    def __str__(self):
-        return self.content
-
-    def get_absolute_url(self):
-        if self.instagram:
-            # partner:meeting-list로 redirect
-            return reverse('partners:meeting-list')
-        elif self.meeting:
-            # downcast후 각 클래스의 get_absolute_url로 redirect
-            return self.meeting.cast().get_absolute_url()
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.instagram is None and self.meeting is None:
-            # Don't save
-            return
-        super(Comment, self).save()
 
 
 class OperationScheme(models.Model):

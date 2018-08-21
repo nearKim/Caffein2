@@ -1,11 +1,10 @@
 from django.contrib import admin
 
 from .models import (
-    Meeting,
     CoffeeEducation,
     CoffeeMeeting,
-    OfficialMeeting,
-    MeetingPhotos)
+    OfficialMeeting)
+from core.models import Meeting, MeetingPhotos
 
 admin.site.register(Meeting)
 admin.site.register(MeetingPhotos)

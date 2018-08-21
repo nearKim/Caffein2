@@ -7,51 +7,23 @@
         <h1 class="jumbotron">짝모 리스트</h1>
 
         {% for meeting in object_list %}
-            <p> {% if meeting.author.profile_pic %}
-                {% thumbnail "50x50" meeting.author.profile_pic %} {% endif %} {{ meeting.author }}</p>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    {% if meeting.author.profile_pic %}
+                        {% thumbnail "50x50" meeting.author.profile_pic %} {% endif %} {{ meeting.author }}
+                </li>
+                <li class="list-inline-item">{{ meeting.created | date:"m월 d일 A h시 i분" }}</li>
+            </ul>
             <p class="lead">{{ meeting.content }}</p>
-            <p>작성시간: {{ meeting.created | date:"m월 d일 A h시 i분" }}</p>
-            {#            <p> 사진: </p>#}
             {% for p in meeting.photos.all %}
                 <img src="{{ p.image.url }}"/>
             {% endfor %}
 
-
-            {% for comment in meeting.comments.all %}
-                <div class="col-lg-9 ">
-                    <p>
-                        {% if comment.author.profile_pic %}
-                            {% thumbnail "25x25 " comment.author.profile_pic %}
-                        {% endif %}
-                        {{ comment.author.name }} {{ comment.content }}
-                    </p>
-                </div>
-                <div class="col-lg-3">
-                {% if user == comment.author %}
-                    <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post"
-                          style="display: inline">{% csrf_token %}
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.path }}">
-                        <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-                    </form>
-                    <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post"
-                          style="display: inline">{% csrf_token %}
-                        {% csrf_token %}
-                        <button class="btn-xs">수정</button>
-                    </form>
-                {% endif %}
-                </div>
-            {% empty %}
-                <p> 댓글이 없습니다!</p>
-            {% endfor %}
-            <form action="{% url 'core:instagram-comment-create' pk=meeting.pk %}" method="post">
-                {% csrf_token %}
-                {{ comment_form | crispy }}
-                <input type="hidden" name="next" value="{% url 'partners:meeting-list' %}">
-                <input type="submit" class="btn btn-default center-block" value="Send"/>
-            </form>
+            <!--댓글 리스트-->
+            {% with meeting_comment=meeting.comments %}
+                {% include 'comments/comment_view_create.html' with goto='partners:meeting-list' comments=meeting_comment object=meeting %}
+            {% endwith %}
             <hr>
         {% endfor %}
-
     </div>
 {% endblock %}

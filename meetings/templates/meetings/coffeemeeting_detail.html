@@ -4,9 +4,11 @@
 {% load static %}
 
 {% block content %}
+    <!--네이버맵 자바스크립트 로딩-->
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=_y2F3mssJyRxB52SCJaN&submodules=geocoder"></script>
     <title>커모</title>
+    <!--본문-->
     <section class="contact">
         <h1 class="text-center">{{ coffeemeeting.title }}</h1>
         <div class="libre-text-lg container">
@@ -29,7 +31,8 @@
                     {#TODO: 카페 정보와 지도를 표시해야 한다 #}
                     카페: <b>{{ coffeemeeting.cafe }}</b>
                 </p>
-             <div id="map" style="width:100%;height:400px;"></div>
+            <!--네이버맵 뷰-->
+                <div id="map" style="width:100%;height:400px;"></div>
                 <script type="text/javascript">
                     let x = "{{ coffeemeeting.cafe.mapx }}"
                     let y = "{{ coffeemeeting.cafe.mapy }}"
@@ -61,6 +64,7 @@
                     {% endfor %}
                     ( {{ coffeemeeting.participants.count }} )명 <br>
                 </p>
+            <!--참여 메세지-->
                 {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
@@ -68,57 +72,20 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+
+        <!--참여버튼-->
                 <form action="{% url 'meetings:participate' pk=coffeemeeting.pk %}" method="post">{% csrf_token %}
                     {# FIXME: Participant중에 현재 user가 존재한다면 텍스트를 참여 취소로 바꿔야 한다. 취소시 alert창을 띄워야겠지.#}
                     <button id="btn-participate" class="btn btn-default center-block">참여</button>
                 </form>
                 <hr>
             </div>
+        <!--댓글-->
             <div class="row col-sm-6">
-
-
-                <!--댓글-->
-                <h3 class="text-center">댓글</h3>
-                {% for comment in comments.all %}
-
-                    <div class="col-lg-9 ">
-                        <p>
-                            {% if comment.author.profile_pic %}
-                                {% thumbnail "25x25 " comment.author.profile_pic %}
-                            {% endif %}
-                            {{ comment.author.name }} {{ comment.content }}
-                        </p>
-                    </div>
-                    <div class="col-lg-3">
-                        {% if user == comment.author %}
-                            <form action="{% url 'core:comment-delete' pk=comment.pk %}" method="post"
-                                  style="display: inline">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.path }}">
-                                <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
-                            </form>
-                            <form action="{% url 'core:comment-update' pk=comment.pk %}" method="post"
-                                  style="display: inline">
-                                {% csrf_token %}
-                                <button class="btn-xs">수정</button>
-                            </form>
-                        {% endif %}
-                    </div>
-
-                {% empty %}
-                    <p>댓글이 없습니다!</p>
-                {% endfor %}
-
+                {% include 'comments/comment_view_create.html' with goto='meetings:coffee-meeting-detail'%}
             </div>
-            <div class="row col-sm-6">
 
-                <form action="{% url 'core:meeting-comment-create' pk=coffeemeeting.pk %}"
-                      method="post">{% csrf_token %}
-                    {{ comment_form | crispy }}
-                    <input type="hidden" name="next" value="{% url 'meetings:coffee-meeting-detail' pk=object.pk %}">
-                    <input id="comment-create" type="submit" class="btn btn-default center-block" value="댓글 달기"/>
-                </form>
-            </div>
+            <!--삭제/수정버튼-->
             {% if user.is_authenticated and user == coffeemeeting.author %}
                 <div id="container-btn" class="container col-sm-6">
                     <a href="{% url 'meetings:coffee-meeting-update' pk=coffeemeeting.pk %}">
