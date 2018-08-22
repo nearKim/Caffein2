@@ -49,7 +49,7 @@ class Cafe(TimeStampedMixin):
     from_time = models.TimeField(_('개점시간'), null=True, blank=True)
     to_time = models.TimeField(_('폐점시간'), null=True, blank=True)
 
-    closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3,  blank=True)
+    closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3, blank=True)
     closed_frq = models.CharField(_('휴무 빈도'), choices=FRQ_CATEGORY, max_length=6, blank=True)
     closed_holiday = models.BooleanField(_('공휴일 휴무 여부'), default=False)
     uploader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploader')
@@ -64,6 +64,8 @@ class Cafe(TimeStampedMixin):
     class Meta:
         ordering = ['-created']
         unique_together = ['name', 'address']
+        verbose_name = _('카페')
+        verbose_name_plural = _('카페')
 
     def __str__(self):
         return self.name

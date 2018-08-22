@@ -32,6 +32,9 @@ class Partners(models.Model):
         unique_together = ['partner_year', 'partner_semester', 'up_partner']
         get_latest_by = ['-partner_year', 'partner_semester']
 
+    def __str__(self):
+        return "{}년 {}학기 기존({})".format(self.partner_year, self.partner_semester, self.up_partner.user.name)
+
     def raise_score(self, score):
         self.score += score
         self.save()
@@ -59,6 +62,9 @@ class PartnerMeeting(Instagram):
     class Meta:
         verbose_name = _('짝지 모임')
         verbose_name_plural = _('짝지 모임')
+
+    def __str__(self):
+        return "{}의 짝모({})".format(self.partner, self.created.strftime("%m월 %d일"))
 
     def get_absoulute_url(self):
         return reverse('partners:meeting-list')

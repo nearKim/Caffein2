@@ -136,6 +136,9 @@ class OperationScheme(models.Model):
         verbose_name = _('운영 정보')
         verbose_name_plural = _('운영 정보')
 
+    def __str__(self):
+        return "{}년 {}학기 운영정보".format(self.current_year, self.current_semester)
+
     @property
     def current_semester(self):
         return 1 if self.semester_start.month == 3 else 2
@@ -160,6 +163,8 @@ class OperationScheme(models.Model):
     def can_old_register():
         latest_os = OperationScheme.latest()
         if latest_os.old_register_end:
+            print(latest_os.old_register_end)
             return latest_os.old_register_end > now() > latest_os.old_register_start
         else:
+            print(latest_os.old_register_start)
             return now() > latest_os.old_register_start

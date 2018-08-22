@@ -26,6 +26,9 @@ class OfficialMeeting(Meeting):
         verbose_name = _('공식 모임')
         verbose_name_plural = _('공식 모임')
 
+    def __str__(self):
+        return "{}({})".format(self.get_category_display(), self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"))
+
     def get_absolute_url(self):
         return reverse('meetings:official-detail', args=[self.pk])
 
@@ -57,6 +60,10 @@ class CoffeeEducation(Meeting):
         verbose_name = _('커피 교육')
         verbose_name_plural = _('커피 교육')
 
+    def __str__(self):
+        return "{} {}({})".format(self.get_category_display(), self.get_difficulty_display(),
+                                  self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"))
+
     def get_absolute_url(self):
         return reverse('meetings:education-detail', args=[self.pk])
 
@@ -71,9 +78,5 @@ class CoffeeMeeting(Meeting):
     def get_absolute_url(self):
         return reverse('meetings:coffee-meeting-detail', args=[self.pk])
 
-    # def __str__(self):
-    #     korean_time = timezone.localtime(self.meeting_date)
-    #     parsed_time = re.search('^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})', korean_time.__str__())
-    #     # 카페이름(커모시간)을 반환한다.
-    #     # ex) 커피프레지던트(2018-08-18 13:00)
-    #     return '{}({})'.format(self.cafe.name, parsed_time.group(1))
+    def __str__(self):
+        return "{}({})".format(self.cafe.name, self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"))
