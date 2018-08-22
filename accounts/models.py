@@ -118,7 +118,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     rule_confirm = models.BooleanField(_('약관 동의'), default=False, validators=[confirmation_validator])
 
-    is_active = models.BooleanField(_('활동 상태'), default=True)
+    # 처음 유져가 생성될 때는 is_active를 False로 한 뒤 입금확인 후에 True로 바꾼다
+    is_active = models.BooleanField(_('활동 상태'), default=False)
     is_staff = models.BooleanField(_('운영진 여부'), default=False)
 
     objects = UserManager()

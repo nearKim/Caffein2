@@ -154,7 +154,7 @@ class OperationScheme(models.Model):
         if latest_os.new_register_end:
             return latest_os.new_register_end > now() > latest_os.new_register_start
         else:
-            return now() > OperationScheme.latest().new_register_start
+            return now() > latest_os.new_register_start
 
     @staticmethod
     def can_old_register():
@@ -162,4 +162,4 @@ class OperationScheme(models.Model):
         if latest_os.old_register_end:
             return latest_os.old_register_end > now() > latest_os.old_register_start
         else:
-            return now() > OperationScheme.latest().old_register_start
+            return now() > latest_os.old_register_start

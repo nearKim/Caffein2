@@ -122,7 +122,7 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         form.instance.active_year = current_year
         form.instance.active_semester = current_semester
         if ActiveUser(user=user, active_year=current_year, active_semester=current_semester):
-            messages.error(self.request, _('이미 가입신청 하셨습니다.'))
+            messages.error(self.request, _('이미 가입신청 하셨거나 아직 신청기간이 아닙니다.'))
             return self.form_invalid(form)
         else:
             return super(ActiveUserCreateView, self).form_valid(form)
@@ -138,11 +138,10 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 
 def old_register_done(request):
     if request.method == 'GET':
-        return render(request, 'accounts/old_register_done.html', context={'user': request.user})
+        return render(request, 'accounts/old_register_done.html', context={'user': request.user, 'os': OperationScheme.latest()})
 
 
 class PaymentView(View):
-
     def get(self, request, pk):
         active_user = ActiveUser.objects.get(user__pk=pk)
         latest_os = OperationScheme.latest()
