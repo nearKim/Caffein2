@@ -155,10 +155,10 @@ $(document).ready(function() {
         requestObj['questions'] = formSubmit();
         requestObj['form_title'] = $('.form-title').val();
         requestObj['form_description'] = $('.form-description').val();
-        var obj = document.getElementsByName('for-new');
+        var obj = document.getElementsByName('purpose');
 	    for( i=0; i<obj.length; i++ ) {
 		if(obj[i].checked) {
-			    requestObj['for_new'] = obj[i].value;
+			    requestObj['purpose'] = obj[i].value;
 		    }
 	    }
         //requestObj['for_new'] = $('.for-new').val();

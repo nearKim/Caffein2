@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% csrf_token %}
-{% if form %}
+{% if form and can_register %}
 <form action="{% url 'survey:survey-fill-new' user_id=user_id %}" method="POST" class="submit-form">{% csrf_token %}
   <div class="card">
 	<div class="card-block">
@@ -63,6 +63,10 @@
   </div>
 </form>
 {% else %}
-	<h3>신입회원 기간이 아닙니다.</h3>
+    {% if not can_register %}
+      <h3>신입 가입기간이 아닙니다.</h3>
+    {% elif not form %}
+	  <h3>진행중인 설문이 없습니다.</h3>
+    {% endif %}
 {% endif %}
 {% endblock %}

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     # User registered apps
     'accounts',
     'cafe',
@@ -61,7 +62,11 @@ INSTALLED_APPS = [
     # 3rd party apps
     'imagekit',
     'crispy_forms',
+    'photologue',
+    'sortedm2m',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
