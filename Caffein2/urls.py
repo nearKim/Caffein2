@@ -29,6 +29,7 @@ urlpatterns = [
     path('cafe/', include('cafe.urls', namespace='cafe')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('partners/', include('partners.urls', namespace='partners')),
+    path('photoalbum/', include('photoalbum.urls', namespace='photoalbum')),
     path('survey/', include('survey.urls', namespace='survey')),
     path('meetings/', include('meetings.urls', namespace='meetings')),
 ]
