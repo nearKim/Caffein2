@@ -1,0 +1,15 @@
+{
+  "name": "cropperjs",
+  "homepage": "https://github.com/fengyuanchen/cropperjs",
+  "version": "1.4.1",
+  "_release": "1.4.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.4.1",
+    "commit": "f8a2da3d8228fa5a7a9576f972abec240487bdb7"
+  },
+  "_source": "https://github.com/fengyuanchen/cropperjs.git",
+  "_target": "^1.4.1",
+  "_originalSource": "cropperjs",
+  "_direct": true
+}
