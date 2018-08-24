@@ -20,7 +20,7 @@ from .models import (
     OfficialMeeting,
     CoffeeEducation,
     CoffeeMeeting)
-from core.models import Meeting, MeetingPhotos
+from core.models import Meeting, MeetingPhotos, OperationScheme
 
 
 # 모든 모임을 한 화면에 보여주는 ListView
@@ -191,17 +191,15 @@ class CoffeeMeetingDetailView(FormMixin, DetailView):
 
 # Participate View
 def participate_meeting(request, pk):
-    # TODO: 참여자를 스캔하여 짝지가 있으면 자동으로 점수 상향
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
+
         if meeting.can_participate():
+            # 참여가능인원이 다 차지 않은 경우
             active_user = get_object_or_404(ActiveUser, user=request.user)
-            if active_user in meeting.participants.all():
-                messages.info(request, '취소 되었습니다.')
-                meeting.participants.remove(active_user)
-            else:
-                messages.info(request, '참여 했습니다.')
-                meeting.participate_meeting(active_user)
+            # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
+            flag = meeting.participate_or_not(active_user)
+            messages.info(request, "참여했습니다") if flag else messages.info(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
         else:
             messages.error(request, '참여 인원이 다 찼습니다.')

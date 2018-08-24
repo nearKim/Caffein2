@@ -22,7 +22,7 @@ class PartnerDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         try:
-            latest_partner = Partners.related_partner(request.user)
+            latest_partner = Partners.related_partner_user(request.user)
             current_os = OperationScheme.latest()
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
             if latest_partner is None:
@@ -86,7 +86,7 @@ class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
     def get(self, request, **kwargs):
         # 유저가 속한 최신의 짝지 객체를 가져온다.
         try:
-            latest_partner = Partners.related_partner(request.user)
+            latest_partner = Partners.related_partner_user(request.user)
             current_os = OperationScheme.latest()
             print(latest_partner)
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다

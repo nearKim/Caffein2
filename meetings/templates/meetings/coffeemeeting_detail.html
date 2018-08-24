@@ -28,7 +28,6 @@
                 </p>
 
                 <p class="libre-text-lg mb-50">
-                    {#TODO: 카페 정보와 지도를 표시해야 한다 #}
                     카페: <b>{{ coffeemeeting.cafe }}</b>
                 </p>
             <!--네이버맵 뷰-->
@@ -59,7 +58,7 @@
                             {% thumbnail "25x25" participant.user.profile_pic %}
                         {% endif %}
 
-                        {{ participant }},
+                        {{ participant.user.name }},
                     {% empty %} 아직 참여자가 없네요
                     {% endfor %}
                     ( {{ coffeemeeting.participants.count }} )명 <br>

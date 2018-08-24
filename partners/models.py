@@ -35,19 +35,37 @@ class Partners(models.Model):
     def __str__(self):
         return "{}년 {}학기 기존({})".format(self.partner_year, self.partner_semester, self.up_partner.user.name)
 
+    def containing_active_users(self):
+        # 짝지 객체에 속한 모든 구성원들의 set을 반환한다.
+        return {self.up_partner, self.down_partner_1, self.down_partner_2, self.down_partner_3}
+
     def raise_score(self, score):
         self.score += score
         self.save()
 
     @staticmethod
-    def related_partner(user):
-        # input 파라미터 user가 속한 짝지 중 가장 최신의 객체를 반환합니다.
+    def related_partner_user(user):
+        # input 파라미터 user가 속한 짝지 중 가장 최신의 객체를 반환한다.
         try:
             related = Partners.objects.filter(
                 Q(up_partner__user=user) |
                 Q(down_partner_1__user=user) |
                 Q(down_partner_2__user=user) |
                 Q(down_partner_3__user=user)
+            ).latest()
+        except Partners.DoesNotExist:
+            related = None
+        return related
+
+    @staticmethod
+    def related_partner_activeuser(active_user):
+        # input 파라미터 active_user가 속한 짝지 중 가장 최신의 객체를 반환한다.
+        try:
+            related = Partners.objects.filter(
+                Q(up_partner=active_user) |
+                Q(down_partner_1=active_user) |
+                Q(down_partner_2=active_user) |
+                Q(down_partner_3=active_user)
             ).latest()
         except Partners.DoesNotExist:
             related = None

@@ -56,24 +56,27 @@
                         {% else %}
                             {{ max }}
                         {% endif %}
-                    {% endwith %}
-                </p>
-                <p class="libre-text-lg mb-50">
-                    참여자:
-                    {% for participant in object.participants.all %}
-                        {% if participant.user.profile_pic %}
-                            {% thumbnail "25x25" participant.user.profile_pic %}
-                        {% endif %}
 
-                        {{ participant }},
-                    {% empty %} 아직 참여자가 없네요
-                    {% endfor %}
-                    ( {{ object.participants.count }} )명 <br>
-                </p>
-                <!--참여 버튼-->
-                <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
-                    <button class="btn btn-default center-block">참여</button>
-                </form>
+                        </p>
+                        {% if max == 0 %}
+                            <p class="libre-text-lg mb-50">
+                                참여자:
+                                {% for participant in object.participants.all %}
+                                    {% if participant.user.profile_pic %}
+                                        {% thumbnail "25x25" participant.user.profile_pic %}
+                                    {% endif %}
+
+                                    {{ participant.user.name }},
+                                {% empty %} 아직 참여자가 없네요
+                                {% endfor %}
+                                ( {{ object.participants.count }} )명 <br>
+                            </p>
+                            <!--참여 버튼-->
+                            <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
+                                <button class="btn btn-default center-block">참여</button>
+                            </form>
+                        {% endif %}
+                    {% endwith %}
                 <hr>
 
                 <!--댓글-->
