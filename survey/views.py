@@ -10,6 +10,7 @@ from django.views.generic.list import ListView
 
 from accounts.models import User
 from .models import Form, Question, Choice, UserAnswer
+from core.models import OperationScheme
 
 
 class FormListView(LoginRequiredMixin, ListView):
@@ -30,10 +31,8 @@ class FormCreate(LoginRequiredMixin, CreateView):
         if len(dict_post_data['questions']) > 0:
             form = Form(title=dict_post_data['form_title'],
                         description=dict_post_data['form_description'],
-                        owner=self.request.user)
-            # 신입가입 양식인 경우
-            if dict_post_data['for_new'] == 'True':
-                form.for_new = True
+                        owner=self.request.user,
+                        purpose=dict_post_data['purpose'])
             form.save()
             result['result'] = '정상적으로 저장되었습니다.'
             for question_item in dict_post_data['questions']:
@@ -59,11 +58,13 @@ def survey_fill(request, user_id, pk):
         form = Form.objects.get(id=pk)
         questions = Question.objects.filter(form=form)
         questions = list(questions)
+        questions.reverse()
         choices = Choice.objects.filter(question__in=questions)
         context = {
             'form': form,
             'questions': questions,
-            'choices': choices
+            'choices': choices,
+            'can_register': OperationScheme.can_old_register()
         }
         return render(request, 'survey/survey_fill.html', context)
     elif request.method == 'POST':
@@ -85,7 +86,15 @@ def survey_fill(request, user_id, pk):
                                       answer=answer,
                                       form=form,
                                       user=user)
-        return redirect('survey:survey-list')
+        info = OperationScheme.latest()
+        context = {
+            'purpose': form.purpose,
+            'bank': info.get_bank_display(),
+            'account': info.bank_account,
+            'boss_name': info.boss.user.name,
+            'pay': info.old_pay
+        }
+        return render(request, 'survey/survey_fill_submit.html', context)
 
 
 # 신입 가입을 위한 함수. 로그인이 필요 없이 동작.
@@ -93,8 +102,10 @@ def survey_fill_new(request, user_id):
     if request.method == 'GET':
         try:
             # 가장 최근의 신입양식을 보여줌
-            form = Form.objects.filter(for_new=True, opened=True)[0]
+            form = Form.objects.filter(purpose='join_new', opened=True)[0]
             questions = Question.objects.filter(form=form)
+            questions = list(questions)
+            questions.reverse()
             choices = Choice.objects.filter(question__in=questions)
         # 신입 가입을 위한 양식이 없는 경우 예외처리
         except (ObjectDoesNotExist, IndexError):
@@ -105,12 +116,13 @@ def survey_fill_new(request, user_id):
             'user_id': user_id,
             'form': form,
             'questions': questions,
-            'choices': choices
+            'choices': choices,
+            'can_register': OperationScheme.can_new_register()
         }
         return render(request, 'survey/survey_fill_new.html', context)
     elif request.method == 'POST':
         user = User.objects.get(id=user_id)
-        form = Form.objects.filter(for_new=True, opened=True)[0]
+        form = Form.objects.filter(purpose='join_new', opened=True)[0]
         form.users.add(user)
         form.save()
         questions = Question.objects.filter(form=form)
@@ -128,7 +140,15 @@ def survey_fill_new(request, user_id):
                                       answer=answer,
                                       form=form,
                                       user=user)
-        return redirect('survey:survey-list')
+        info = OperationScheme.latest()
+        context = {
+            'purpose': form.purpose,
+            'bank': info.get_bank_display(),
+            'account': info.bank_account,
+            'boss_name': info.boss.user.name,
+            'pay': info.new_pay
+        }
+        return render(request, 'survey/survey_fill_submit.html', context)
 
 
 # 응답 결과를 표시. 같은 form에 같은 user가 복수의 응답을 한 경우에는 최신 응답만 표시

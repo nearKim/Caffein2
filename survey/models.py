@@ -10,13 +10,10 @@ class Form(TimeStampedMixin):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, default='1', on_delete=models.CASCADE, related_name='owner')
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='users')
     opened = models.BooleanField(default=True)
-    for_new = models.BooleanField(default=False)
+    purpose = models.CharField(max_length=10, default='survey')
 
     class Meta:
         ordering = ['-created']
-
-    def is_new(self):
-        return self.for_new
 
     def __str__(self):
         return self.title
