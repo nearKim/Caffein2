@@ -19,11 +19,13 @@ from django.views.generic.edit import (
     UpdateView,
 )
 
+from accounts.category import DEPARTMENT_COLLEGE_MAP, College
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from core.models import OperationScheme
 from .models import ActiveUser
 
 
+# Activation
 def activate(request, uidb64, token):
     User = get_user_model()
     try:
@@ -50,6 +52,13 @@ class TokenGenerator(PasswordResetTokenGenerator):
 
 
 account_activation_token = TokenGenerator()
+
+
+# User
+def load_departments(request):
+    college = request.GET.get('college')
+    departments = DEPARTMENT_COLLEGE_MAP[College(college)]
+    return render(request, 'ajax/department_dropdown_options.html', {'departments': departments})
 
 
 class UserCreateView(CreateView):
@@ -98,10 +107,9 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
     model = get_user_model()
     form_class = CustomUserChangeForm
-    # fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
-    #           'profile_pic']
 
 
+# ActiveUser
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     model = ActiveUser
     fields = []
@@ -138,9 +146,11 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 
 def old_register_done(request):
     if request.method == 'GET':
-        return render(request, 'accounts/old_register_done.html', context={'user': request.user, 'os': OperationScheme.latest()})
+        return render(request, 'accounts/old_register_done.html',
+                      context={'user': request.user, 'os': OperationScheme.latest()})
 
 
+# Deprecated
 class PaymentView(View):
     def get(self, request, pk):
         active_user = ActiveUser.objects.get(user__pk=pk)

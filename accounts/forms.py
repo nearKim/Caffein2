@@ -26,6 +26,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['rule_confirm', 'email', 'password1', 'password2', 'name', 'phone', 'student_no', 'college',
                   'department', 'category', 'profile_pic', 'join_year', 'join_semester']
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['department'] = ''
+
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")

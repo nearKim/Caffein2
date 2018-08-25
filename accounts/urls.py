@@ -8,7 +8,7 @@ from .views import (
     UserUpdateView,
     ActiveUserCreateView,
     PaymentView,
-    old_register_done)
+    old_register_done, load_departments)
 
 app_name = 'accounts'
 
@@ -22,4 +22,6 @@ urlpatterns = [
     path('<int:pk>/pay/', PaymentView.as_view(), name='payment'),
     path('<int:pk>/old-register/', ActiveUserCreateView.as_view(), name='old-register'),
     path('old-register/done', old_register_done, name='old-register-done'),
+
+    path('ajax/load-departments', load_departments, name='ajax-load-departments'),
 ]

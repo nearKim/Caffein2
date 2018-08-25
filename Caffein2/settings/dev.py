@@ -22,4 +22,4 @@ DATABASES = {
 }
 
 # EMAIL provider
-EMAIL_BACKEND = 'django.comments.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
