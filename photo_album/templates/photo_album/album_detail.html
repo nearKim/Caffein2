@@ -10,7 +10,7 @@
     <h2 style="display: inline">{{ object.name }}</h2>
     &emsp;<b><i>{{ object.description }}</i></b>
     <i>{{ object.created }}</i>
-
+    <a class="btn btn-primary" href="{% url "photo_album:drag_and_drop_upload" album_id=object.id %}">Edit</a>
     <hr>
 
     <div class="album-detail" style="display:inline;margin-left: 5px">

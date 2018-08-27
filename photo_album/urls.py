@@ -7,9 +7,10 @@ from photo_album.views import *
 app_name = 'photo_album'
 
 urlpatterns = [
-    path('clear', clear_database, name='clear_database'),
-    path('basic-upload/<int:album_id>', BasicUploadView.as_view(), name='basic_upload'),
-    path('progress-bar-upload', ProgressBarUploadView.as_view(), name='progress_bar_upload'),
+    path('clear/<int:pk>', clear_database, name='clear_database'),
+    path('delete-photo/<int:pk>', delete_photo, name='delete_photo'),
+    #path('basic-upload/<int:album_id>', BasicUploadView.as_view(), name='basic_upload'),
+    #path('progress-bar-upload', ProgressBarUploadView.as_view(), name='progress_bar_upload'),
     path('drag-and-drop-upload/<int:album_id>', DragAndDropUploadView.as_view(), name='drag_and_drop_upload'),
     path('album', AlbumLV.as_view(), name='album_list'),
     path('album_create', AlbumCreateView.as_view(), name='album_create'),

@@ -15,6 +15,16 @@
 {% endblock %}
 
 {% block photos_content %}
+    <div style="margin-bottom: 20px;">
+    <button type="button" class="btn btn-primary js-upload-photos">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Select Images
+    </button>
+    <input id="fileupload" type="file" name="file" multiple
+           style="display: none;"
+           data-url="{% url 'photo_album:drag_and_drop_upload' album_id=album_id %}"
+           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+  </div>
+
   <div class="well text-muted text-center" style="padding-top: 4rem; padding-bottom: 4rem;">
     <span class="glyphicon glyphicon-arrow-down" style="font-size: 4rem;"></span>
     <h3>Drop Photos Here to Upload</h3>
@@ -22,7 +32,7 @@
 
   <input id="fileupload" type="file" name="file" multiple
          style="display: none;"
-         data-url="{% url 'photo_album:basic_upload' album_id=album_id %}"
+         data-url="{% url 'photo_album:drag_and_drop_upload' album_id=album_id %}"
          data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
 
   <table id="gallery" class="table table-bordered">
@@ -34,10 +44,12 @@
     <tbody>
       {% for photo in photos %}
         <tr>
-          <td><a href="{{ photo.get_absolute_url }}">
+          <td>
+            <a href="{{ photo.get_absolute_url }}">
                 <img src="{{ photo.file.thumb_url }}" alt="thumbnail">
             </a>
-              <a href="{{ photo.file.url }}">{{ photo.file.name }}</a>
+            <a href="{{ photo.file.url }}">{{ photo.file.name }}</a>
+              <a class="btn btn-danger" href="{% url "photo_album:delete_photo" pk=photo.id %}">delete</a>
           </td>
 
         </tr>

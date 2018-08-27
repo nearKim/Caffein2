@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.views import View
 import time
 
-
+'''
 class BasicUploadView(View):
     def get(self, request, album_id):
         photos_list = Photo.objects.filter(album_id=album_id)
@@ -21,8 +21,6 @@ class BasicUploadView(View):
             #photo = form.save()
             photo = form.save(commit=False)
             photo.album = Album.objects.get(id=album_id)
-            print(album_id)
-            print(Album.objects.get(id=album_id))
             photo.save()
             data = {'is_valid': True, 'name': photo.file.name, 'url': photo.file.url}
         else:
@@ -39,13 +37,12 @@ class ProgressBarUploadView(View):
         time.sleep(1)  # You don't need this line. This is just to delay the process so you can see the progress bar testing locally.
         form = PhotoForm(self.request.POST, self.request.FILES)
         if form.is_valid():
-            print('bar')
             photo = form.save()
             data = {'is_valid': True, 'name': photo.file.name, 'url': photo.file.url}
         else:
             data = {'is_valid': False}
         return JsonResponse(data)
-
+'''
 
 class DragAndDropUploadView(View):
 
@@ -59,8 +56,6 @@ class DragAndDropUploadView(View):
             #photo = form.save()
             photo = form.save(commit=False)
             photo.album = Album.objects.get(id=album_id)
-            print(album_id)
-            print(Album.objects.get(id=album_id))
             photo.save()
             data = {'is_valid': True, 'name': photo.file.name, 'url': photo.file.url}
         else:
@@ -68,15 +63,24 @@ class DragAndDropUploadView(View):
         return JsonResponse(data)
 
 
-def clear_database(request):
-    for photo in Photo.objects.all():
+def clear_database(request, pk):
+    for photo in Photo.objects.filter(album_id=pk):
         photo.file.delete()
         photo.delete()
     return redirect(request.POST.get('next'))
 
 
+def delete_photo(request, pk):
+    photo = Photo.objects.get(pk=pk)
+    album_id = photo.album_id
+    photo.file.delete()
+    photo.delete()
+    return redirect('photo_album:drag_and_drop_upload', album_id=album_id)
+    #return redirect(request.POST.get('next'))
+    #return reverse('photo_album:drag_and_drop_upload', kwargs={'album_id': album_id})
+
 '''
-def photo_list(request):
+def photo_crop(request):
     photos = Photo.objects.all()
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
@@ -85,7 +89,7 @@ def photo_list(request):
             return redirect('photo_list')
     else:
         form = PhotoForm()
-    return render(request, 'photo_album/photo_list.html', {'form': form, 'photos': photos})
+    return render(request, 'photo_album/photo_crop.html', {'form': form, 'photos': photos})
 '''
 
 class AlbumCreateView(CreateView):
