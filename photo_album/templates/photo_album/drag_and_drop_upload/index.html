@@ -10,11 +10,107 @@
   <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
   <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
 
+    <script>
+    function setImg(a){
+        //console.log(a.getElementsByTagName('a')[0].src)
+        console.log(a.getAttribute("src"));
+        //document.getElementById("ImageFrame").src = a.getElementsByTagName('img')[0].src
+        $("#image").attr("src", a.getAttribute("src"));
+        $("#modalCrop").modal("show");
+    }
+    $(function () {
+
+      /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
+        /*
+      $("#id_file").change(function () {
+        if (this.files && this.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $("#image").attr("src", e.target.result);
+            //$("#modalCrop").modal("show");
+          }
+          reader.readAsDataURL(this.files[0]);
+        }
+      });*/
+
+      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+      var $image = $("#image");
+      //var $image;
+      var cropBoxData;
+      var canvasData;
+
+
+
+      $("#modalCrop").on("shown.bs.modal", function () {
+        $image.cropper({
+          viewMode: 1,
+          //aspectRatio: 1/1,
+          minCropBoxWidth: 20,
+          minCropBoxHeight: 20,
+          ready: function () {
+            $image.cropper("setCanvasData", canvasData);
+            $image.cropper("setCropBoxData", cropBoxData);
+          }
+        });
+      }).on("hidden.bs.modal", function () {
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+        $image.cropper("destroy");
+      });
+
+
+      $(".js-popup").click(function () {
+        $("#modalCrop").modal("show");
+      });
+
+      $(".js-zoom-in").click(function () {
+        $image.cropper("zoom", 0.1);
+      });
+
+      $(".js-zoom-out").click(function () {
+        $image.cropper("zoom", -0.1);
+      });
+
+      $(".js-rotate-right").click(function () {
+        $image.cropper("rotate", 90);
+      });
+
+      $(".js-rotate-left").click(function () {
+        $image.cropper("rotate", -90);
+      });
+
+      $(".js-reverse-horizontal").click(function () {
+        $image.cropper("scaleX", -$image.cropper("getData").scaleX);
+      });
+
+      $(".js-reverse-vertical").click(function () {
+        $image.cropper("scaleY", -$image.cropper("getData").scaleY);
+      });
+
+      $(".js-refresh").click(function () {
+        $image.cropper("reset");
+      });
+
+      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+      $(".js-crop-and-upload").click(function () {
+        var cropData = $image.cropper("getData");
+        $("#id_x").val(cropData["x"]);
+        $("#id_y").val(cropData["y"]);
+        $("#id_height").val(cropData["height"]);
+        $("#id_width").val(cropData["width"]);
+        $("#formUpload").submit();
+      });
+
+    });
+  </script>
+
+
   {# PHOTOS PAGE SCRIPTS #}
   <script src="{% static 'js/drag-and-drop-upload.js' %}"></script>
 {% endblock %}
 
 {% block photos_content %}
+    {# for file select upload #}
     <div style="margin-bottom: 20px;">
     <button type="button" class="btn btn-primary js-upload-photos">
       <span class="glyphicon glyphicon-cloud-upload"></span> Select Images
@@ -24,7 +120,7 @@
            data-url="{% url 'photo_album:drag_and_drop_upload' album_id=album_id %}"
            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
   </div>
-
+    {# for drag and drop upload #}
   <div class="well text-muted text-center" style="padding-top: 4rem; padding-bottom: 4rem;">
     <span class="glyphicon glyphicon-arrow-down" style="font-size: 4rem;"></span>
     <h3>Drop Photos Here to Upload</h3>
@@ -50,6 +146,7 @@
             </a>
             <a href="{{ photo.file.url }}">{{ photo.file.name }}</a>
               <a class="btn btn-danger" href="{% url "photo_album:delete_photo" pk=photo.id %}">delete</a>
+              <a class="btn btn-success" onclick="setImg(this);" src="{{ photo.file.url }}">edit</a>
           </td>
 
         </tr>
@@ -57,4 +154,48 @@
       {% endfor %}
     </tbody>
   </table>
+
+  {# for cropper #}
+  <div class="modal fade" id="modalCrop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Crop the photo</h4>
+        </div>
+        <div class="modal-body">
+          <img src="" id="image" style="max-width: 100%;">
+        </div>
+        <div class="modal-footer">
+          <div class="btn-group pull-left" role="group">
+            <button type="button" class="btn btn-default js-rotate-left">
+              <span class="fa fa-rotate-left"></span>
+            </button>
+            <button type="button" class="btn btn-default js-rotate-right">
+              <span class="fa fa-rotate-right"></span>
+            </button>
+            <button type="button" class="btn btn-default js-zoom-in">
+              <span class="fa fa-search-plus"></span>
+            </button>
+            <button type="button" class="btn btn-default js-zoom-out">
+              <span class="fa fa-search-minus"></span>
+            </button>
+            <button type="button" class="btn btn-default js-reverse-vertical">
+              <span class="fa fa-arrows-v"></span>
+            </button>
+            <button type="button" class="btn btn-default js-reverse-horizontal">
+              <span class="fa fa-arrows-h"></span>
+            </button>
+            <button type="button" class="btn btn-default js-refresh">
+              <span class="fa fa-refresh"></span>
+            </button>
+          </div>
+          <!--<button type="button" class="btn btn-default" data-dismiss="modal">Nevermind</button>-->
+          <button type="button" class="btn btn-primary js-crop-and-upload">Crop and upload</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
