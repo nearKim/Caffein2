@@ -1,11 +1,42 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
+from core.mixins import TimeStampedMixin
+from .fields import ThumbnailImageField
+
+def get_album_photo_path(instance, filename):
+    return 'media/photo_album/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
-class Photo(models.Model):
-    file = models.ImageField()
-    description = models.CharField(max_length=255, blank=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+class Album(TimeStampedMixin):
+    name = models.CharField(_('앨범 이름'), max_length=50)
+    description = models.CharField(_('설명'), max_length=100, blank=True)
+
+    class Mete:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self): # 2
+        return reverse('photo_album:album_detail', args=(self.id,))
+
+
+class Photo(TimeStampedMixin):
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)  # 3
+    title = models.CharField(max_length=50)
+    description = models.CharField(_('설명'), max_length=255, blank=True)
+    #file = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
+    file = ThumbnailImageField(_('이미지'), upload_to=get_album_photo_path)
 
     class Meta:
+        ordering = ['-created']
         verbose_name = 'photo'
         verbose_name_plural = 'photos'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('photo_album:photo_detail', args=(self.id,))

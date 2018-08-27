@@ -3,9 +3,27 @@ from PIL import Image
 from django import forms
 from django.core.files import File
 
-from .models import Photo
+from .models import Album, Photo
 
 
+class AlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = ('name', 'description')
+
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ('file', )
+    '''
+    def save(self, **kwargs):
+        photo = super().save(commit=False)
+        print(kwargs.get('album_id'))
+        photo.album = Album.objects.get(id=kwargs.get('album_id'))
+        photo.save()
+        return photo'''
+'''
 class PhotoForm(forms.ModelForm):
     x = forms.FloatField(widget=forms.HiddenInput())
     y = forms.FloatField(widget=forms.HiddenInput())
@@ -34,5 +52,4 @@ class PhotoForm(forms.ModelForm):
         resized_image = cropped_image.resize((200, 200), Image.ANTIALIAS)
         resized_image.save(photo.file.path)
 
-        return photo
-
+        return photo'''

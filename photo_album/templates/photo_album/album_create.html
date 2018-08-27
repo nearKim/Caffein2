@@ -1,0 +1,22 @@
+{% extends 'album_base.html' %}
+{% block content %}
+<form role="form" class="form" method="{% block form_method %}post{% endblock %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="control-label" for="inputError">
+                        {{ field.errors.as_text }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-success">사진 추가</button>
+    </div>
+</form>
+{% endblock %}
