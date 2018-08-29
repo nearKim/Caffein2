@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import User
@@ -40,6 +41,11 @@ class Partners(models.Model):
         return {self.up_partner, self.down_partner_1, self.down_partner_2, self.down_partner_3}
 
     def raise_score(self, score):
+        latest_os = OperationScheme.latest()
+        if latest_os.semester_end:
+            if now() > latest_os.semester_end:
+                # 학기가 종료된 후에는 짝지점수를 올리면 안된다.
+                return
         self.score += score
         self.save()
 
