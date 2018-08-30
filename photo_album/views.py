@@ -4,9 +4,11 @@ from django.views.generic import ListView, DetailView, CreateView
 from .forms import *
 from django.http import JsonResponse
 from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class AlbumCreateView(CreateView):
+class AlbumCreateView(CreateView, LoginRequiredMixin):
     model = Album
     form_class = AlbumForm
     template_name = 'photo_album/album_create.html'
@@ -20,19 +22,19 @@ class AlbumCreateView(CreateView):
         return reverse('photo_album:album_edit', kwargs={'album_id': self.object.pk})
 
 
-class AlbumLV(ListView):
+class AlbumLV(ListView, LoginRequiredMixin):
     model = Album
 
 
-class AlbumDV(DetailView):
+class AlbumDV(DetailView, LoginRequiredMixin):
     model = Album
 
 
-class PhotoDV(DetailView):
+class PhotoDV(DetailView, LoginRequiredMixin):
     model = Photo
 
 
-class AlbumEditView(View):
+class AlbumEditView(View, LoginRequiredMixin):
 
     def get(self, request, album_id):
         photos_list = Photo.objects.filter(album_id=album_id)
@@ -60,6 +62,7 @@ class AlbumEditView(View):
             return JsonResponse(data)
 
 
+@login_required
 def clear_database(request, pk):
     for photo in Photo.objects.filter(album_id=pk):
         photo.file.delete()
@@ -68,6 +71,7 @@ def clear_database(request, pk):
 
 
 # album edit에서 delete. album edit 페이지로 돌아감
+@login_required
 def delete_photo(request, pk):
     photo = Photo.objects.get(pk=pk)
     album_id = photo.album_id
@@ -77,6 +81,7 @@ def delete_photo(request, pk):
 
 
 # photo detail에서 delete. photo detail 페이지로 돌아감
+@login_required
 def delete_photo_to_album_detail(request, pk):
     photo = Photo.objects.get(pk=pk)
     album_id = photo.album_id
