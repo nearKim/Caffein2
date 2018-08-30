@@ -10,7 +10,7 @@
           var reader = new FileReader();
           reader.onload = function (e) {
             $("#image").attr("src", e.target.result);
-            //$("#modalCrop").modal("show");
+            $("#modalCrop").modal("show");
           }
           reader.readAsDataURL(this.files[0]);
         }
@@ -86,9 +86,6 @@
   <form method="post" enctype="multipart/form-data" id="formUpload">
     {% csrf_token %}
     {{ form }}
-    <button type="button" class="btn btn-default js-popup">
-    edit
-    </button>
   </form>
 
   <!-- MODAL TO CROP THE IMAGE -->
