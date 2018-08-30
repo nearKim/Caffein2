@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from core.mixins import TimeStampedMixin
 from .fields import ThumbnailImageField
 
+
 def get_album_photo_path(instance, filename):
     return 'media/photo_album/{:%Y/%m/%d}/{}'.format(now(), filename)
 
@@ -19,15 +20,15 @@ class Album(TimeStampedMixin):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self): # 2
+    def get_absolute_url(self):
         return reverse('photo_album:album_detail', args=(self.id,))
 
 
 class Photo(TimeStampedMixin):
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)  # 3
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=50)
     description = models.CharField(_('설명'), max_length=255, blank=True)
-    #file = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
+    # 파일이 입력되면서 썸네일이 만들어짐
     file = ThumbnailImageField(_('이미지'), upload_to=get_album_photo_path)
 
     class Meta:

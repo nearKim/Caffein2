@@ -1,8 +1,5 @@
 from PIL import Image
-
 from django import forms
-from django.core.files import File
-
 from .models import Album, Photo
 
 
@@ -12,20 +9,13 @@ class AlbumForm(forms.ModelForm):
         fields = ('name', 'description')
 
 
-class PhotoForm(forms.ModelForm):
+class PhotoFormMultiFile(forms.ModelForm):
     class Meta:
         model = Photo
         fields = ('file', )
-    '''
-    def save(self, **kwargs):
-        photo = super().save(commit=False)
-        print(kwargs.get('album_id'))
-        photo.album = Album.objects.get(id=kwargs.get('album_id'))
-        photo.save()
-        return photo'''
 
 
-class PhotoForm2(forms.ModelForm):
+class PhotoFormCrop(forms.ModelForm):
     x = forms.FloatField(widget=forms.HiddenInput())
     y = forms.FloatField(widget=forms.HiddenInput())
     width = forms.FloatField(widget=forms.HiddenInput())
@@ -36,12 +26,12 @@ class PhotoForm2(forms.ModelForm):
         fields = ('file', 'x', 'y', 'width', 'height', )
         widgets = {
             'file': forms.FileInput(attrs={
-                'accept': 'image/*'  # this is not an actual validation! don't rely on that!
+                'accept': 'image/*'
             })
         }
 
     def save(self, **kwargs):
-        photo = super(PhotoForm2, self).save()
+        photo = super(PhotoFormCrop, self).save()
 
         x = self.cleaned_data.get('x')
         y = self.cleaned_data.get('y')
@@ -53,3 +43,4 @@ class PhotoForm2(forms.ModelForm):
 
         cropped_image.save(photo.file.path)
         return photo
+
