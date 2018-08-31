@@ -5,11 +5,9 @@ from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
-    DeleteView,
     UpdateView
 )
 
-from django.db.models import Q
 from cafe.forms import CafeCreateUpdateForm
 from cafe.models import Cafe
 
@@ -23,19 +21,9 @@ def index(request):
     return render(request, 'cafe/index.html', context=context)
 
 
-class CafeListView(ListView, LoginRequiredMixin):
-    model = Cafe
-    template_name = 'cafe/cafe_list.html'
-
-
 class CafeDetailView(DetailView, LoginRequiredMixin):
     model = Cafe
     template_name = 'cafe/cafe_detail.html'
-
-
-class CafeDeleteView(DeleteView, LoginRequiredMixin):
-    model = Cafe
-    template_name = 'cafe/cafe_delete.html'
 
 
 class CafeUpdateView(UpdateView, LoginRequiredMixin):
