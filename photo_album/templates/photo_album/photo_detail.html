@@ -1,0 +1,46 @@
+{% extends "album_base.html" %}
+
+{% block title %}Photo Detail{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "css/photo.css" %}{% endblock %}
+
+{% block content %}
+    <div class="box-intro">
+        <div class="table-cell ">
+            <div id="content">
+                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 100px"
+                   href="{% url 'photo_album:album_detail' object.album.id %}">Back</a>
+                <h2>{{ object.album.name }}</h2>
+                <table class="photo-detail" style="margin-left: 100px; margin-right: 100px; margin-top: 50px;">
+                    <tr>
+                        <td>
+                            <a href="{{ object.file.url }}">
+                                <img src="{{ object.file.url }}"
+                                     style="max-width: 100%; margin-right: 10px; border: 2px solid #ccc;">
+                            </a>
+                        </td>
+
+                        <td>
+                            <ul>
+                                <li>Photo Description</li>
+                                {% if object.description %}<p>{{ object.description|linebreaks }}</p>
+                                {% else %}<p>(blank)</p>{% endif %}
+                                <li>Date Uploaded</li>
+                                <p>{{ object.created }}</p>
+                                <li>Album Name</li>
+                                <p>
+                                    <a href="{% url 'photo_album:album_detail' object.album.id %}">{{ object.album.name }}</a>
+                                </p>
+                                {% if user.is_staff or user == object.uploader %}
+                                    <a class="btn btn-danger" style="float:right;" onclick="return confirm('정말 지우시겠습니까?');"
+                                       href="{% url "photo_album:delete_photo_to_detail" pk=photo.id %}">delete</a>
+                                {% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
