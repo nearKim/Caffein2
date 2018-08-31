@@ -23,16 +23,13 @@
 
                         <td>
                             <ul>
-                                <li>Photo Description</li>
-                                {% if object.description %}<p>{{ object.description|linebreaks }}</p>
-                                {% else %}<p>(blank)</p>{% endif %}
                                 <li>Date Uploaded</li>
                                 <p>{{ object.created }}</p>
                                 <li>Album Name</li>
                                 <p>
                                     <a href="{% url 'photo_album:album_detail' object.album.id %}">{{ object.album.name }}</a>
                                 </p>
-                                {% if user.is_staff or user == object.uploader %}
+                                {% if user.is_staff or user == object.uploader or user == object.album.uploader%}
                                     <a class="btn btn-danger" style="float:right;" onclick="return confirm('정말 지우시겠습니까?');"
                                        href="{% url "photo_album:delete_photo_to_detail" pk=photo.id %}">delete</a>
                                 {% endif %}
