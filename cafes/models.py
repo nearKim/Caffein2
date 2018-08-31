@@ -3,8 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-
-from accounts.models import User
+from django.conf import settings
 from core.mixins import TimeStampedMixin
 
 
@@ -52,7 +51,7 @@ class Cafe(TimeStampedMixin):
     closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3, blank=True)
     closed_frq = models.CharField(_('휴무 빈도'), choices=FRQ_CATEGORY, max_length=6, blank=True)
     closed_holiday = models.BooleanField(_('공휴일 휴무 여부'), default=False)
-    uploader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploader')
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='uploader')
     image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
 
     # naver api

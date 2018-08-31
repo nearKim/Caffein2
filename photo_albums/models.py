@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from core.mixins import TimeStampedMixin
 from .fields import ThumbnailImageField
+from django.conf import settings
 
 
 def get_album_photo_path(instance, filename):
@@ -11,8 +12,15 @@ def get_album_photo_path(instance, filename):
 
 
 class Album(TimeStampedMixin):
-    name = models.CharField(_('앨범 이름'), max_length=50)
-    description = models.CharField(_('설명'), max_length=100, blank=True)
+    name = models.CharField(_('앨범 이름'),
+                            max_length=50)
+    description = models.CharField(_('설명'),
+                                   max_length=100,
+                                   blank=True)
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.CASCADE,
+                                 null=True,
+                                 related_name='album_uploader')
 
     class Mete:
         ordering = ['name']
@@ -25,11 +33,16 @@ class Album(TimeStampedMixin):
 
 
 class Photo(TimeStampedMixin):
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
-    title = models.CharField(max_length=50)
-    description = models.CharField(_('설명'), max_length=255, blank=True)
+    album = models.ForeignKey(Album,
+                              on_delete=models.CASCADE,
+                              null=True)
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.CASCADE,
+                                 null=True,
+                                 related_name='photo_uploader')
     # 파일이 입력되면서 썸네일이 만들어짐
-    file = ThumbnailImageField(_('이미지'), upload_to=get_album_photo_path)
+    file = ThumbnailImageField(_('이미지'),
+                               upload_to=get_album_photo_path)
 
     class Meta:
         ordering = ['-created']
