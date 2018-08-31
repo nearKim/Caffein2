@@ -57,13 +57,12 @@ INSTALLED_APPS = [
     'core',
     'meetings',
     'partners',
+    'photo_album',
     'survey',
     'comments',
     # 3rd party apps
     'imagekit',
     'crispy_forms',
-    'photologue',
-    'sortedm2m',
 ]
 
 SITE_ID = 1
