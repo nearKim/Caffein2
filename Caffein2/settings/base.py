@@ -18,6 +18,8 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+DEBUG = True
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -151,3 +153,12 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# NaverMap
+if DEBUG:
+    NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
+    NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
+else:
+    # FIXME: Heroku prod 환경에서 유효
+    NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
+    NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']

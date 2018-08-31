@@ -6,15 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from Caffein2.settings.base import get_secret
 
-try:
-    NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
-    NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
-except:
-    # FIXME: Heroku prod 환경
-    NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
-    NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']
+from Caffein2.settings.base import NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
 
 
 @login_required
