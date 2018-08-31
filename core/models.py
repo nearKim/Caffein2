@@ -64,9 +64,9 @@ class Meeting(Postable):
 
     def update_partner_score(self, active_user, increment):
         # TODO: 커모, 교육 참가시 가산점 제도 확
-        from partners.models import Partners
+        from partners.models import Partner
         # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
-        related_partner = Partners.related_partner_activeuser(active_user)
+        related_partner = Partner.related_partner_activeuser(active_user)
         if related_partner is None:
             # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
             return
@@ -107,7 +107,7 @@ class Meeting(Postable):
         return qs
 
 
-class MeetingPhotos(TimeStampedMixin):
+class MeetingPhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_meeting_photo_path)
     meeting = models.ForeignKey('core.Meeting', related_name='photos', verbose_name=_('모임'),
                                 on_delete=models.CASCADE)
@@ -117,7 +117,7 @@ class MeetingPhotos(TimeStampedMixin):
         verbose_name_plural = _('모임 사진')
 
 
-class FeedPhotos(TimeStampedMixin):
+class FeedPhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
     instagram = models.ForeignKey('core.Instagram', default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)

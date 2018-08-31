@@ -26,11 +26,11 @@ urlpatterns = [
 
     path('', include('core.urls', namespace='core')),
     path('comments',include('comments.urls', namespace='comments')),
-    path('cafe/', include('cafe.urls', namespace='cafe')),
+    path('cafes/', include('cafes.urls', namespace='cafes')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('partners/', include('partners.urls', namespace='partners')),
-    path('photo_album/', include('photo_album.urls', namespace='photo_album')),
-    path('survey/', include('survey.urls', namespace='survey')),
+    path('photo_albums/', include('photo_albums.urls', namespace='photo_albums')),
+    path('surveys/', include('surveys.urls', namespace='surveys')),
     path('meetings/', include('meetings.urls', namespace='meetings')),
 ]
 

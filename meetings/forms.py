@@ -68,7 +68,7 @@ class CoffeeMeetingForm(ModelForm):
     def __init__(self, *args, **kwargs):
         # kwargs에서 form을 만드는데 필요없는 view에서 넘겨준 부가정보를 먼저 빼낸다
         self.request = kwargs.pop('request', None)
-        self.cafe = kwargs.pop('cafe')
+        self.cafe = kwargs.pop('cafes')
         read_only = kwargs.pop('read_only')
 
         # form을 생성하고 필요한 처리를 한다

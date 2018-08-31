@@ -69,7 +69,7 @@ class CoffeeEducation(Meeting):
 
 
 class CoffeeMeeting(Meeting):
-    cafe = models.ForeignKey('cafe.Cafe', on_delete=models.SET_NULL, verbose_name=_('카페'), null=True)
+    cafe = models.ForeignKey('cafes.Cafe', on_delete=models.SET_NULL, verbose_name=_('카페'), null=True)
 
     class Meta:
         verbose_name = _('커모')

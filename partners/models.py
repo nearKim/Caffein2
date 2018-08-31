@@ -9,7 +9,7 @@ from accounts.validator import year_validator
 from core.models import Instagram, OperationScheme
 
 
-class Partners(models.Model):
+class Partner(models.Model):
     partner_year = models.PositiveSmallIntegerField(_('짝지 연도'), validators=[year_validator])
     partner_semester = models.PositiveSmallIntegerField(_('짝지 학기'), choices=User.SEMESTER_CHOICE)
     up_partner = models.ForeignKey('accounts.ActiveUser', on_delete=models.CASCADE)
@@ -53,13 +53,13 @@ class Partners(models.Model):
     def related_partner_user(user):
         # input 파라미터 user가 속한 짝지 중 가장 최신의 객체를 반환한다.
         try:
-            related = Partners.objects.filter(
+            related = Partner.objects.filter(
                 Q(up_partner__user=user) |
                 Q(down_partner_1__user=user) |
                 Q(down_partner_2__user=user) |
                 Q(down_partner_3__user=user)
             ).latest()
-        except Partners.DoesNotExist:
+        except Partner.DoesNotExist:
             related = None
         return related
 
@@ -67,19 +67,19 @@ class Partners(models.Model):
     def related_partner_activeuser(active_user):
         # input 파라미터 active_user가 속한 짝지 중 가장 최신의 객체를 반환한다.
         try:
-            related = Partners.objects.filter(
+            related = Partner.objects.filter(
                 Q(up_partner=active_user) |
                 Q(down_partner_1=active_user) |
                 Q(down_partner_2=active_user) |
                 Q(down_partner_3=active_user)
             ).latest()
-        except Partners.DoesNotExist:
+        except Partner.DoesNotExist:
             related = None
         return related
 
 
 class PartnerMeeting(Instagram):
-    partner = models.ForeignKey('partners.Partners', on_delete=models.CASCADE)
+    partner = models.ForeignKey('partners.Partner', on_delete=models.CASCADE)
     num_coffee = models.SmallIntegerField(_('마신 커피 수'), default=0)
     num_eat = models.SmallIntegerField(_('먹은 식사 수'), default=0)
 

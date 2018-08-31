@@ -50,12 +50,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     # User registered apps
     'accounts',
-    'cafe',
+    'cafes',
     'core',
     'meetings',
     'partners',
-    'photo_album',
-    'survey',
+    'photo_albums',
+    'surveys',
     'comments',
     # 3rd party apps
     'imagekit',
