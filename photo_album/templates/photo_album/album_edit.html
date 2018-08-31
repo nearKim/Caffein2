@@ -21,6 +21,7 @@
             {% block photos_content %}
 
                 {# for removing all photos #}
+                {% if user.is_staff or user == uploader %}
                 <form method="post" action="{% url 'photo_album:clear_database' pk=album_id %}">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
@@ -28,10 +29,11 @@
                         <span class="glyphicon glyphicon-trash"></span> Clear All Photos
                     </button>
                 </form>
+                {% endif %}
 
                 {# for file select upload #}
                 <div style="display: inline;">
-                    <button type="button" class="btn btn-primary js-upload-photos pull-left">
+                    <button type="button" class="btn btn-primary js-upload-photos pull-left" style="height: 40px;">
                         <span class="fa fa-cloud-upload"></span> Select Images
                     </button>
                     <input id="fileupload" accept=".jpg, .jpeg, .png" type="file" name="file" multiple
@@ -43,7 +45,7 @@
                 {# for crop upload #}
                 <div class="filebox pull-left" style="display: inline;">
                     <form name="crop" method="post" enctype="multipart/form-data" id="formUpload"
-                          class="btn btn-success">
+                          class="btn btn-success" style="height: 40px; margin-left: 10px;">
                         {% csrf_token %}
                         <label for="id_file"><span class="fa fa-crop"></span> Crop Image</label>
                         <input type="file" name="file" accept=".jpg, .jpeg, .png" id="id_file" style="display: none;">
