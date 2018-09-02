@@ -17,10 +17,14 @@ tests/report/
 # Migrations
 **/migrations
 
+# Imagekit
+CACHE/
+
 # Secret information
 /Caffein2/secrets.json
 
 # Media Files
+media/
 /Caffein2/media/*
 Caffein2/media/
 accounts/profile/
