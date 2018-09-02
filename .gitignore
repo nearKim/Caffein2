@@ -15,7 +15,7 @@ build/
 tests/report/
 
 # Migrations
-**/migrations
+# **/migrations
 
 # Imagekit
 CACHE/
