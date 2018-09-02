@@ -4,8 +4,8 @@ import dj_database_url
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
-MEDIA_ROOT = '/media'
-STATIC_ROOT = '/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
