@@ -4,6 +4,9 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from imagekit.models import ProcessedImageField
+from pilkit.processors import ResizeToFill
+
 from core.mixins import TimeStampedMixin
 
 
@@ -28,14 +31,6 @@ class Cafe(TimeStampedMixin):
         ('FRI', '금요일'),
         ('SAT', '토요일'),
     )
-    FRQ_CATEGORY = (
-        ('EVERY', '매주'),
-        ('FIRST', '첫번째'),
-        ('SECOND', '두번째'),
-        ('THIRD', '세번째'),
-        ('FOURTH', '네번째'),
-        ('LAST', '마지막')
-    )
 
     name = models.CharField(_('카페이름'), max_length=50)
     address = models.CharField(_('주소'), max_length=200)
@@ -49,10 +44,9 @@ class Cafe(TimeStampedMixin):
     to_time = models.TimeField(_('폐점시간'), null=True, blank=True)
 
     closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3, blank=True)
-    closed_frq = models.CharField(_('휴무 빈도'), choices=FRQ_CATEGORY, max_length=6, blank=True)
-    closed_holiday = models.BooleanField(_('공휴일 휴무 여부'), default=False)
+    closed_holiday = models.BooleanField(_('공휴일 휴무 여부'))
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='uploader')
-    image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
+    # image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
 
     # naver api
     link = models.CharField(_('홈페이지'), validators=[URLValidator()], blank=True, max_length=260)
@@ -71,3 +65,16 @@ class Cafe(TimeStampedMixin):
 
     def get_absolute_url(self):
         return reverse('cafes:cafes-detail', args=[str(self.id)])
+
+
+class CafePhoto(models.Model):
+    image = ProcessedImageField(upload_to=get_cafe_photo_path,
+                                processors=[ResizeToFill(300, 340)],
+                                format='JPEG',
+                                options={'quality': 60},
+                                verbose_name=_('카페 사진'))
+    cafe = models.ForeignKey('cafes.Cafe', related_name='photos', on_delete=models.CASCADE, verbose_name=_('카페'))
+
+    class Meta:
+        verbose_name = _('카페 사진')
+        verbose_name_plural = _('카페 사진')

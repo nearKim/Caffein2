@@ -70,11 +70,11 @@
     $(document).ready(function ($) {
         $(".clickable-row").click(function () {
             url = $(this).attr("create-url")
-            $("#btn-cafes-selected").prop("disabled", false)
-            $("#btn-cafes-selected").text("여기서 커모 열기!")
+            $("#btn-cafe-selected").prop("disabled", false)
+            $("#btn-cafe-selected").text("여기서 커모 열기!")
         });
     });
-    $(document).on('click', '#btn-cafes-selected', e => {
+    $(document).on('click', '#btn-cafe-selected', e => {
         window.location = url
 
     })

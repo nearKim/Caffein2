@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, ClearableFileInput, forms
 from django.forms.widgets import HiddenInput
 
 from cafes.models import Cafe
@@ -8,7 +8,9 @@ class CafeCreateUpdateForm(ModelForm):
     class Meta:
         model = Cafe
         fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price', 'from_time', 'to_time',
-                  'closed_day', 'closed_frq', 'closed_holiday', 'image', 'link', 'road_address', 'mapx', 'mapy']
+                  'closed_day', 'closed_holiday', 'link', 'road_address', 'mapx', 'mapy']
+
+    images = forms.FileField(required=False, widget=ClearableFileInput(attrs={'multiple': True}))
 
     def __init__(self, *args, **kwargs):
         super(CafeCreateUpdateForm, self).__init__(*args, **kwargs)

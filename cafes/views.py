@@ -9,7 +9,7 @@ from django.views.generic import (
 )
 
 from cafes.forms import CafeCreateUpdateForm
-from cafes.models import Cafe
+from cafes.models import Cafe, CafePhoto
 
 
 @login_required
@@ -18,28 +18,43 @@ def index(request):
     context = {
         'num_cafes': num_cafes,
     }
-    return render(request, 'cafe/index.html', context=context)
+    return render(request, 'cafes/index.html', context=context)
 
 
 class CafeDetailView(DetailView, LoginRequiredMixin):
     model = Cafe
-    template_name = 'cafe/cafe_detail.html'
+    template_name = 'cafes/cafe_detail.html'
+    context_object_name = 'cafe'
 
 
 class CafeUpdateView(UpdateView, LoginRequiredMixin):
     model = Cafe
     form_class = CafeCreateUpdateForm
-    template_name = 'cafe/cafe_update.html'
+    template_name = 'cafes/cafe_update.html'
+
+    def form_valid(self, form):
+        instance = form.save()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                cafe_photo = CafePhoto(cafe=instance, image=f)
+                cafe_photo.save()
+        return super(CafeUpdateView, self).form_valid(form)
 
 
 class CafeCreateView(CreateView, LoginRequiredMixin):
     model = Cafe
     form_class = CafeCreateUpdateForm
-    template_name = 'cafe/cafe_create.html'
+    template_name = 'cafes/cafe_create.html'
 
-    # uploader 자동 생성
+    # 카페 최초 등록자 자동 생성
     def form_valid(self, form):
         form.instance.uploader = self.request.user
+        instance = form.save()
+        # 카페 사진이 같이 넘어왔다면 함께 저장하자
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                cafe_photo = CafePhoto(cafe=instance, image=f)
+                cafe_photo.save()
         return super(CafeCreateView, self).form_valid(form)
 
 
@@ -50,7 +65,7 @@ class CafeSearchView(ListView):
     """
     model = Cafe
     paginate_by = 20
-    template_name = 'cafe/cafe_search.html'
+    template_name = 'cafes/cafe_search.html'
 
     def get_queryset(self):
         keywords = self.request.GET.get('search-term', None)

@@ -18,7 +18,7 @@ def search_place(request):
         place = request.GET.get('search_term', '')
         # 초기화면 또는 빈칸 검색시
         if place == '':
-            return render(request, 'cafe/place_search.html', context={'places': ''})
+            return render(request, 'cafes/place_search.html', context={'places': ''})
 
         encText = urllib.parse.quote(place)
         url = "https://openapi.naver.com/v1/search/local?display=20&query=" + encText  # json 결과
@@ -33,10 +33,10 @@ def search_place(request):
             response_body = response.read()
             search_results = json.loads(response_body.decode('utf-8'))
             places = search_results.pop('items')
-            return render(request, 'cafe/place_search.html', context={'places': places})
+            return render(request, 'cafes/place_search.html', context={'places': places})
         # 에러 발생시
         else:
-            return render(request, 'cafe/place_search.html', context={'places': ''})
+            return render(request, 'cafes/place_search.html', context={'places': ''})
     else:
         # 네이버 API는 오직 GET요청만을 허용한다
         raise Http404
