@@ -47,7 +47,8 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField(label=_("Password"),
+                                         help_text=_("해당 유저의 비밀번호를 바꾸려면 우측을 클릭하세. <a href=\'../password/\'>비밀번호 변경하기</a>"))
 
     class Meta:
         model = get_user_model()

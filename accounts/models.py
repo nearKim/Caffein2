@@ -118,6 +118,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
     rule_confirm = models.BooleanField(_('약관 동의'), default=False, validators=[confirmation_validator])
+    survey_done = models.BooleanField(_('설문 완료 여부'), default=False)
 
     # 처음 유져가 생성될 때는 is_active를 False로 한 뒤 입금확인 후에 True로 바꾼다
     is_active = models.BooleanField(_('활동 상태'), default=False)
