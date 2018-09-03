@@ -95,7 +95,7 @@ var ajaxSubmit = function(data) {
     var csrf_token = $("[name='csrfmiddlewaretoken']").val();
     // ajax form submit
     $.ajax({
-        url: 'form_create/',
+        url: 'create',
         type: 'POST',
         headers: {'X-CSRFToken': csrf_token},
         data: data,

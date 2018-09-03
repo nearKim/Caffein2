@@ -160,6 +160,7 @@ def survey_result(request, pk):
     lists = []
     for user in users:
         user_answer = list(answers.filter(user=user).order_by('created'))[-len(form.question_set.all()):]
+        user_answer.reverse()
         lists.append({
             'user': user,
             'user_answer': user_answer
