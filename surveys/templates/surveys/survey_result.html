@@ -1,0 +1,54 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    <a class="btn btn-primary" style="margin-top: 10px;"
+       href="{% url 'surveys:survey-list' %}">Back</a>
+    <table class="table table-bordered" style="margin-top: 50px;">
+        <thead>
+        </thead>
+
+        <tbody>
+
+        {% for item in lists %}
+            <tr>
+                <td style="width:1px;white-space:nowrap;">
+                    <h4 class="card-title">{{ item.user }}</h4>
+                    제출시간: {{ item.created | date:"Y-m-d H:i:s" }}
+                </td>
+                {% for answer in item.user_answer %}
+                    <td style="width:1px;white-space:nowrap;">
+                        <li>질문 : {{ answer.question }}</li>
+                        <p class="card-text">응답 : {{ answer }}</p>
+                    </td>
+                {% endfor %}
+
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <div class="row">
+        {% for item in lists %}
+            <div class="card">
+                <div class="card-block">
+                    <div>
+                        <div class="card">
+                            <div class="card-block">
+                                <h3 class="card-title">{{ item.user }}</h3>
+                                제출시간: {{ item.created | date:"Y-m-d H:i:s" }}
+                            </div>
+                        </div>
+                        {% for answer in item.user_answer %}
+                            <div class="card">
+                                <div class="card-block">
+                                    <li>질문 : {{ answer.question }}</li>
+                                    <p class="card-text">응답 : {{ answer }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

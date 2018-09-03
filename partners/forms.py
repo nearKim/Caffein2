@@ -2,7 +2,7 @@ from django.forms import ModelForm, forms, ClearableFileInput
 
 from .models import (
     PartnerMeeting,
-    Partners
+    Partner
 )
 
 
@@ -19,7 +19,7 @@ class PartnerMeetingForm(ModelForm):
 
     def save(self, commit=True):
         instance = super(PartnerMeetingForm, self).save(commit=False)
-        instance.partner = Partners.related_partner(self.request.user)
+        instance.partner = Partner.related_partner_user(self.request.user)
         instance.author = self.request.user
         instance.save()
 

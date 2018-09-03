@@ -66,6 +66,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
@@ -117,8 +118,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('가입일'), auto_now_add=True)
 
     rule_confirm = models.BooleanField(_('약관 동의'), default=False, validators=[confirmation_validator])
+    survey_done = models.BooleanField(_('설문 완료 여부'), default=False)
 
-    is_active = models.BooleanField(_('활동 상태'), default=True)
+    # 처음 유져가 생성될 때는 is_active를 False로 한 뒤 입금확인 후에 True로 바꾼다
+    is_active = models.BooleanField(_('활동 상태'), default=False)
     is_staff = models.BooleanField(_('운영진 여부'), default=False)
 
     objects = UserManager()
@@ -163,7 +166,7 @@ class ActiveUser(models.Model):
         get_latest_by = ['-active_year', 'active_semester']
 
     def __str__(self):
-        return self.user.name
+        return "{}({}년 {}학기)".format(self.user.name, self.active_year, self.active_semester)
 
     @property
     def is_new(self):

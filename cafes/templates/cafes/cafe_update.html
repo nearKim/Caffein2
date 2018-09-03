@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <section class="contact">
+    <div class="container">
+        <h1 class="jumbotron">카페 정보 수정하기</h1>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form | crispy }}
+        <input class="btn btn-default center-block" type="submit" value="수정하기"/>
+    </form>
+    </div>
+    </section>
+
+{% endblock %}

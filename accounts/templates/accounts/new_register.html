@@ -13,7 +13,7 @@
         </h5>
         <!--FIXME: 약관 링크!-->
         <a href="#">약관 보기</a>
-        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        <form method="post" id="userForm" data-departments-url="{% url 'accounts:ajax-load-departments' %}" enctype="multipart/form-data">{% csrf_token %}
             {{ form | crispy }}
             <input type="submit" class="btn btn-default center-block" value="다음 단계로"/>
         </form>
@@ -21,4 +21,22 @@
 
     </div>
 </div>
-{% endblock %}}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    $("#id_college").change(function () {
+        var url = $("#userForm").attr("data-departments-url")
+        var college = $(this).val()
+
+        $.ajax({
+            url:url,
+            method:'get',
+            data:{
+                'college':college
+            },
+            success: function (data) {
+                $("#id_department").html(data)
+            }
+        })
+    })
+    </script>
+{% endblock %}

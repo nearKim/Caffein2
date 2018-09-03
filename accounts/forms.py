@@ -26,6 +26,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['rule_confirm', 'email', 'password1', 'password2', 'name', 'phone', 'student_no', 'college',
                   'department', 'category', 'profile_pic', 'join_year', 'join_semester']
 
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['department'] = ''
+
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
@@ -43,7 +47,8 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField(label=_("Password"),
+                                         help_text=_("해당 유저의 비밀번호를 바꾸려면 우측을 클릭하세. <a href=\'../password/\'>비밀번호 변경하기</a>"))
 
     class Meta:
         model = get_user_model()

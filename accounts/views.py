@@ -19,11 +19,13 @@ from django.views.generic.edit import (
     UpdateView,
 )
 
+from accounts.category import DEPARTMENT_COLLEGE_MAP, College
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from core.models import OperationScheme
 from .models import ActiveUser
 
 
+# Activation
 def activate(request, uidb64, token):
     User = get_user_model()
     try:
@@ -36,7 +38,7 @@ def activate(request, uidb64, token):
         # user.save()
         # login(request, user)
         messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
-        return redirect('survey:survey-fill-new', user_id=uid)
+        return redirect('surveys:surveys-fill-new', user_id=uid)
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
@@ -50,6 +52,13 @@ class TokenGenerator(PasswordResetTokenGenerator):
 
 
 account_activation_token = TokenGenerator()
+
+
+# User
+def load_departments(request):
+    college = request.GET.get('college')
+    departments = DEPARTMENT_COLLEGE_MAP[College(college)]
+    return render(request, 'ajax/department_dropdown_options.html', {'departments': departments})
 
 
 class UserCreateView(CreateView):
@@ -98,10 +107,9 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
     model = get_user_model()
     form_class = CustomUserChangeForm
-    # fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
-    #           'profile_pic']
 
 
+# ActiveUser
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     model = ActiveUser
     fields = []
@@ -122,7 +130,7 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         form.instance.active_year = current_year
         form.instance.active_semester = current_semester
         if ActiveUser(user=user, active_year=current_year, active_semester=current_semester):
-            messages.error(self.request, _('이미 가입신청 하셨습니다.'))
+            messages.error(self.request, _('이미 가입신청 하셨거나 아직 신청기간이 아닙니다.'))
             return self.form_invalid(form)
         else:
             return super(ActiveUserCreateView, self).form_valid(form)
@@ -138,11 +146,12 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 
 def old_register_done(request):
     if request.method == 'GET':
-        return render(request, 'accounts/old_register_done.html', context={'user': request.user})
+        return render(request, 'accounts/old_register_done.html',
+                      context={'user': request.user, 'os': OperationScheme.latest()})
 
 
+# Deprecated
 class PaymentView(View):
-
     def get(self, request, pk):
         active_user = ActiveUser.objects.get(user__pk=pk)
         latest_os = OperationScheme.latest()

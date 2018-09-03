@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="box-intro">
+        <div style="margin: 100px;">
+            <h2>제출되었습니다.</h2>
+            {% if purpose == 'join_new' %}
+                <h4>{{ bank }} {{ account }} {{ boss_name }}(으)로 {{ new_pay }}원을 신청자 이름으로 입금하시면 가입 신청이 완료됩니다.</h4>
+            {% elif purpose == 'join_old' %}
+                <h4>{{ bank }} {{ account }} {{ boss_name }}(으)로 {{ old_pay }}원을 신청자 이름으로 입금하시면 가입 신청이 완료됩니다.</h4>
+                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">Back</a>
+            {% else %}
+                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">Back</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

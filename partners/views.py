@@ -9,20 +9,20 @@ from django.views.generic.edit import (
     DeleteView, FormMixin)
 
 from comments.forms import CommentForm
-from core.models import FeedPhotos, OperationScheme
+from core.models import FeedPhoto, OperationScheme
 from .forms import PartnerMeetingForm
 from .models import (
     PartnerMeeting,
-    Partners
+    Partner
 )
 
 
 class PartnerDetailView(DetailView):
-    model = Partners
+    model = Partner
 
     def get(self, request, *args, **kwargs):
         try:
-            latest_partner = Partners.related_partner(request.user)
+            latest_partner = Partner.related_partner_user(request.user)
             current_os = OperationScheme.latest()
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
             if latest_partner is None:
@@ -73,10 +73,10 @@ class PartnerMeetingUpdateCreateMixin:
 class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
-        FeedPhotos.objects.filter(instagram=instance).delete()
+        FeedPhoto.objects.filter(instagram=instance).delete()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                feed_photo = FeedPhotos(instagram=instance, image=f)
+                feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
 
         return super(PartnerMeetingUpdateView, self).form_valid(form)
@@ -86,7 +86,7 @@ class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
     def get(self, request, **kwargs):
         # 유저가 속한 최신의 짝지 객체를 가져온다.
         try:
-            latest_partner = Partners.related_partner(request.user)
+            latest_partner = Partner.related_partner_user(request.user)
             current_os = OperationScheme.latest()
             print(latest_partner)
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
@@ -107,7 +107,7 @@ class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                feed_photo = FeedPhotos(instagram=instance, image=f)
+                feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
 
         return super(PartnerMeetingCreateView, self).form_valid(form)

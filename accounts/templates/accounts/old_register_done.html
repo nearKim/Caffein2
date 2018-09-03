@@ -2,8 +2,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="contact text-center container">
-    <h1>기존회원 재가입 신청이 완료되었습니다.</h1>
-    <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
-</div>
+    <div class="contact text-center container">
+        <h1>기존회원 재가입 신청이 완료되었습니다.</h1>
+        <h1>이제 {{ os.get_bank_display }}
+            {{ os.bank_account }} 로 {{ os.old_pay }}원을 보내주시면 재가입이 완료됩니다.
+        </h1>
+        <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
+    </div>
 {% endblock %}}

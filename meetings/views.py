@@ -12,7 +12,7 @@ from django.views.generic.edit import (
     FormMixin)
 
 from accounts.models import ActiveUser
-from cafe.models import Cafe
+from cafes.models import Cafe
 from comments.forms import CommentForm
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
@@ -20,7 +20,7 @@ from .models import (
     OfficialMeeting,
     CoffeeEducation,
     CoffeeMeeting)
-from core.models import Meeting, MeetingPhotos
+from core.models import Meeting, MeetingPhoto, OperationScheme
 
 
 # 모든 모임을 한 화면에 보여주는 ListView
@@ -43,7 +43,7 @@ class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(OfficialMeetingCreateView, self).form_valid(form)
 
@@ -51,11 +51,11 @@ class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
 class OfficialMeetingUpdateView(OfficialMeetingCreateUpdateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
-        MeetingPhotos.objects.filter(meeting=instance).delete()
+        MeetingPhoto.objects.filter(meeting=instance).delete()
 
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
 
         return super(OfficialMeetingUpdateView, self).form_valid(form)
@@ -88,7 +88,7 @@ class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeEducationCreateView, self).form_valid(form)
 
@@ -96,11 +96,11 @@ class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
 class CoffeeEducationUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
-        MeetingPhotos.objects.filter(meeting=instance).delete()
+        MeetingPhoto.objects.filter(meeting=instance).delete()
 
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
 
         return super(CoffeeEducationUpdateView, self).form_valid(form)
@@ -132,7 +132,7 @@ class CoffeeMeetingCreateView(CoffeeMeetingCreateUpdateMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
-        form_kwargs['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        form_kwargs['cafes'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
         form_kwargs['read_only'] = True
         return form_kwargs
 
@@ -143,7 +143,7 @@ class CoffeeMeetingCreateView(CoffeeMeetingCreateUpdateMixin, CreateView):
         instance.participants.add(author_active)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
@@ -154,8 +154,8 @@ class CoffeeMeetingUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingUpdateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
-        form_kwargs['cafe'] = self.object.cafe
-        # 수정할 때는 CoffeeMeetingForm에서 cafe 어트리뷰트를 수정할 수 있어야 한다
+        form_kwargs['cafes'] = self.object.cafe
+        # 수정할 때는 CoffeeMeetingForm에서 cafes 어트리뷰트를 수정할 수 있어야 한다
         form_kwargs['read_only'] = False
         return form_kwargs
 
@@ -163,7 +163,7 @@ class CoffeeMeetingUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
         instance = form.save()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhotos(meeting=instance, image=f)
+                photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
 
@@ -191,17 +191,15 @@ class CoffeeMeetingDetailView(FormMixin, DetailView):
 
 # Participate View
 def participate_meeting(request, pk):
-    # TODO: 참여자를 스캔하여 짝지가 있으면 자동으로 점수 상향
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
+
         if meeting.can_participate():
+            # 참여가능인원이 다 차지 않은 경우
             active_user = get_object_or_404(ActiveUser, user=request.user)
-            if active_user in meeting.participants.all():
-                messages.info(request, '취소 되었습니다.')
-                meeting.participants.remove(active_user)
-            else:
-                messages.info(request, '참여 했습니다.')
-                meeting.participate_meeting(active_user)
+            # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
+            flag = meeting.participate_or_not(active_user)
+            messages.info(request, "참여했습니다") if flag else messages.info(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
         else:
             messages.error(request, '참여 인원이 다 찼습니다.')

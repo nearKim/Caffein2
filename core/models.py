@@ -1,9 +1,11 @@
+from django.contrib import messages
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from comments.models import Comment
 from core.mixins import Postable, TimeStampedMixin
+# from partners.models import Partners
 
 from .mixins import (
     TimeStampedMixin,
@@ -55,18 +57,48 @@ class Meeting(Postable):
         if self.max_participants == 0:
             return True
         else:
-            # print(self.max_participants)
             return self.max_participants > self.participants.count()
 
     def count_participants(self):
         return self.participants.count()
 
-    def participate_meeting(self, active_user):
-        if self.can_participate():
+    def update_partner_score(self, active_user, increment):
+        # TODO: 커모, 교육 참가시 가산점 제도 확
+        from partners.models import Partner
+        # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
+        related_partner = Partner.related_partner_activeuser(active_user)
+        if related_partner is None:
+            # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
+            return
+        latest_os = OperationScheme.latest()
+        # 짝지 년도, 학기를 가장 최신의 운영정보 년도, 학기와 비교한다
+        if not (related_partner.partner_year == latest_os.current_year
+                and related_partner.partner_semester == latest_os.current_semester):
+            # 만일 다르다면 아무것도 하지 않는다. 신학기에 예전학기 짝지 정보를 불러온 것이기 때문이다.
+            return
+
+        else:
+            # 같다면 짝지의 구성원이 현재 참여자에 존재하는지 확인한다.
+            participants_set = {participant for participant in self.participants.all()}
+            partner_in_meeting = related_partner.containing_active_users().intersection(participants_set)
+            if len(partner_in_meeting) != 0:
+                if increment:
+                    # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다.
+                    related_partner.raise_score(latest_os.coffee_point)
+                else:
+                    # 참여취소일 경우 점수를 하향해야 한다.
+                    related_partner.raise_score(-latest_os.coffee_point)
+
+    def participate_or_not(self, active_user):
+        if active_user in self.participants.all():
+            # 참여 취소
+            self.update_partner_score(active_user, False)
+            self.participants.remove(active_user)
+            return False
+        else:
+            self.update_partner_score(active_user, True)
             self.participants.add(active_user)
             return True
-        else:
-            return False
 
     @property
     def comments(self):
@@ -75,7 +107,7 @@ class Meeting(Postable):
         return qs
 
 
-class MeetingPhotos(TimeStampedMixin):
+class MeetingPhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_meeting_photo_path)
     meeting = models.ForeignKey('core.Meeting', related_name='photos', verbose_name=_('모임'),
                                 on_delete=models.CASCADE)
@@ -85,7 +117,7 @@ class MeetingPhotos(TimeStampedMixin):
         verbose_name_plural = _('모임 사진')
 
 
-class FeedPhotos(TimeStampedMixin):
+class FeedPhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
     instagram = models.ForeignKey('core.Instagram', default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
@@ -136,6 +168,9 @@ class OperationScheme(models.Model):
         verbose_name = _('운영 정보')
         verbose_name_plural = _('운영 정보')
 
+    def __str__(self):
+        return "{}년 {}학기 운영정보".format(self.current_year, self.current_semester)
+
     @property
     def current_semester(self):
         return 1 if self.semester_start.month == 3 else 2
@@ -154,12 +189,14 @@ class OperationScheme(models.Model):
         if latest_os.new_register_end:
             return latest_os.new_register_end > now() > latest_os.new_register_start
         else:
-            return now() > OperationScheme.latest().new_register_start
+            return now() > latest_os.new_register_start
 
     @staticmethod
     def can_old_register():
         latest_os = OperationScheme.latest()
         if latest_os.old_register_end:
+            print(latest_os.old_register_end)
             return latest_os.old_register_end > now() > latest_os.old_register_start
         else:
-            return now() > OperationScheme.latest().old_register_start
+            print(latest_os.old_register_start)
+            return now() > latest_os.old_register_start

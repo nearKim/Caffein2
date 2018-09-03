@@ -1,7 +1,6 @@
 from .base import *
 from django.contrib.messages import constants
 
-DEBUG = True
 
 # Messaging
 MESSAGE_LEVEL = constants.DEBUG  # 지금부터 debug 레벨의 messages 를 남길 수 있음.
@@ -22,4 +21,4 @@ DATABASES = {
 }
 
 # EMAIL provider
-EMAIL_BACKEND = 'django.comments.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

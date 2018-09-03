@@ -18,29 +18,26 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+DEBUG = True
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-
-# Load secret key
-# https://wayhome25.github.io/django/2017/07/11/django-settings-secret-key/
-secret_file = os.path.join(BASE_DIR, 'Caffein2', 'secrets.json')
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-
-def get_secret(setting, secrets=secrets):
+def get_secret(setting):
     """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
     try:
+        secret_file = os.path.join(BASE_DIR, 'Caffein2', 'secrets.json')
+        with open(secret_file) as f:
+            secrets = json.loads(f.read())
         return secrets[setting]
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
+    except:
+        return None
 
 
-SECRET_KEY = get_secret("SECRET_KEY")
-
-ALLOWED_HOSTS = []
-
+SECRET_KEY = get_secret('SECRET_KEY') if get_secret('SECRET_KEY') else os.environ['SECRET_KEY']
 # Application definition
 
 INSTALLED_APPS = [
@@ -53,12 +50,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     # User registered apps
     'accounts',
-    'cafe',
+    'cafes',
     'core',
     'meetings',
     'partners',
-    'photo_album',
-    'survey',
+    'photo_albums',
+    'surveys',
     'comments',
     # 3rd party apps
     'imagekit',
@@ -69,6 +66,10 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # whitenoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -139,19 +140,25 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Caffein2', 'static'),
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'Caffein2/media')
 MEDIAFILES_DIRS = [
     os.path.join(BASE_DIR, 'Caffein2', 'media'),
 ]
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # User Model
 AUTH_USER_MODEL = 'accounts.User'
 
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# NaverMap
+if DEBUG:
+    NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
+    NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
+else:
+    # FIXME: Heroku prod 환경에서 유효
+    NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
+    NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']
