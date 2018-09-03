@@ -11,7 +11,7 @@ from core.mixins import TimeStampedMixin
 
 
 def get_cafe_photo_path(instance, filename):
-    return 'media/cafes/{:%Y/%m/%d}/{}'.format(now(), filename)
+    return 'cafes/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
 class Cafe(TimeStampedMixin):
