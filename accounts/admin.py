@@ -23,7 +23,8 @@ class UserAdmin(BaseUserAdmin):
         (_('개인정보'), {'fields': ('name', 'phone', 'profile_pic')}),
         (_('학적정보'), {'fields': ('student_no', 'college', 'department', 'category')}),
         (_('권한'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-        (_('중요 날짜'), {'fields': ('join_year', 'join_semester', 'last_login')})
+        (_('추가정보'), {'fields': ('rule_confirm', 'survey_done')}),
+        (_('중요 날짜'), {'fields': ('join_year', 'join_semester','last_login')})
     )
     add_fieldsets = (
         (None, {
@@ -32,6 +33,7 @@ class UserAdmin(BaseUserAdmin):
         (_('개인정보'), {'fields': ('name', 'phone', 'profile_pic')}),
         (_('학적정보'), {'fields': ('student_no', 'college', 'department', 'category')}),
         (_('권한'), {'fields': ('is_active', 'is_staff')}),
+        (_('추가정보'), {'fields': ('rule_confirm', 'survey_done')}),
         (_('중요 날짜'), {'fields': ('join_year', 'join_semester')})
     )
     search_fields = ('email',)
