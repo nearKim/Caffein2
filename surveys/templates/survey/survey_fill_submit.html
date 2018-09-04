@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h3>제출되었습니다.</h3>
-    {% if purpose == 'join_new' or purpose == 'join_old' %}
-        <div>{{ bank }} {{ account }} {{ boss_name }}으로 {{ pay }}원을 신청자 이름으로 입금하시면 완료됩니다.</div>
-    {% endif %}
-{% endblock %}

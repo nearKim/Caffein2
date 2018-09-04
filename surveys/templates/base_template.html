@@ -1,5 +1,3 @@
-{% extends 'index.html' %}
-{% load crispy_forms_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -12,6 +10,25 @@
     {% endblock %}
 </head>
 <body>
+<nav class="navbar navbar-inverse bg-primary">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="{% url 'surveys:survey-list' %}">Caffein Survey</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'surveys:survey-list' %}">Home <span
+                        class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{% url 'core:login' %}">Login <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{% url 'core:logout' %}">Logout <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="container">
     {% block body %}
         {% if messages %}

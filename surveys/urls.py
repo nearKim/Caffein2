@@ -1,15 +1,14 @@
-from django.conf.urls import url
-
+from django.urls import path
 from .views import survey_fill, survey_fill_new, FormListView, FormCreate, delete_form, survey_result, change_form_state
 
 app_name = 'surveys'
 
 urlpatterns = [
-    url(r'^home/', FormListView.as_view(), name="surveys-list"),
-    url(r'^create/', FormCreate.as_view(), name="surveys-create"),
-    url(r'^fill/(?P<pk>\d+)/(?P<user_id>\d+)$', survey_fill, name="surveys-fill"),
-    url(r'^join_form/(?P<user_id>\d+)$', survey_fill_new, name="surveys-fill-new"),
-    url(r'^result/(?P<pk>\d+)$', survey_result, name="surveys-result"),
-    url(r'^delete_form/(?P<pk>\d+)$', delete_form, name="delete-form"),
-    url(r'^change_form_state/(?P<pk>\d+)$', change_form_state, name="change-form-state"),
+    path('', FormListView.as_view(), name="survey-list"),
+    path('create', FormCreate.as_view(), name="survey-create"),
+    path('fill/<int:pk>/<int:user_id>', survey_fill, name="survey-fill"),
+    path('join_form/<int:user_id>', survey_fill_new, name="survey-fill-new"),
+    path('result/<int:pk>', survey_result, name="survey-result"),
+    path('delete_form/<int:pk>', delete_form, name="delete-form"),
+    path('change_form_state/<int:pk>', change_form_state, name="change-form-state"),
 ]
