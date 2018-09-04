@@ -64,7 +64,8 @@ def survey_fill(request, user_id, pk):
             'form': form,
             'questions': questions,
             'choices': choices,
-            'can_register': OperationScheme.can_old_register()
+            'can_old_register': OperationScheme.can_old_register(),
+            'can_new_register': OperationScheme.can_new_register()
         }
         return render(request, 'surveys/survey_fill.html', context)
     elif request.method == 'POST':
@@ -92,7 +93,8 @@ def survey_fill(request, user_id, pk):
             'bank': info.get_bank_display(),
             'account': info.bank_account,
             'boss_name': info.boss.user.name,
-            'pay': info.old_pay
+            'new_pay': info.new_pay,
+            'old_pay': info.old_pay
         }
         return render(request, 'surveys/survey_fill_submit.html', context)
 
@@ -117,11 +119,14 @@ def survey_fill_new(request, user_id):
             'form': form,
             'questions': questions,
             'choices': choices,
-            'can_register': OperationScheme.can_new_register()
+            'can_old_register': OperationScheme.can_old_register(),
+            'can_new_register': OperationScheme.can_new_register()
         }
         return render(request, 'surveys/survey_fill_new.html', context)
     elif request.method == 'POST':
+        # 설문 완료 표시
         user = User.objects.get(id=user_id)
+        user.survey_done = True
         form = Form.objects.filter(purpose='join_new', opened=True)[0]
         form.users.add(user)
         form.save()
@@ -146,7 +151,8 @@ def survey_fill_new(request, user_id):
             'bank': info.get_bank_display(),
             'account': info.bank_account,
             'boss_name': info.boss.user.name,
-            'pay': info.new_pay
+            'new_pay': info.new_pay,
+            'old_pay': info.old_pay
         }
         return render(request, 'surveys/survey_fill_submit.html', context)
 
@@ -160,9 +166,11 @@ def survey_result(request, pk):
     lists = []
     for user in users:
         user_answer = list(answers.filter(user=user).order_by('created'))[-len(form.question_set.all()):]
+        user_answer.reverse()
         lists.append({
             'user': user,
-            'user_answer': user_answer
+            'user_answer': user_answer,
+            'created': answers.filter(user=user)[0].created
         })
     context = {
         'lists': lists,
