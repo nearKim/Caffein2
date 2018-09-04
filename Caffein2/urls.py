@@ -34,6 +34,8 @@ urlpatterns = [
     path('meetings/', include('meetings.urls', namespace='meetings')),
 ]
 
+admin.site.site_header = '카페인 운영자 페이지'
+admin.site.site_title = 'Caffein Admin'
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

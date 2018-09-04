@@ -195,8 +195,6 @@ class OperationScheme(models.Model):
     def can_old_register():
         latest_os = OperationScheme.latest()
         if latest_os.old_register_end:
-            print(latest_os.old_register_end)
             return latest_os.old_register_end > now() > latest_os.old_register_start
         else:
-            print(latest_os.old_register_start)
             return now() > latest_os.old_register_start
