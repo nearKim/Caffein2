@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline
+from django.template.response import TemplateResponse
+from django.urls import path
 
+from accounts.models import ActiveUser
 from comments.models import Comment
-from core.models import FeedPhoto
+from core.models import FeedPhoto, OperationScheme
 from .models import (
     Partner,
     PartnerMeeting
@@ -29,3 +32,4 @@ class FeedCommentInline(TabularInline):
 @admin.register(PartnerMeeting)
 class PartnerMeetingAdmin(ModelAdmin):
     inlines = (FeedPhotoInline, FeedCommentInline)
+
