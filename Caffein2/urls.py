@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
@@ -34,8 +35,8 @@ urlpatterns = [
     path('meetings/', include('meetings.urls', namespace='meetings')),
 ]
 
-admin.site.site_header = '카페인 운영자 페이지'
-admin.site.site_title = 'Caffein Admin'
 if settings.DEBUG:
+    import debug_toolbar
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls)),]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

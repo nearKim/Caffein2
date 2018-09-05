@@ -60,11 +60,15 @@ INSTALLED_APPS = [
     # 3rd party apps
     'imagekit',
     'crispy_forms',
+    'debug_toolbar'
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
+    # DebugToolbar
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
 
     # whitenoise
