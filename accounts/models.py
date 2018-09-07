@@ -173,7 +173,7 @@ class ActiveUser(models.Model):
         get_latest_by = ['-active_year', 'active_semester']
 
     def __str__(self):
-        return "{}({}년 {}학기)".format(self.user.name, self.active_year, self.active_semester)
+        return self.user.__str__()
 
     def _is_new(self):
         # 신입회원 여부를 리턴한다
