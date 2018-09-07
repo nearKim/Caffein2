@@ -41,6 +41,9 @@ SECRET_KEY = get_secret('SECRET_KEY') if get_secret('SECRET_KEY') else os.enviro
 # Application definition
 
 INSTALLED_APPS = [
+    # Bootstrap Admin
+    'bootstrap_admin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
