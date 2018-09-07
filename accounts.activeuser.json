@@ -1,0 +1,102 @@
+[
+{
+  "model": "accounts.activeuser",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "active_year": 2018,
+    "active_semester": 1,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "active_year": 2018,
+    "active_semester": 1,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 3,
+  "fields": {
+    "user": 7,
+    "active_year": 2018,
+    "active_semester": 1,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 5,
+  "fields": {
+    "user": 3,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 6,
+  "fields": {
+    "user": 4,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 7,
+  "fields": {
+    "user": 5,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 8,
+  "fields": {
+    "user": 6,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 9,
+  "fields": {
+    "user": 7,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+},
+{
+  "model": "accounts.activeuser",
+  "pk": 10,
+  "fields": {
+    "user": 8,
+    "active_year": 2018,
+    "active_semester": 2,
+    "is_paid": true
+  }
+}
+]
