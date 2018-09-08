@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
-from accounts.models import User
+from accounts.models import User, ActiveUser
 from accounts.validator import year_validator
 from core.models import Instagram, OperationScheme
 
@@ -48,6 +48,29 @@ class Partner(models.Model):
                 return
         self.score += score
         self.save()
+
+    @staticmethod
+    def current_activeuser_set():
+        # 최신의 운영정보를 불러온다
+        latest_os = OperationScheme.latest()
+        # 현재 학기, 연도에 대항하는 모든 짝지 객체를 불러온다
+        current_partners = Partner.objects\
+            .select_related('up_partner')\
+            .select_related('down_partner_1')\
+            .select_related('down_partner_2')\
+            .select_related('down_partner_3')\
+            .filter(partner_semester=latest_os.current_semester, partner_year=latest_os.current_year)
+
+        # 만일 하나도 없다면 None을 반환한다
+        if not current_partners.exists():
+            return ActiveUser.objects.none()
+        # 존재한다면 각 짝지객체에 속한 모든 ActiveUser객체들을 얻는다
+        activeusers = set()
+        for partner in current_partners:
+            activeusers = activeusers | partner.containing_active_users()
+        activeuser_pks = [activeuser.pk for activeuser in activeusers if activeuser is not None]
+
+        return ActiveUser.objects.select_related('user').filter(id__in=activeuser_pks)
 
     @staticmethod
     def related_partner_user(user):
