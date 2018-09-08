@@ -8,7 +8,7 @@ RAVEN_CONFIG = {
     'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
     # If you are using git, you can also automatically configure the
     # release based on the git info.
-    'release': raven.fetch_git_sha(BASE_DIR),
+    'release': os.environ['SOURCE_VERSION']
 }
 
 from raven.contrib.django.raven_compat.models import client
