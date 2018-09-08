@@ -1,6 +1,19 @@
 from .base import *
 import django_heroku
 import dj_database_url
+import raven
+
+# RAVEN
+RAVEN_CONFIG = {
+    'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
+}
+
+from raven.contrib.django.raven_compat.models import client
+
+client.captureException()
 
 # Prod needs this
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
@@ -9,17 +22,39 @@ ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
+    },
+    'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
+        'console': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
+            'handlers': ['sentry'],
+            'level': 'WARNING',
+            'propagate': True,
         },
-    },
+        'raven': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+            'propagate': False,
+        },
+    }
 }
 
 # Roots

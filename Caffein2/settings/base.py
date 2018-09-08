@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     # 3rd party apps
     'imagekit',
     'crispy_forms',
-    'debug_toolbar'
+    'debug_toolbar',
+    'raven.contrib.django.raven_compat'
 ]
 
 SITE_ID = 1
