@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | Caffein Admin{% endblock %}
+
+{% block content_title %}
+    <h1>{{ os.current_year }}년 {{ os.current_semester }}학기</h1>
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}" class="django-admin-logo">카페인 운영진</a></h1>
+{% endblock %}

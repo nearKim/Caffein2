@@ -79,9 +79,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     UNDERGRADUATE, GRADUATE, EXCHANGE, PROFESSOR = 'u', 'g', 'e', 'p'
 
     STUDENT_CATEGORY = (
-        (UNDERGRADUATE, '학부생'),
-        (GRADUATE, '대학원생'),
-        (EXCHANGE, '교환학생'),
+        (UNDERGRADUATE, '학부'),
+        (GRADUATE, '대학원'),
+        (EXCHANGE, '교환'),
         (PROFESSOR, '교직원'),
     )
     SEMESTER_CHOICE = (
@@ -133,7 +133,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('회원')
 
     def __str__(self):
-        return "{} {} {}".format(self.get_college_display(), self.get_department_display(), self.name)
+        if self.category != self.UNDERGRADUATE:
+            return "{}({} {} {}학번)".format(self.name, self.get_department_display(), self.get_category_display(),
+                                           self.short_student_no)
+        return "{}({} {}학번)".format(self.name, self.get_department_display(), self.short_student_no)
+
+    @property
+    def short_student_no(self):
+        return self.student_no[2:4]
 
     def get_absolute_url(self):
         return reverse('accounts:detail', args=[str(self.id)])
@@ -165,12 +172,17 @@ class ActiveUser(models.Model):
         get_latest_by = ['-active_year', 'active_semester']
 
     def __str__(self):
-        return "{}({}년 {}학기)".format(self.user.name, self.active_year, self.active_semester)
+        return self.user.__str__()
 
-    @property
-    def is_new(self):
+    def _is_new(self):
         # 신입회원 여부를 리턴한다
         return self.user.get_join_year_semester() == (self.active_year, self.active_semester)
+
+    # 모델어드민에서 사용할 property
+    # https://stackoverflow.com/questions/12842095/how-to-display-a-boolean-property-in-the-django-admin
+    _is_new.boolean = True
+    _is_new.short_description = _('신입 여부')
+    is_new = property(_is_new)
 
     def get_absolute_url(self):
         # FIXME: implement here
