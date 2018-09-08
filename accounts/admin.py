@@ -65,13 +65,13 @@ class UserAdmin(BaseUserAdmin):
         queryset.update(is_active=True)
         for q in queryset:
             # 만일 현재 사용자가 신입회원이 아닌경우 잘못 체크된 경우이므로 에러와 함께 활동회원을 만들면 안된다.
-            if not (q.join_year, q.join_semester) == (self.latest_os.current_year, self.latest_os.current_semester):
+            if not (q.join_year, q.join_semester) == (latest_os.current_year, latest_os.current_semester):
                 messages.error(request, q.__str__() + ' 회원은 신규회원이 아닙니다!! 다시 확인해주세요!')
                 continue
 
             ActiveUser.objects.create(user=q,
-                                      active_year=self.latest_os.current_year,
-                                      active_semester=self.latest_os.current_semester,
+                                      active_year=latest_os.current_year,
+                                      active_semester=latest_os.current_semester,
                                       is_paid=True)
             # 4명까지는 알림창을 띄워주자
             if queryset.count() < 5:
@@ -106,10 +106,11 @@ class ActiveUserAdmin(ModelAdmin):
         ]
         return match_urls + urls
 
-    def partner_match_view(self, request):
-        # 운영정보에서 가장 최신의 정보를 불러온다
-        latest_os = OperationScheme.latest()
+    def partner_match_view(self, request, **kwargs):
+        # Admin의 전역 view에 추가되는 OS객체를 추출한다
+        latest_os = kwargs.pop('extra_context')['os']
         year, semester = latest_os.current_year, latest_os.current_semester
+
         # 활동회원 중 이번학기 회원들을 불러온다
         active_users = ActiveUser.objects \
             .select_related('user') \
@@ -136,8 +137,9 @@ class ActiveUserAdmin(ModelAdmin):
         )
         return TemplateResponse(request, "admin/match_partner.html", context)
 
-    def match_partner(self, request):
+    def match_partner(self, request, **kwargs):
         year, semester = request.POST.get('year'), request.POST.get('semester')
+
         # 넘어오는 리스트는 ActiveUser의 pk들을 담고 있다
         old_list = request.POST.getlist('olds')
         new_list = request.POST.getlist('news')
