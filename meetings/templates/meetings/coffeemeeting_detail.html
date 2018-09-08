@@ -26,8 +26,8 @@
                     내용: <b>{{ coffeemeeting.content }}</b>
                 </p>
 
-                <p class="libre-text-lg mb-50">
-                    카페: <b>{{ coffeemeeting.cafe }}</b>
+                <p class="mb-50">
+                   <b class="libre-text-lg">카페: {{ coffeemeeting.cafe }}</b><a target="_blank" href="{% url 'cafes:cafes-detail' coffeemeeting.cafe.id %}" class="lead">(카페 정보 보기)</a>
                 </p>
             <!--네이버맵 뷰-->
                 <div id="map" style="width:100%;height:400px;"></div>
