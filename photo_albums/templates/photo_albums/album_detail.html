@@ -12,7 +12,7 @@
             &emsp;<b><i>{{ object.description }} </i></b>
             <i> {{ object.created }}</i>&emsp;
             {# if user.is_staff or user == object.uploader #}
-                <a class="btn btn-info" style="margin: 50px; position: absolute; right: 0px; top: 50px" href="{% url "photo_album:album_edit" album_id=object.id %}">Edit</a>
+                <a class="btn btn-info" style="margin: 50px; position: absolute; right: 0px; top: 50px" href="{% url "photo_albums:album_edit" album_id=object.id %}">Edit</a>
             {# endif #}
             <hr>
 

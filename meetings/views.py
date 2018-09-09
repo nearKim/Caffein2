@@ -9,7 +9,8 @@ from django.views.generic.edit import (
     CreateView,
     UpdateView,
     DeleteView,
-    FormMixin)
+    FormMixin
+)
 
 from accounts.models import ActiveUser
 from cafes.models import Cafe
