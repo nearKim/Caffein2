@@ -64,7 +64,6 @@ pkg/*
 tags
 /Gemfile.lock
 test/tmp/
-vendor/
 /exec
 
 # Documentation

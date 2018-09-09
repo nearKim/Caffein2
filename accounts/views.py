@@ -38,7 +38,7 @@ def activate(request, uidb64, token):
         # user.save()
         # login(request, user)
         messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
-        return redirect('surveys:surveys-fill-new', user_id=uid)
+        return redirect('surveys:survey-fill-new', user_id=uid)
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
 

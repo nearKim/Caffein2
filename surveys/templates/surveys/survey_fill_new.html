@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     {% csrf_token %}
-    {% if form and can_register %}
+    {% if form.purpose == 'join_new' and can_new_register %}
         <div class="box-intro">
             <form action="{% url 'surveys:survey-fill-new' user_id=user_id %}" method="POST"
                   class="submit-form" style="margin: 100px;">
@@ -78,7 +78,7 @@
         </div>
     {% else %}
         <div class="box-intro">
-            {% if not can_register %}
+            {% if not can_new_register %}
                 <h2 style="margin: 200px;">신입 가입기간이 아닙니다.</h2>
             {% elif not form %}
                 <h2 style="margin: 200px;">진행중인 설문이 없습니다.</h2>
