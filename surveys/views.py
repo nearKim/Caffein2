@@ -56,10 +56,10 @@ class FormCreate(LoginRequiredMixin, CreateView):
 def survey_fill(request, user_id, pk):
     if request.method == 'GET':
         form = Form.objects.get(id=pk)
-        questions = Question.objects.filter(form=form)
-        questions = list(questions)
-        questions.reverse()
-        choices = Choice.objects.filter(question__in=questions)
+        questions = Question.objects.filter(form=form).order_by('id')
+        #questions = list(questions)
+        #questions.reverse()
+        choices = Choice.objects.filter(question__in=questions).order_by('id')
         context = {
             'form': form,
             'questions': questions,
@@ -71,8 +71,6 @@ def survey_fill(request, user_id, pk):
     elif request.method == 'POST':
         user = User.objects.get(id=user_id)
         form = Form.objects.get(id=pk)
-        form.users.add(user)
-        form.save()
         questions = Question.objects.filter(form=form)
         for question in questions:
             if question.question_type == 'choice_many':
@@ -87,8 +85,11 @@ def survey_fill(request, user_id, pk):
                                       answer=answer,
                                       form=form,
                                       user=user)
+        form.users.add(user)
+        form.save()
         info = OperationScheme.latest()
         context = {
+
             'purpose': form.purpose,
             'bank': info.get_bank_display(),
             'account': info.bank_account,
@@ -105,10 +106,10 @@ def survey_fill_new(request, user_id):
         try:
             # 가장 최근의 신입양식을 보여줌
             form = Form.objects.filter(purpose='join_new', opened=True)[0]
-            questions = Question.objects.filter(form=form)
-            questions = list(questions)
-            questions.reverse()
-            choices = Choice.objects.filter(question__in=questions)
+            questions = Question.objects.filter(form=form).order_by('id')
+            #questions = list(questions)
+            #questions.reverse()
+            choices = Choice.objects.filter(question__in=questions).order_by('id')
         # 신입 가입을 위한 양식이 없는 경우 예외처리
         except (ObjectDoesNotExist, IndexError):
             form = None

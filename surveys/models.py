@@ -52,7 +52,7 @@ class Answer(TimeStampedMixin):
 
 class UserAnswer(Answer):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
-    answer = models.TextField(max_length=1000)
+    answer = models.TextField(max_length=1000, null=True)
 
     def __str__(self):
         return self.answer

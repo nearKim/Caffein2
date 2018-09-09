@@ -69,8 +69,8 @@ var changeQuestionType = function(type) {
         case 'choice_many':
             html = "<div class=\"answer-type\">";
             html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Option 1\" value=\"Option 1\">";
-            html += "</div>";
             html += "<button class=\"btn btn-primary add-option\">Add Option</button>";
+            html += "</div>";
             break;
         case 'binary':
             html = "<div class=\"form-check answer-type\">"
@@ -161,8 +161,6 @@ $(document).ready(function() {
 			    requestObj['purpose'] = obj[i].value;
 		    }
 	    }
-        //requestObj['for_new'] = $('.for-new').val();
-        console.log(requestObj);
         var requestJson = JSON.stringify(requestObj);
         ajaxSubmit(requestJson);
 
