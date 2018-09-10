@@ -15,6 +15,7 @@ from django.views.generic.edit import (
 from accounts.models import ActiveUser
 from cafes.models import Cafe
 from comments.forms import CommentForm
+from core.mixins import FaceBookPostMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
 from .models import (
@@ -39,9 +40,10 @@ class EveryMeetingListView(ListView):
 
 # CRUD for OfficialMeeting
 
-class OfficialMeetingCreateView(OfficialMeetingCreateUpdateMixin, CreateView):
+class OfficialMeetingCreateView(FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
+        self.message = '{}님이 공식모임을 생성하였습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 photo = MeetingPhoto(meeting=instance, image=f)
@@ -84,9 +86,10 @@ class OfficialMeetingDeleteView(DeleteView):
 
 
 # CoffeeEducation
-class CoffeeEducationCreateView(CoffeeEducationCreateUpdateMixin, CreateView):
+class CoffeeEducationCreateView(FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
+        self.message = '{}님이 커피교육을 열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 photo = MeetingPhoto(meeting=instance, image=f)
@@ -129,7 +132,7 @@ class CoffeeEducationDeleteView(DeleteView):
 
 
 # CoffeeMeeting
-class CoffeeMeetingCreateView(CoffeeMeetingCreateUpdateMixin, CreateView):
+class CoffeeMeetingCreateView(FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
@@ -142,6 +145,7 @@ class CoffeeMeetingCreateView(CoffeeMeetingCreateUpdateMixin, CreateView):
         # 커모의 작성자는 디폴트로 참여해야 한다.
         author_active = ActiveUser.objects.filter(user=instance.author).latest()
         instance.participants.add(author_active)
+        self.message = '{}님이 커모를  열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 photo = MeetingPhoto(meeting=instance, image=f)
