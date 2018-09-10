@@ -1,6 +1,11 @@
+import facebook
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
+
+from Caffein2.settings.dev import FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
 
 
 class TimeStampedMixin(models.Model):
@@ -21,3 +26,19 @@ class Postable(TimeStampedMixin):
 
     class Meta:
         abstract = True
+
+
+class FaceBookPostMixin:
+    def get_success_url(self):
+        url = super(FaceBookPostMixin, self).get_success_url()
+        # 그래프 API객체를 SDK를 통해 가져온다
+        graph = facebook.GraphAPI(FACEBOOK_TOKEN)
+        # 그룹아이디를 이용하여 put_object를 통해 그룹에 글을 쓴다.
+        # 메세지는 상속받는 클래스의 생성자에서 각각 다르게 설정해야겠지
+        message = self.message if self.message else 'test'
+        # graph.put_object(FACEBOOK_GROUP_ID, "feed", message=message, link='https://{}{}'.format(Site.objects.get_current().domain, url))
+        graph.put_object(FACEBOOK_GROUP_ID, "feed", message=message, link='https://www.naver.com')
+        return url
+
+    class Meta:
+        abstract=True
