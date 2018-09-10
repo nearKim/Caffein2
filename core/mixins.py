@@ -36,6 +36,7 @@ class FaceBookPostMixin:
         # 그룹아이디를 이용하여 put_object를 통해 그룹에 글을 쓴다.
         # 메세지는 상속받는 클래스의 생성자에서 각각 다르게 설정해야겠지
         message = self.message if self.message else 'test'
+        # FIXME: 페이스북 API는 localhost를 valid link로 인정하지 않는다. Production 환경에서 실제 URL로 교체가 필요하다. Logging도 필요하다
         # graph.put_object(FACEBOOK_GROUP_ID, "feed", message=message, link='https://{}{}'.format(Site.objects.get_current().domain, url))
         graph.put_object(FACEBOOK_GROUP_ID, "feed", message=message, link='https://www.naver.com')
         return url
