@@ -38,7 +38,7 @@ def activate(request, uidb64, token):
         # user.save()
         # login(request, user)
         messages.info(request, _('서울대계정 이메일이 확인되었습니다. 가입설문으로 이동합니다.'))
-        return redirect('surveys:surveys-fill-new', user_id=uid)
+        return redirect('surveys:survey-fill-new', user_id=uid)
     else:
         return HttpResponse(_('Activation Link invalid. Try again.'))
 
@@ -117,9 +117,11 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_old_register():
+            # 아직 재가입 기간이 아니라면 해당 정보를 띄워준다
             return render(request, 'accounts/cannot_register.html',
                           context={'user': request.user, 'os': OperationScheme.latest()})
         else:
+            # 재가입 기간이라면 그대로 진행한다. form_valid로 내려가겠지.
             return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -129,8 +131,10 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = user
         form.instance.active_year = current_year
         form.instance.active_semester = current_semester
-        if ActiveUser(user=user, active_year=current_year, active_semester=current_semester):
-            messages.error(self.request, _('이미 가입신청 하셨거나 아직 신청기간이 아닙니다.'))
+
+        if ActiveUser.objects.filter(user=user, active_year=current_year, active_semester=current_semester).exists():
+            # 현재년도,학기에 해당하는 유저가 활동회원 테이블에 존재하면 이미 재신청을 한 것이다.
+            messages.error(self.request, _('이미 가입신청 하셨습니다.'))
             return self.form_invalid(form)
         else:
             return super(ActiveUserCreateView, self).form_valid(form)

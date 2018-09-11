@@ -127,6 +127,7 @@ def survey_fill_new(request, user_id):
         # 설문 완료 표시
         user = User.objects.get(id=user_id)
         user.survey_done = True
+        user.save()
         form = Form.objects.filter(purpose='join_new', opened=True)[0]
         form.users.add(user)
         form.save()

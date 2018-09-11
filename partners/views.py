@@ -9,6 +9,7 @@ from django.views.generic.edit import (
     DeleteView, FormMixin)
 
 from comments.forms import CommentForm
+from core.mixins import FaceBookPostMixin
 from core.models import FeedPhoto, OperationScheme
 from .forms import PartnerMeetingForm
 from .models import (
@@ -82,7 +83,7 @@ class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
         return super(PartnerMeetingUpdateView, self).form_valid(form)
 
 
-class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
+class PartnerMeetingCreateView(FaceBookPostMixin, PartnerMeetingUpdateCreateMixin, CreateView):
     def get(self, request, **kwargs):
         # 유저가 속한 최신의 짝지 객체를 가져온다.
         try:
@@ -105,6 +106,7 @@ class PartnerMeetingCreateView(PartnerMeetingUpdateCreateMixin, CreateView):
 
     def form_valid(self, form):
         instance = form.save()
+        self.message = '{}님이 짝모했어요!. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 feed_photo = FeedPhoto(instagram=instance, image=f)
