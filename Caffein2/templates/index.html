@@ -1,4 +1,5 @@
 {% load static %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,14 +12,19 @@
     <meta name="description" content="SNU Coffee club Caffein. Based on KARMO HTML5 free template.">
 
     <!-- STYLES -->
-    <link rel="stylesheet" href="{% static "assets/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static "assets/css/flexslider.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/animsition.min.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/style.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/owl.carousel.css" %}">
     <link rel="stylesheet" href="{% static "assets/css/owl.theme.css" %}">
 
-
+    <!--Script-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
     <!-- Fontawesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
@@ -39,10 +45,12 @@
         <div class="box-header">
             <div class="box-logo">
                 {#FIXME: fix Logo.png#}
-                <a href="{% url 'core:index' %}"><img src="{% static "assets/img/logo.png" %}" width="80"
-                                                      alt="Logo"></a>
+                <a href="
+                        {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
+                    <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
             </div>
             <!-- box-nav -->
+            <span style="position:fixed;left:80%;padding:10%;	background-color: blue;">test!</span>
             <a class="box-primary-nav-trigger" href="#0">
                 <span class="box-menu-icon"></span>
             </a>
@@ -54,18 +62,19 @@
         <nav>
             <ul class="box-primary-nav">
                 <li class="box-label">Caffe人</li>
-                <li><a href="{% url 'core:index' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
-                {% if not request.user.is_anonymous %}
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'core:logged-in' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                     <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a></li>
                     <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
                     <!--FIXME: 사진첩? 다른기능?-->
                     <li><a href="#">사진첩</a></li>
                 {% else %}
                     <!--FIXME: 다른기능?-->
+                    <li><a href="{% url 'core:index' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                     <li><a href="#">공지사항</a></li>
                     <li><a href="#">사진첩</a></li>
                 {% endif %}
-                {% if not request.user.is_anonymous %}
+                {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:old-register' user.id %}">기존회원 재가입</a></li>
                 {% else %}
                     <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
@@ -90,10 +99,34 @@
 										</span>
             </h3>
             <h1>카페인</h1>
-            {#TODO: add 회원가입 button#}
-            <div class="text-center">
-                <a href="{% url 'core:login' %}" class="default-btn-lg" role="button">로그인</a>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login-modal">
+                로그인
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="login-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">회원 로그인</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">{% csrf_token %}
+                                {{ form | crispy }}
+                                <input type="hidden" name="next" value="{% url 'core:logged-in' %}"/>
+                                <button type="submit" class="btn btn-default">로그인</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
         {#            <div class="mouse">#}
         {#                <div class="scroll"></div>#}
@@ -776,7 +809,6 @@
 </footer>
 
 <!-- SCRIPTS -->
-<script type="text/javascript" src="{% static "assets/js/jquery-2.2.3.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/animated-headline.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/menu.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/modernizr.js" %}"></script>
