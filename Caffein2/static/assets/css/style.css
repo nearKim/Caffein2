@@ -731,7 +731,14 @@ ul.tags li a:hover{
     padding-top: 20px;
     margin-left: 5%;
 }
-
+#div-login {
+	font-size:3vw;
+}
+@media screen and (min-width:1024px){
+	#div-login {
+		font-size:20px;
+	}
+}
 .box-primary-nav-trigger {
     position: absolute;
     right: 0;
