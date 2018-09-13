@@ -47,11 +47,14 @@
                 <div class="box-logo">
                     {#FIXME: fix Logo.png#}
                     <a href="
+
+
                             {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
                         <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
                     <!-- box-nav -->
+                    <div id="div-login" class="lead">로그인</div>
                     <!-- box-primary-nav-trigger -->
-                    <a class="box-primary-nav-trigger" href="#0">
+                    <a id="a-append" class="box-primary-nav-trigger" href="#0">
                         <span class="box-menu-icon"></span>
                     </a>
                 </div>
@@ -810,6 +813,17 @@
 </footer>
 
 <!-- SCRIPTS -->
+<script type="text/javascript">
+    {# NavBar 옆에 로그인 텍스트 버튼을 위치시킨다.#}
+    $(document).ready(function () {
+        let target = document.getElementById('a-append')
+        let rect = target.getBoundingClientRect();
+        let loginText = document.getElementById('div-login')
+        loginText.style.position = "absolute";
+        loginText.style.top = '35%';
+        loginText.style.left = (rect.left - loginText.getBoundingClientRect().width - 10) + 'px'; // 10px만큼의 오프셋을 준다
+    })
+</script>
 <script type="text/javascript" src="{% static "assets/js/animated-headline.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/menu.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/modernizr.js" %}"></script>
