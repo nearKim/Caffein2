@@ -727,8 +727,6 @@ ul.tags li a:hover{
 
 .box-header.is-fixed {
 	position: fixed;
-	top: -50px;
-	background-color: rgba(255, 255, 255, 0.96);
 	-webkit-transition: -webkit-transform 0.3s;
 	transition: -webkit-transform 0.3s;
 	transition: transform 0.3s;
@@ -745,9 +743,11 @@ ul.tags li a:hover{
 }
 
 .box-logo {
-	display: block;
-	padding: 20px;
-	margin-left: 50px;
+	position:absolute;
+	height: 30px;
+	top: 30%;
+	display: inline-block;
+	margin-left: 5%;
 }
 
 .box-primary-nav-trigger {
@@ -816,12 +816,11 @@ ul.tags li a:hover{
 }
 
 .box-primary-nav-trigger {
-	width: 100px;
 	padding-left: 1em;
 	background-color: transparent;
 	height: 30px;
 	line-height: 30px;
-	right: 50px;
+	right: 5%;
 	top: 50%;
 	bottom: auto;
 	-webkit-transform: translateY(-50%);
