@@ -42,26 +42,18 @@
 <header class="main-header">
     <div class="container-fluid">
         <!-- box header -->
-        <div class="box-header is-fixed">
+        <div class="box-header">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12" style="background-color: blue; height: 80px;white-space: nowrap;">
-                        <div class="box-logo" style="display: inline-block;">
-                            {#FIXME: fix Logo.png#}
-                            <a href="
-                                    {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
-                                <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
-                        </div>
-                        <!-- box-nav -->
-                    <div style="display:inline-block;">
-                        <h1 style="width:100px;height:30px;">테스트</h1>
-
-                    </div>
-                        <!-- box-primary-nav-trigger -->
-                        <a class="box-primary-nav-trigger"style="display:inline-block" href="#0">
-                            <span class="box-menu-icon"></span>
-                        </a>
-                    </div>
+                <div class="box-logo">
+                    {#FIXME: fix Logo.png#}
+                    <a href="
+                            {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
+                        <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
+                    <!-- box-nav -->
+                    <!-- box-primary-nav-trigger -->
+                    <a class="box-primary-nav-trigger" href="#0">
+                        <span class="box-menu-icon"></span>
+                    </a>
                 </div>
             </div>
         </div>
