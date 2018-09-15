@@ -20,7 +20,7 @@ from django.views.generic.edit import (
 )
 
 from accounts.category import DEPARTMENT_COLLEGE_MAP, College
-from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
+from accounts.forms import CustomUserCreationForm, CustomUserChangeForm, SelfUserChangeForm
 from core.models import OperationScheme
 from .models import ActiveUser
 
@@ -106,7 +106,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
     model = get_user_model()
-    form_class = CustomUserChangeForm
+    form_class = SelfUserChangeForm
 
 
 # ActiveUser
@@ -152,6 +152,7 @@ def old_register_done(request):
     if request.method == 'GET':
         return render(request, 'accounts/old_register_done.html',
                       context={'user': request.user, 'os': OperationScheme.latest()})
+
 
 
 # Deprecated

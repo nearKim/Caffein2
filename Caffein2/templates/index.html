@@ -816,6 +816,7 @@
 </footer>
 
 <!-- SCRIPTS -->
+    {% block javascript %}
 <script type="text/javascript">
     {# NavBar 옆에 로그인 텍스트 버튼을 위치시킨다.#}
     $(document).ready(function () {
@@ -830,6 +831,7 @@
         }
     })
 </script>
+    {% endblock %}
 <script type="text/javascript" src="{% static "assets/js/animated-headline.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/menu.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/modernizr.js" %}"></script>
@@ -843,8 +845,6 @@
 <script type="text/javascript" src="{% static "assets/js/wow.min.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/owl.carousel.min.js" %}"></script>
 
-{% block javascript %}
-{% endblock %}
 <script type="text/javascript">
     $(window).load(function () {
         new WOW().init();
