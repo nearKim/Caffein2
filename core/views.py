@@ -1,15 +1,9 @@
-from django.http import HttpResponseForbidden
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
-def logged_in(request):
+def entrypoint(request):
+    """ 루트 url을 통해 처음 사이트로 들어온 경우 로그인 여부에 따라 분기한다."""
     if request.user.is_authenticated:
         return render(request, 'accounts/index.html', context={'user': request.user})
     else:
-        return HttpResponseForbidden
-
-# def index(request):
-#     if request.user.is_authenticated:
-#         return render(request, 'accounts/index.html', context={'user': request.user})
-#     else:
-#         return render(request, 'index.html')
+        return redirect('core:index')

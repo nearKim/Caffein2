@@ -4,13 +4,13 @@ from django.contrib.auth.views import (
 )
 from django.urls import path, reverse_lazy
 
-from .views import logged_in
+from .views import entrypoint
 
 app_name = 'core'
 
 urlpatterns = [
-    path('', LoginView.as_view(template_name='index.html', ), name='index'),
-    path('index/', logged_in, name='logged-in'),
+    path('', entrypoint, name='entrypoint'),
+    path('home/', LoginView.as_view(template_name='index.html', ), name='index'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:index')), name='logout'),
 
 
