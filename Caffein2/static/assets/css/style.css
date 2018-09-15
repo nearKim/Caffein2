@@ -732,10 +732,18 @@ ul.tags li a:hover{
     margin-left: 5%;
 }
 #div-login {
-	font-size:3vw;
+	font-size:4vw;
 }
 @media screen and (min-width:1024px){
 	#div-login {
+		font-size:20px;
+	}
+}
+#div-logout {
+	font-size:4vw;
+}
+@media screen and (min-width:1024px){
+	#div-logout {
 		font-size:20px;
 	}
 }

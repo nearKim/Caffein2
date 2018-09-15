@@ -1,31 +1,34 @@
 {% extends 'index.html' %}
+{% load imagekit %}
+
 {% block content %}
     <section class="box-intro">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div class="table-cell text-center">
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
+            {% if user.profile_pic %}
+            {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
             {% endif %}
-            <h2>{{ user.name }}님 안녕하세요.</h2>
-            <br>
-            <br>
-            <br>
-            <div id="coffee" class="btn-group-lg">
-                <a href="{% url 'meetings:meetings-list' %}" class="btn">모임 보기</a>
-                <a href="{% url 'cafes:cafes-search' %}" class="btn">커모 열기</a>
-            </div>
-            <div id="partner" class="btn-group-lg">
-                <a href="{% url 'partners:detail' user.id %}" class="btn">짝모 현황</a>
-                <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
-                <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>
-            </div>
-            <br>
-            <div id="logout" class="btn-sm">
-                <a href="{% url 'core:logout' %}">로그아웃</a>
-            </div>
+        <p class="lead">{{ user.name }}</p>
+{#            <h2>{{ user.name }}님 안녕하세요.</h2>#}
+{#            <br>#}
+{#            <br>#}
+{#            <br>#}
+{#            <div id="coffee" class="btn-group-lg">#}
+{#                <a href="{% url 'meetings:meetings-list' %}" class="btn">모임 보기</a>#}
+{#                <a href="{% url 'cafes:cafes-search' %}" class="btn">커모 열기</a>#}
+{#            </div>#}
+{#            <div id="partner" class="btn-group-lg">#}
+{#                <a href="{% url 'partners:detail' user.id %}" class="btn">짝모 현황</a>#}
+{#                <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>#}
+{#                <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>#}
+{#            </div>#}
+{#            <br>#}
         </div>
     </section>
 {% endblock %}

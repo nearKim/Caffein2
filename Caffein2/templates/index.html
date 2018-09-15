@@ -48,12 +48,17 @@
                     {#FIXME: fix Logo.png#}
                     <a href="
 
+
                             {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
                         <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
                     <!-- box-nav -->
                     {% if not request.user.is_authenticated %}
-                        <div id="div-login" data-toggle="modal" data-target="#modal-login" class="lead">
-                            회원 로그인
+                        <div id="div-login" data-toggle="modal" data-target="#modal-login">
+                            <a href="#">로그인</a>
+                        </div>
+                    {% else %}
+                        <div id="div-logout">
+                            <a href="{% url 'core:logout' %}">로그아웃</a>
                         </div>
                     {% endif %}
                     <!-- box-primary-nav-trigger -->
@@ -816,22 +821,24 @@
 </footer>
 
 <!-- SCRIPTS -->
-    {% block javascript %}
+{% block javascript %}
+{% endblock %}
+
 <script type="text/javascript">
     {# NavBar 옆에 로그인 텍스트 버튼을 위치시킨다.#}
     $(document).ready(function () {
         let target = document.getElementById('a-append')
-
         let rect = target.getBoundingClientRect();
-        let loginText = document.getElementById('div-login')
-        if (loginText !== null) {
-            loginText.style.position = "absolute";
-            loginText.style.top = '35%';
-            loginText.style.left = (rect.left - loginText.getBoundingClientRect().width - 20) + 'px'; // 10px만큼의 오프셋을 준다
+
+        {# div-login 혹은 div-logout 중 하나는 반드시 존재해야 한다.#}
+        let loginOrOut = document.getElementById('div-login') ? document.getElementById('div-login') : document.getElementById('div-logout')
+        if (loginOrOut !== null) {
+            loginOrOut.style.position = "absolute";
+            loginOrOut.style.top = '35%';
+            loginOrOut.style.left = (rect.left - loginOrOut.getBoundingClientRect().width - 20) + 'px'; // 20px만큼의 오프셋을 준다
         }
     })
 </script>
-    {% endblock %}
 <script type="text/javascript" src="{% static "assets/js/animated-headline.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/menu.js" %}"></script>
 <script type="text/javascript" src="{% static "assets/js/modernizr.js" %}"></script>
