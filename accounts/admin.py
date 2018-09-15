@@ -25,6 +25,8 @@ class UserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
 
+    view_on_site = False
+
     list_display = ('email', 'name', 'phone', 'student_no', 'college',
                     'department', 'category', 'rule_confirm', 'survey_done', 'is_new')
     list_filter = ('join_year', 'join_semester', 'survey_done', 'college', 'category')
@@ -55,6 +57,7 @@ class UserAdmin(BaseUserAdmin):
     def user_change_password(self, request, id, form_url='', **kwargs):
         # kwargs에 extra_context가 담겨와서 발생하는 버그를 수정한다.
         return super(UserAdmin, self).user_change_password(request, id, form_url)
+
 
     def is_new(self, obj):
         latest_os = OperationScheme.latest()
