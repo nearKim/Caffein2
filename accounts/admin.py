@@ -2,11 +2,13 @@ from django.conf.urls import url
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin, AdminSite
 from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, sensitive_post_parameters_m
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.debug import sensitive_post_parameters
 
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from core.models import OperationScheme
@@ -49,6 +51,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('-date_joined',)
     actions = ['invalidate_user', 'activate_and_add_active', ]
+
+    def user_change_password(self, request, id, form_url='', **kwargs):
+        # kwargs에 extra_context가 담겨와서 발생하는 버그를 수정한다.
+        return super(UserAdmin, self).user_change_password(request, id, form_url)
 
     def is_new(self, obj):
         latest_os = OperationScheme.latest()
