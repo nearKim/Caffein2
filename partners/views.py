@@ -28,16 +28,16 @@ class PartnerDetailView(DetailView):
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
             if latest_partner is None:
                 raise Http404
-                # 다른경우 신학기 시작 후 기존회원의 옛날 짝지 데이터를 가져온 것이므로 에러 메세지를 띄우고 index로 보낸다.
+                # 다른경우 신학기 시작 후 기존회원의 옛날 짝지 데이터를 가져온 것이므로 404를 띄우고 index로 보낸다.
             elif not ((current_os.current_year == latest_partner.partner_year) and (
                     current_os.current_semester == latest_partner.partner_semester)):
                 raise Http404
             else:
-                return render(request, 'partners/partners_detail.html', {'partners': latest_partner})
+                # return render(request, 'partners/partners_detail.html', {'partners': latest_partner})
+                return render(request, 'accounts/index.html', {'user': request.user, 'partners': latest_partner})
         except Http404:
-            # 만일 짝지 객체가 없으면 신입회원이므로 에러 메세지를 띄우고 index로 보낸다.
-            messages.error(request, '아직 짝지가 배정되지 않았습니다.')
-            return redirect(reverse('core:index'))
+            # 짝지 객체가 없다면 명시적으로 None을 템플릿에 전달한다.
+            return render(request, 'accounts/index.html', {'user': request.user, 'partners': None})
 
 
 class PartnerMeetingListView(FormMixin, ListView):

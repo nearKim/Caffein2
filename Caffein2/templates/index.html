@@ -49,7 +49,7 @@
                     <a href="
 
 
-                            {% if request.user.is_authenticated %}{% url 'core:logged-in' %}{% else %}{% url 'core:index' %}{% endif %}">
+                            {% if request.user.is_authenticated %}{% url 'core:entrypoint' %}{% else %}{% url 'core:index' %}{% endif %}">
                         <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
                     <!-- box-nav -->
                     {% if not request.user.is_authenticated %}
@@ -75,7 +75,7 @@
             <ul class="box-primary-nav">
                 <li class="box-label">Caffe人</li>
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'core:logged-in' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
+                    <li><a href="{% url 'core:entrypoint' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                     <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a></li>
                     <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
                     <!--FIXME: 사진첩? 다른기능?-->
@@ -128,7 +128,7 @@
                         <div class="modal-body">
                             <form method="post">{% csrf_token %}
                                 {{ form | crispy }}
-                                <input type="hidden" name="next" value="{% url 'core:logged-in' %}"/>
+                                <input type="hidden" name="next" value="{% url 'core:entrypoint' %}"/>
                                 <button type="submit" class="btn btn-secondary">로그인</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                             </form>

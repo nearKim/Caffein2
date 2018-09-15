@@ -747,6 +747,9 @@ ul.tags li a:hover{
 		font-size:20px;
 	}
 }
+.img-profile {
+	border-radius: 50%;
+}
 .box-primary-nav-trigger {
     position: absolute;
     right: 0;

@@ -54,11 +54,11 @@ class Partner(models.Model):
         # 최신의 운영정보를 불러온다
         latest_os = OperationScheme.latest()
         # 현재 학기, 연도에 대항하는 모든 짝지 객체를 불러온다
-        current_partners = Partner.objects\
-            .select_related('up_partner')\
-            .select_related('down_partner_1')\
-            .select_related('down_partner_2')\
-            .select_related('down_partner_3')\
+        current_partners = Partner.objects \
+            .select_related('up_partner') \
+            .select_related('down_partner_1') \
+            .select_related('down_partner_2') \
+            .select_related('down_partner_3') \
             .filter(partner_semester=latest_os.current_semester, partner_year=latest_os.current_year)
 
         # 만일 하나도 없다면 None을 반환한다
@@ -76,12 +76,17 @@ class Partner(models.Model):
     def related_partner_user(user):
         # input 파라미터 user가 속한 짝지 중 가장 최신의 객체를 반환한다.
         try:
-            related = Partner.objects.filter(
-                Q(up_partner__user=user) |
-                Q(down_partner_1__user=user) |
-                Q(down_partner_2__user=user) |
-                Q(down_partner_3__user=user)
-            ).latest()
+            related = Partner.objects \
+                .select_related('up_partner') \
+                .select_related('down_partner_1') \
+                .select_related('down_partner_2') \
+                .select_related('down_partner_3') \
+                .filter(
+                    Q(up_partner__user=user) |
+                    Q(down_partner_1__user=user) |
+                    Q(down_partner_2__user=user) |
+                    Q(down_partner_3__user=user)
+                ).latest()
         except Partner.DoesNotExist:
             related = None
         return related
@@ -90,12 +95,17 @@ class Partner(models.Model):
     def related_partner_activeuser(active_user):
         # input 파라미터 active_user가 속한 짝지 중 가장 최신의 객체를 반환한다.
         try:
-            related = Partner.objects.filter(
-                Q(up_partner=active_user) |
-                Q(down_partner_1=active_user) |
-                Q(down_partner_2=active_user) |
-                Q(down_partner_3=active_user)
-            ).latest()
+            related = Partner.objects \
+                .select_related('up_partner') \
+                .select_related('down_partner_1') \
+                .select_related('down_partner_2') \
+                .select_related('down_partner_3') \
+                .filter(
+                    Q(up_partner=active_user) |
+                    Q(down_partner_1=active_user) |
+                    Q(down_partner_2=active_user) |
+                    Q(down_partner_3=active_user)
+                ).latest()
         except Partner.DoesNotExist:
             related = None
         return related
