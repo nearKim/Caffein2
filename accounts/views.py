@@ -69,14 +69,14 @@ class UserCreateView(CreateView):
     def dispatch(self, request, *args, **kwargs):
         if not OperationScheme.can_new_register():
             return render(request, 'accounts/cannot_register.html',
-                          context={'user': request.user, 'os': OperationScheme.latest()})
+                          context={'user': request.user})
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(UserCreateView, self).get_context_data(**kwargs)
-        context['os'] = OperationScheme.latest()
+        # context['os'] = OperationScheme.latest()
         return context
 
     def form_valid(self, form):
@@ -119,7 +119,7 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         if not OperationScheme.can_old_register():
             # 아직 재가입 기간이 아니라면 해당 정보를 띄워준다
             return render(request, 'accounts/cannot_register.html',
-                          context={'user': request.user, 'os': OperationScheme.latest()})
+                          context={'user': request.user})
         else:
             # 재가입 기간이라면 그대로 진행한다. form_valid로 내려가겠지.
             return super(ActiveUserCreateView, self).dispatch(request, *args, **kwargs)
@@ -151,7 +151,7 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
 def old_register_done(request):
     if request.method == 'GET':
         return render(request, 'accounts/old_register_done.html',
-                      context={'user': request.user, 'os': OperationScheme.latest()})
+                      context={'user': request.user})
 
 
 
@@ -163,4 +163,4 @@ class PaymentView(View):
         pay = latest_os.new_pay if active_user.is_new else latest_os.old_pay
 
         return render(request, 'accounts/now_pay.html',
-                      context={'active_user': active_user, 'os': latest_os, 'pay': pay})
+                      context={'active_user': active_user, 'pay': pay})

@@ -54,11 +54,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('-date_joined',)
     actions = ['invalidate_user', 'activate_and_add_active', ]
 
-    def user_change_password(self, request, id, form_url='', **kwargs):
-        # kwargs에 extra_context가 담겨와서 발생하는 버그를 수정한다.
-        return super(UserAdmin, self).user_change_password(request, id, form_url)
-
-
     def is_new(self, obj):
         latest_os = OperationScheme.latest()
         if (obj.join_year, obj.join_semester) == (latest_os.current_year, latest_os.current_semester):
@@ -115,9 +110,8 @@ class ActiveUserAdmin(ModelAdmin):
         ]
         return match_urls + urls
 
-    def partner_match_view(self, request, **kwargs):
-        # Admin의 전역 view에 추가되는 OS객체를 추출한다
-        latest_os = kwargs.pop('extra_context')['os']
+    def partner_match_view(self, request):
+        latest_os = OperationScheme.latest()
         year, semester = latest_os.current_year, latest_os.current_semester
 
         # 활동회원 중 이번학기 회원들을 불러온다
@@ -146,7 +140,7 @@ class ActiveUserAdmin(ModelAdmin):
         )
         return TemplateResponse(request, "admin/match_partner.html", context)
 
-    def match_partner(self, request, **kwargs):
+    def match_partner(self, request):
         year, semester = request.POST.get('year'), request.POST.get('semester')
 
         # 넘어오는 리스트는 ActiveUser의 pk들을 담고 있다

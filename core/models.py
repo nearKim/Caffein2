@@ -25,9 +25,7 @@ def get_meeting_photo_path(instance, filename):
 
 
 class Instagram(Postable):
-    def get_absolute_url(self):
-        # 인스타그램의 경우 짝모에서만 사용되므로 단일객체를 볼 필요 없이 바로 짝모리스트로 이동한다.
-        return reverse('partners:meeting-list')
+    pass
 
 
 class Meeting(Postable):
@@ -133,6 +131,10 @@ class FeedPhoto(TimeStampedMixin):
     class Meta:
         verbose_name = _('피드 사진')
         verbose_name_plural = _('피드 사진')
+
+    def get_absolute_url(self):
+        # 인스타그램의 경우 짝모에서만 사용되므로 단일객체를 볼 필요 없이 바로 짝모리스트로 이동한다.
+        return reverse('partners:meeting-list')
 
 
 class OperationScheme(models.Model):
