@@ -51,6 +51,11 @@ class PartnerMeetingListView(FormMixin, ListView):
         context['comment_form'] = self.get_form()
         return context
 
+    def get_queryset(self):
+        latest_os = OperationScheme.latest()
+        # 현재학기 이후로 생성된 짝모만 반환한다.
+        return PartnerMeeting.objects.filter(created__gte=latest_os.semester_start)
+
 
 class PartnerMeetingDeleteView(DeleteView):
     model = PartnerMeeting
