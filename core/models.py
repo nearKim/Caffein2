@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.db import models
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -23,7 +25,9 @@ def get_meeting_photo_path(instance, filename):
 
 
 class Instagram(Postable):
-    pass
+    def get_absolute_url(self):
+        # 인스타그램의 경우 짝모에서만 사용되므로 단일객체를 볼 필요 없이 바로 짝모리스트로 이동한다.
+        return reverse('partners:meeting-list')
 
 
 class Meeting(Postable):
@@ -115,6 +119,10 @@ class MeetingPhoto(TimeStampedMixin):
     class Meta:
         verbose_name = _('모임 사진')
         verbose_name_plural = _('모임 사진')
+
+    def get_absolute_url(self):
+        # 각 meeting의 디테일뷰로 이동
+        return self.meeting.cast().get_absolute_url()
 
 
 class FeedPhoto(TimeStampedMixin):
