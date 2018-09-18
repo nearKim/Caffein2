@@ -16,11 +16,10 @@ def entrypoint(request):
             # 커모 중 최신 인스턴스 3개와 Photo 인스턴스 중 최신 9개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects.select_related('cafe').all().order_by('-meeting_date')[:3]
             latest_feedphotos = FeedPhoto.objects.all().order_by('-created')
-            latest_meetingphotos = MeetingPhoto.objects.all().order_by('-created')
             latest_albumphotos = Photo.objects.all().order_by('-created')
 
             # https://stackoverflow.com/a/11635996
-            latest_photos = list(latest_albumphotos) + list(latest_feedphotos) + list(latest_meetingphotos)
+            latest_photos = list(latest_albumphotos) + list(latest_feedphotos)
             latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:9]
             latest_partner = Partner.related_partner_user(request.user)
             current_os = OperationScheme.latest()
@@ -35,7 +34,7 @@ def entrypoint(request):
             else:
                 # 짝지 객체가 아예 없거나 현재 학기, 년도에 해당하는 짝지가 없다면 명시적으로 None을 템플릿에 전달한다.
                 return render(request, 'accounts/index.html', {'user': request.user,
-                                                               'partners': None,
+                                                               'partner': None,
                                                                'coffee_meetings': coffee_meetings,
                                                                'latest_photos': latest_photos_sorted})
 
