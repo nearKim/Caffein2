@@ -1,7 +1,6 @@
 {% extends 'index.html' %}
 {% load imagekit %}
 
-{#FIXME: 모든 프로필 사진에 디폴트 이미지 추가 #}
 {% block content %}
     <section class="box-intro">
         <div class="table-cell text-center">
@@ -21,6 +20,9 @@
                                 {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                                {% else %}
+                                    <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                         class="img-profile" width="100" height="100">
                                 {% endif %}
                                 <p class="lead">
                                     {{ user.name }} <span style="margin-left:2px;"
@@ -35,6 +37,9 @@
                                     <div class="col-xs-4">
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                 class="img-profile" width="70" height="70">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
@@ -43,6 +48,9 @@
                                     <div class="col-xs-6">
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                 class="img-profile" width="70" height="70">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
@@ -51,12 +59,20 @@
                                     <div class="col-xm-12">
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                 class="img-profile" width="70" height="70">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mt-50">
+                                <h2>{{ score }}점</h2>
+                            </div>
                         </div>
                     </div>
 
@@ -68,6 +84,9 @@
                             <div class="col-xs-12">
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                                {% else %}
+                                    <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                         class="img-profile" width="100" height="100">
                                 {% endif %}
                                 <p class="lead">{{ user.name }}</p>
                                 <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -80,6 +99,9 @@
                                 <div class="col-xs-4">
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                             class="img-profile" width="100" height="100">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -93,6 +115,9 @@
                                         <div class="col-xs-4">
                                             {% if down.profile_pic %}
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                     class="img-profile" width="100" height="100">
                                             {% endif %}
                                             <p class="lead">
                                                 {{ down.name }}
@@ -105,6 +130,9 @@
                                 <div class="col-xs-6">
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                             class="img-profile" width="100" height="100">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -117,6 +145,9 @@
                                         <div class="col-xs-6">
                                             {% if down.profile_pic %}
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                     class="img-profile" width="100" height="100">
                                             {% endif %}
                                             <p class="lead">
                                                 {{ down.name }}
@@ -130,6 +161,9 @@
                                 <div class="col-xs-12">
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                             class="img-profile" width="100" height="100">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -150,6 +184,9 @@
                         <div class="col-xs-12">
                             {% if user.profile_pic %}
                                 {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                            {% else %}
+                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                     class="img-profile" width="100" height="100">
                             {% endif %}
                             <p class="lead">{{ user.name }}</p>
                             <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -194,8 +231,10 @@
                                      style="height:10%; margin-bottom:20px;">
                                     <div class="col-xs-4">
                                         {% if meeting.photos %}
-                                            {#FIXME: 사진이 없을 경우 디폴트 사진 추가 #}
                                             {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
+                                        {% else %}
+                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                 class="img-profile" width="100" height="100">
                                         {% endif %}
                                     </div>
                                     <div class="col-xs-8" style="position:relative;">
@@ -234,7 +273,7 @@
                                 {% if photo.file.thumb_url %}
                                     <img class="img-responsive hvr-grow" src="{{ photo.file.thumb_url }}">
                                 {% else %}
-                                        <img class="img-responsive hvr-grow" src="{{ photo.image.url }}">
+                                    <img class="img-responsive hvr-grow" src="{{ photo.image.url }}">
                                 {% endif %}
                                 {# 3번째 사진마다 div를 닫아주고 새로운 row를 열어준다 #}
                                 {% if forloop.counter|divisibleby:3 %}

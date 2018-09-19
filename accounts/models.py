@@ -2,9 +2,9 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
 
-if not settings.configured:
-    # TODO: Production 레벨에서 Production 세팅으로 전환
-    settings.configure('Caffein2.settings.dev', DEBUG=True)
+# if not settings.configured:
+#     # TODO: Production 레벨에서 Production 세팅으로 전환
+#     settings.configure('Caffein2.settings.dev', DEBUG=True)
 
 from django.core.mail import send_mail
 from django.db import models

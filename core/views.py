@@ -59,6 +59,7 @@ def entrypoint(request):
                 context['down_num'] = down_num
                 context['up_partner'] = up_partner
                 context['down_partners'] = down_partners
+                context['score'] = latest_partner.score
 
                 return render(request, 'accounts/index.html', context)
             else:
