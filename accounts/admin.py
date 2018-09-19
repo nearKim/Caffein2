@@ -129,7 +129,7 @@ class ActiveUserAdmin(ModelAdmin):
 
         # 각 활동회원들 중 현재 매칭된 회원은 없애준다
         new_actives = new_actives.difference(matched_users)
-        old_actives = old_actives.difference(matched_users)
+        old_actives = old_actives.difference(matched_users).order_by('user__name')
 
         # 각각을 다른 context에 넣어 뿌려준다
         context = dict(
