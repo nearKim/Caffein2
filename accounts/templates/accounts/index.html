@@ -12,10 +12,10 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            {% if partner_set %}
-                {% if is_up %}
-                    {# 현재 로그인한 유저가 위짝지일 때  #}
-                    <div class="container-fluid">
+            <div class="container-fluid">
+                {% if partner_set %}
+                    {% if is_up %}
+                        {# 현재 로그인한 유저가 위짝지일 때  #}
                         <div class="row mb-50">
                             <div class="col-xs-12">
                                 {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
@@ -75,12 +75,10 @@
                                 <h2>{{ score }}점</h2>
                             </div>
                         </div>
-                    </div>
 
-                {% else %}
+                    {% else %}
 
-                    {# 현재 유저가 아래짝지일 때 #}
-                    <div class="container-fluid">
+                        {# 현재 유저가 아래짝지일 때 #}
                         <div class="row mb-50">
                             <div class="col-xs-12">
                                 {% if user.profile_pic %}
@@ -174,13 +172,11 @@
                                 </div>
                             {% endif %}
                         </div>
-                    </div>
-                {% endif %}
+                    {% endif %}
 
-            {% else %}
+                {% else %}
 
-                {#  짝지가 아직 정해지지 않았을 때 #}
-                <div class="container-fluid">
+                    {#  짝지가 아직 정해지지 않았을 때 #}
                     <div class="row mb-50">
                         <div class="col-xs-12">
                             {% if user.profile_pic %}
@@ -194,15 +190,23 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12 text-center">아직 짝지가 정해지지 않았습니다</div>
+                        <div class="col-sm-12 text-center"><h3>아직 짝지가 정해지지 않았습니다</h3></div>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="btn-group-lg mt-100 " >
+                        <a href="{% url 'cafes:cafes-search' %}" class="btn white" style="margin-right: 10px;">커모 열기</a>
+                        {% if partner_set %}
+                            <a href="{% url 'partners:meeting-list' %}" class="btn green" >짝모 보기</a>
+                            <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">짝모 등록</a>
+                        {% else %}
+                            <a href="{% url 'partners:meeting-list' %}" class="btn disabled">짝모 보기</a>
+                            <a href="{% url 'partners:meeting-create' %}" class="btn disabled">짝모 등록</a>
+                        {% endif %}
                     </div>
                 </div>
-            {% endif %}
-
-            {#            <h2>{{ user.name }}님 안녕하세요.</h2>#}
-            {#            <br>#}
-            {#            <br>#}
-            {#            <br>#}
+            </div>
             {#            <div id="coffee" class="btn-group-lg">#}
             {#                <a href="{% url 'meetings:meetings-list' %}" class="btn">모임 보기</a>#}
             {#                <a href="{% url 'cafes:cafes-search' %}" class="btn">커모 열기</a>#}
@@ -217,18 +221,19 @@
     </section>
     <section class="portfolio">
         <div class="container text-center">
-            <div class="row" style="margin-top:20px;">
+            <div class="row mt-100">
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3> 진행중 커모 </h3>
+                            <h3> 커모 </h3>
                             <hr>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}
-                                <div id="div-coffee-meeting" meeting-pk="{{ meeting.pk }}" class="row hvr-glow"
+                                <div class="div-coffee-meeting row hvr-glow"
+                                     meeting-detail="{% url 'meetings:coffee-meeting-detail' meeting.pk %}"
                                      style="height:10%; margin-bottom:20px;">
                                     <div class="col-xs-4">
                                         {% if meeting.photos.all %}
@@ -265,7 +270,7 @@
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3> 모임 사진</h3>
+                            <h3> 사진첩 </h3>
                             <hr>
                         </div>
                     </div>
@@ -273,12 +278,17 @@
                         {% for photo in latest_photos %}
                             <div class="col-xs-4">
                                 {% if photo.file.thumb_url %}
-                                    <img class="img-responsive hvr-grow" src="{{ photo.file.thumb_url }}">
+                                    {# photo_albums에 속한 사진들 #}
+                                    <img class="photos img-responsive hvr-grow"
+                                         redirect-url="{% url 'photo_albums:photo_detail' photo.pk %}"
+                                         src="{{ photo.file.thumb_url }}">
                                 {% else %}
-                                    <img class="img-responsive hvr-grow" src="{{ photo.image.url }}">
+                                    {# 짝모에 속한 사진들 #}
+                                    <img class="photos img-responsive hvr-grow"
+                                         redirect-url="{% url 'partners:meeting-list' %}" src="{{ photo.image.url }}">
                                 {% endif %}
-                                {# 3번째 사진마다 div를 닫아주고 새로운 row를 열어준다 #}
                                 {% if forloop.counter|divisibleby:3 %}
+                                    {# 3번째 사진마다 div를 닫아주고 새로운 row를 열어준다 #}
                                     </div>
                                     <div class="row">
                                 {% endif %}
@@ -290,4 +300,18 @@
         </div>
         </div>
     </section>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('.div-coffee-meeting').on('click', function () {
+                let meetingURL = $(this).attr('meeting-detail')
+                location.href = meetingURL
+            })
+            $('.photos').on('click', function () {
+                let redirectURL = $(this).attr('redirect-url')
+                location.href = redirectURL
+            })
+        })
+    </script>
 {% endblock %}
