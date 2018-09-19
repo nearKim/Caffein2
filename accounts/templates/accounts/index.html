@@ -26,6 +26,7 @@
                                     {{ user.name }} <span style="margin-left:2px;"
                                                           class="glyphicon glyphicon-star"></span>
                                 </p>
+                                <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
                             </div>
                         </div>
                         <div class="row">
@@ -36,6 +37,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
+                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                     </div>
                                 {% elif down_num == 2 %}
                                     <div class="col-xs-6">
@@ -43,6 +45,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
+                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                     </div>
                                 {% elif down_num == 1 %}
                                     <div class="col-xm-12">
@@ -50,6 +53,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
+                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -66,6 +70,7 @@
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                                 {% endif %}
                                 <p class="lead">{{ user.name }}</p>
+                                <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
                             </div>
                         </div>
                         <div class="row">
@@ -80,6 +85,7 @@
                                         {{ up_partner.name }}
                                         <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
                                     </p>
+                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                 </div>
                                 {# 아래짝지중에 사용자가 있으므로 사용자 본인은 빼준다. #}
                                 {% for down in down_partners %}
@@ -91,6 +97,7 @@
                                             <p class="lead">
                                                 {{ down.name }}
                                             </p>
+                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -103,6 +110,7 @@
                                         {{ up_partner.name }}
                                         <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
                                     </p>
+                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                 </div>
                                 {% for down in down_partners %}
                                     {% if not down == user %}
@@ -113,6 +121,7 @@
                                             <p class="lead">
                                                 {{ down.name }}
                                             </p>
+                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -126,6 +135,7 @@
                                         {{ up_partner.name }}
                                         <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
                                     </p>
+                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                 </div>
                             {% endif %}
                         </div>
@@ -142,6 +152,7 @@
                                 {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                             {% endif %}
                             <p class="lead">{{ user.name }}</p>
+                            <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
                         </div>
                     </div>
                     <div class="row">
