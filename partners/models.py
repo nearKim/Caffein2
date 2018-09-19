@@ -40,6 +40,9 @@ class Partner(models.Model):
         # 짝지 객체에 속한 모든 구성원들의 set을 반환한다.
         return {self.up_partner, self.down_partner_1, self.down_partner_2, self.down_partner_3}
 
+    def down_partner_count(self):
+        return len(self.containing_active_users() - set([None])) - 1
+
     def raise_score(self, score):
         latest_os = OperationScheme.latest()
         if latest_os.semester_end:
@@ -81,12 +84,16 @@ class Partner(models.Model):
                 .select_related('down_partner_1') \
                 .select_related('down_partner_2') \
                 .select_related('down_partner_3') \
+                .select_related('up_partner__user') \
+                .select_related('down_partner_1__user') \
+                .select_related('down_partner_2__user') \
+                .select_related('down_partner_3__user') \
                 .filter(
-                    Q(up_partner__user=user) |
-                    Q(down_partner_1__user=user) |
-                    Q(down_partner_2__user=user) |
-                    Q(down_partner_3__user=user)
-                ).latest()
+                Q(up_partner__user=user) |
+                Q(down_partner_1__user=user) |
+                Q(down_partner_2__user=user) |
+                Q(down_partner_3__user=user)
+            ).latest()
         except Partner.DoesNotExist:
             related = None
         return related
@@ -100,12 +107,16 @@ class Partner(models.Model):
                 .select_related('down_partner_1') \
                 .select_related('down_partner_2') \
                 .select_related('down_partner_3') \
+                .select_related('up_partner__user') \
+                .select_related('down_partner_1__user') \
+                .select_related('down_partner_2__user') \
+                .select_related('down_partner_3__user') \
                 .filter(
-                    Q(up_partner=active_user) |
-                    Q(down_partner_1=active_user) |
-                    Q(down_partner_2=active_user) |
-                    Q(down_partner_3=active_user)
-                ).latest()
+                Q(up_partner=active_user) |
+                Q(down_partner_1=active_user) |
+                Q(down_partner_2=active_user) |
+                Q(down_partner_3=active_user)
+            ).latest()
         except Partner.DoesNotExist:
             related = None
         return related
