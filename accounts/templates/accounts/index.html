@@ -22,7 +22,7 @@
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                                 {% else %}
                                     <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                         class="img-profile" width="100" height="100">
+                                         class="img-profile img-default-up">
                                 {% endif %}
                                 <p class="lead">
                                     {{ user.name }} <span style="margin-left:2px;"
@@ -39,7 +39,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
                                             <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                 class="img-profile" width="70" height="70">
+                                                 class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
@@ -50,7 +50,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
                                             <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                 class="img-profile" width="70" height="70">
+                                                 class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
@@ -61,7 +61,7 @@
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
                                             <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                 class="img-profile" width="70" height="70">
+                                                 class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
                                         <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
@@ -86,7 +86,7 @@
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                                 {% else %}
                                     <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                         class="img-profile" width="100" height="100">
+                                         class="img-profile img-default-up" >
                                 {% endif %}
                                 <p class="lead">{{ user.name }}</p>
                                 <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -101,7 +101,7 @@
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
                                         <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                             class="img-profile" width="100" height="100">
+                                             class="img-profile img-default">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -117,7 +117,7 @@
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                             {% else %}
                                                 <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                     class="img-profile" width="100" height="100">
+                                                     class="img-profile img-default">
                                             {% endif %}
                                             <p class="lead">
                                                 {{ down.name }}
@@ -132,7 +132,7 @@
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
                                         <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                             class="img-profile" width="100" height="100">
+                                             class="img-profile img-default">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -147,7 +147,7 @@
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                             {% else %}
                                                 <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                     class="img-profile" width="100" height="100">
+                                                     class="img-profile img-default">
                                             {% endif %}
                                             <p class="lead">
                                                 {{ down.name }}
@@ -163,7 +163,7 @@
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
                                         <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                             class="img-profile" width="100" height="100">
+                                             class="img-profile img-default" >
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -186,7 +186,7 @@
                                 {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                             {% else %}
                                 <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                     class="img-profile" width="100" height="100">
+                                     class="img-profile img-default-up" >
                             {% endif %}
                             <p class="lead">{{ user.name }}</p>
                             <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -232,9 +232,7 @@
                                     <div class="col-xs-4">
                                         {% if meeting.photos %}
                                             {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
-                                        {% else %}
-                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                                 class="img-profile" width="100" height="100">
+                                            {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
                                         {% endif %}
                                     </div>
                                     <div class="col-xs-8" style="position:relative;">
