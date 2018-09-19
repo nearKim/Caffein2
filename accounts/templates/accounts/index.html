@@ -190,7 +190,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}
-                                <div id="div-coffee-meeting" meeting-pk="{{ meeting.pk }}" class="row"
+                                <div id="div-coffee-meeting" meeting-pk="{{ meeting.pk }}" class="row hvr-glow"
                                      style="height:10%; margin-bottom:20px;">
                                     <div class="col-xs-4">
                                         {% if meeting.photos %}
@@ -232,11 +232,9 @@
                         {% for photo in latest_photos %}
                             <div class="col-xs-4">
                                 {% if photo.file.thumb_url %}
-                                    <img class="img-responsive" src="{{ photo.file.thumb_url }}">
+                                    <img class="img-responsive hvr-grow" src="{{ photo.file.thumb_url }}">
                                 {% else %}
-                                    <a href="#">
-                                        <img class="img-responsive" src="{{ photo.image.url }}">
-                                    </a>
+                                        <img class="img-responsive hvr-grow" src="{{ photo.image.url }}">
                                 {% endif %}
                                 {# 3번째 사진마다 div를 닫아주고 새로운 row를 열어준다 #}
                                 {% if forloop.counter|divisibleby:3 %}
