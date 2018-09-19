@@ -13,11 +13,13 @@ django-multiupload==0.5.2
 django-tables2==1.21.2
 docopt==0.6.2
 ExifRead==2.1.2
+-e git+https://github.com/mobolic/facebook-sdk.git@5ebe9acfd2689939e2cce267fabd33ad509e3df5#egg=facebook_sdk
 gunicorn==19.9.0
 idna==2.7
 pilkit==2.0
 Pillow==5.2.0
 psycopg2==2.7.5
+pyparsing==2.2.0
 pytz==2018.4
 raven==6.9.0
 requests==2.19.1

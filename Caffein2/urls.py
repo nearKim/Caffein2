@@ -22,10 +22,8 @@ from django.urls import path, include
 #     settings.configure('Caffein2.settings.dev', DEBUG=True)
 from django.conf.urls.static import static
 
-from core.models import OperationScheme
-
 urlpatterns = [
-    path('admin/', admin.site.urls, {'extra_context': {'os': OperationScheme.latest()}}),
+    path('admin/', admin.site.urls),
 
     path('', include('core.urls', namespace='core')),
     path('comments', include('comments.urls', namespace='comments')),

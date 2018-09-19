@@ -47,8 +47,10 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
+    """운영자 페이지에서 직접 회원정보를 변경할때 사용하는 폼"""
     password = ReadOnlyPasswordHashField(label=_("Password"),
-                                         help_text=_("해당 유저의 비밀번호를 바꾸려면 우측을 클릭하세. <a href=\'../password/\'>비밀번호 변경하기</a>"))
+                                         help_text=_(
+                                             "해당 유저의 비밀번호를 바꾸려면 우측을 클릭하세요. <a href=\'../password/\'>비밀번호 변경하기</a>"))
 
     class Meta:
         model = get_user_model()
@@ -60,3 +62,26 @@ class CustomUserChangeForm(UserChangeForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+
+class SelfUserChangeForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['profile_pic', 'email', 'name', 'phone', 'student_no', 'college', 'department',
+                  'category']
+
+    def __init__(self, *args, **kwargs):
+        super(SelfUserChangeForm, self).__init__(*args, **kwargs)
+        f = self.fields.get('user_permissions')
+        if f is not None:
+            f.queryset = f.queryset.select_related('content_type')
+        # Text Input
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['name'].widget.attrs['readonly'] = True
+        self.fields['phone'].widget.attrs['readonly'] = True
+        self.fields['student_no'].widget.attrs['readonly'] = True
+
+        # ChoiceField
+        self.fields['college'].widget.attrs['disabled'] = 'disabled'
+        self.fields['department'].widget.attrs['disabled'] = 'disabled'
+        self.fields['category'].widget.attrs['disabled'] = 'disabled'
