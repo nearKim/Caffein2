@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% load imagekit %}
+{% load static %}
 
 {% block content %}
     <section class="box-intro">
@@ -21,7 +22,7 @@
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                                 {% else %}
-                                    <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                    <img src="{% static 'assets/img/default-avatar.png' %}"
                                          class="img-profile img-default-up">
                                 {% endif %}
                                 <p class="lead">
@@ -38,7 +39,7 @@
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
-                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
                                                  class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
@@ -49,7 +50,7 @@
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
-                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
                                                  class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
@@ -60,7 +61,7 @@
                                         {% if down.profile_pic %}
                                             {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                         {% else %}
-                                            <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
                                                  class="img-profile img-default">
                                         {% endif %}
                                         <p class="lead">{{ down.name }}</p>
@@ -85,8 +86,8 @@
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                                 {% else %}
-                                    <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                         class="img-profile img-default-up" >
+                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                         class="img-profile img-default-up">
                                 {% endif %}
                                 <p class="lead">{{ user.name }}</p>
                                 <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -100,7 +101,7 @@
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
-                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                        <img src="{% static 'assets/img/default-avatar.png' %}"
                                              class="img-profile img-default">
                                     {% endif %}
                                     <p class="lead">
@@ -116,7 +117,7 @@
                                             {% if down.profile_pic %}
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                             {% else %}
-                                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                <img src="{% static 'assets/img/default-avatar.png' %}"
                                                      class="img-profile img-default">
                                             {% endif %}
                                             <p class="lead">
@@ -131,7 +132,7 @@
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
-                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                        <img src="{% static 'assets/img/default-avatar.png' %}"
                                              class="img-profile img-default">
                                     {% endif %}
                                     <p class="lead">
@@ -146,7 +147,7 @@
                                             {% if down.profile_pic %}
                                                 {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
                                             {% else %}
-                                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
+                                                <img src="{% static 'assets/img/default-avatar.png' %}"
                                                      class="img-profile img-default">
                                             {% endif %}
                                             <p class="lead">
@@ -162,8 +163,8 @@
                                     {% if up_partner.profile_pic %}
                                         {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                     {% else %}
-                                        <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                             class="img-profile img-default" >
+                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                             class="img-profile img-default">
                                     {% endif %}
                                     <p class="lead">
                                         {{ up_partner.name }}
@@ -185,8 +186,8 @@
                             {% if user.profile_pic %}
                                 {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
                             {% else %}
-                                <img src="https://docs.google.com/uc?id=1FA-1MW4L1U6K7FpkCFVk5bizz7R8WWbi"
-                                     class="img-profile img-default-up" >
+                                <img src="{% static 'assets/img/default-avatar.png' %}"
+                                     class="img-profile img-default-up">
                             {% endif %}
                             <p class="lead">{{ user.name }}</p>
                             <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
@@ -230,8 +231,11 @@
                                 <div id="div-coffee-meeting" meeting-pk="{{ meeting.pk }}" class="row hvr-glow"
                                      style="height:10%; margin-bottom:20px;">
                                     <div class="col-xs-4">
-                                        {% if meeting.photos %}
+                                        {% if meeting.photos.all %}
                                             {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-cafe.jpg' %}"
+                                                 style="width: 100%; max-width: 100px;height: auto;">
                                             {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
                                         {% endif %}
                                     </div>
