@@ -32,7 +32,12 @@ class PartnerMeetingListView(FormMixin, ListView):
     def get_queryset(self):
         latest_os = OperationScheme.latest()
         # 현재학기 이후로 생성된 짝모만 반환한다.
-        return PartnerMeeting.objects.filter(created__gte=latest_os.semester_start)
+        return PartnerMeeting.objects \
+            .select_related('author') \
+            .select_related('partner') \
+            .prefetch_related('photos') \
+            .prefetch_related('comments__meeting') \
+            .filter(created__gte=latest_os.semester_start)
 
 
 class PartnerMeetingDeleteView(DeleteView):
