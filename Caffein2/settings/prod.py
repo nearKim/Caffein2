@@ -3,6 +3,17 @@ import django_heroku
 import dj_database_url
 import raven
 
+# Facebook
+# snucoffee계정
+APP_ID = os.environ['FACEBOOK_APP_ID']
+APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
+# FIXME: 이 그룹은 현재 snucoffee계정이 가입한 django_test 그룹이다.
+FACEBOOK_GROUP_ID = '542458402875116'  # django_test
+# FIXME: 이 토큰은 2개월후 만료된다.
+FACEBOOK_TOKEN = os.environ['FACEBOOK_APP_TOKEN_60']
+
+
+
 # RAVEN
 RAVEN_CONFIG = {
     'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
