@@ -18,7 +18,7 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-DEBUG = False
+DEBUG = True
 
 
 # Quick-start development settings - unsuitable for production
@@ -64,9 +64,10 @@ INSTALLED_APPS = [
     'imagekit',
     'crispy_forms',
     'debug_toolbar',
-    'raven.contrib.django.raven_compat'
+    'raven.contrib.django.raven_compat',
+    'django_user_agents',
 ]
-
+USER_AGENTS_CACHE = None
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -84,6 +85,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 3rd party
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'Caffein2.urls'

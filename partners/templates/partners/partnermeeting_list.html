@@ -3,27 +3,57 @@
 {% load crispy_forms_tags %}
 {% load imagekit %}
 {% block content %}
-    <div class="container">
-        <h1 class="jumbotron">짝모 리스트</h1>
-
+    <div class="card-box mt-150">
         {% for meeting in object_list %}
-            <ul class="list-inline">
-                <li class="list-inline-item">
-                    {% if meeting.author.profile_pic %}
-                        {% thumbnail "50x50" meeting.author.profile_pic %} {% endif %} {{ meeting.author }}
-                </li>
-                <li class="list-inline-item">{{ meeting.created | date:"m월 d일 A h시 i분" }}</li>
-            </ul>
-            <p class="lead">{{ meeting.content }}</p>
-            {% for p in meeting.photos.all %}
-                <img src="{{ p.image.url }}"/>
-            {% endfor %}
-
-            <!--댓글 리스트-->
-            {% with meeting_comment=meeting.comments %}
-                {% include 'comments/comment_view_create.html' with goto='partners:meeting-list' comments=meeting_comment object=meeting %}
-            {% endwith %}
-            <hr>
+            <div class="card center-block">
+                <div class="container-fluid">
+                    <div class="row" style="margin-bottom:10px; margin-top:10px;">
+                        <div class="col-xs-5">
+                            {% if meeting.author.profile_pic %}
+                                {% thumbnail "30x30" meeting.author.profile_pic -- class="img-profile" %}
+                            {% else %}
+                                <img src="{% static 'assets/img/default-avatar.png' %}" width="30" height="30"
+                                     class="img-profile">
+                            {% endif %}
+                            &nbsp; {{ meeting.author.name }}
+                        </div>
+                        <div class="col-xs-7 text-right " style="font-size:calc(0.5vw + 9px);">
+                            {{ meeting.created | date:"m월 d일 A h시i분" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for p in meeting.photos.all %}
+                            <img src="{{ p.image.url }}" style="width: 100%; height: auto"/>
+                        {% endfor %}
+                    </div>
+                    <div class="row" style="padding:16px;">
+                        <section>
+                            <b>{{ meeting.author.name }}</b>
+                            {{ meeting.content }}
+                        </section>
+                        <section id="section-comment" style="margin-top:16px;">
+                            <!--댓글 리스트-->
+                            {% with meeting_comment=meeting.comments %}
+                                {% include 'comments/comment_view_create.html' with goto='partners:meeting-list' comments=meeting_comment object=meeting %}
+                            {% endwith %}
+                        </section>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
+
     </div>
+{% endblock %}
+{% block javascript %}
+    {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(':input').on('keypress', function(event) {
+                if(event.which === 13) {
+                    $(this).closest('form').trigger('submit')
+                }
+            })
+        })
+
+    </script>
 {% endblock %}
