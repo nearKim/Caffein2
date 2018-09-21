@@ -63,9 +63,10 @@ INSTALLED_APPS = [
     # 3rd party apps
     'imagekit',
     'crispy_forms',
-    'debug_toolbar'
+    'debug_toolbar',
+    'django_user_agents',
 ]
-
+USER_AGENTS_CACHE = None
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -83,6 +84,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 3rd party
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'Caffein2.urls'
