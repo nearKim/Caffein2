@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-sm-10">
                             {% if cafe.closed_day %}
-                                <h5>{{ cafe.closed_day }}</h5>
+                                <h5>{{ cafe.get_closed_day_display }}</h5>
                             {% else %}
                                 <p>정보를 등록해주세요!</p>
                             {% endif %}
