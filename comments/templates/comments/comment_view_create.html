@@ -7,7 +7,9 @@
     <div class="col-xs-9">
         <p>
             {% if comment.author.profile_pic %}
-                {% thumbnail "25x25 " comment.author.profile_pic %}
+                {% thumbnail "25x25 " comment.author.profile_pic  -- class="img-profile"%}
+                {% else %}
+                <img src="{% static 'assets/img/default-avatar.png' %}" class="img-profile">
             {% endif %}
             {{ comment.author.name }} {{ comment.content }}
         </p>
@@ -44,7 +46,7 @@
         <form action="{% url 'comments:meeting-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
             {{ comment_form | crispy }}
             <input type="hidden" name="next" value="{% url goto pk=object.pk %}">
-            <input input-comment-create type="submit" class="btn btn-default center-block" style="display: none;"/>
+            <input id="input-comment-create" type="submit" class="btn btn-default center-block" style="display: none;"/>
         </form>
     {% endif %}
 </div>

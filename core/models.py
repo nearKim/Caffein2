@@ -130,6 +130,7 @@ class MeetingPhoto(TimeStampedMixin):
         # https://stackoverflow.com/a/49296707
         base = 1200
         img = Image.open(self.image)
+        img_format = img.format
         (width, height) = img.size
 
         if width < base and height < base:
@@ -138,7 +139,7 @@ class MeetingPhoto(TimeStampedMixin):
             factor = base / width if base / width < base / height else base / height
         img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
         img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=60)
+        img.save(img_io, img_format, quality=60)
         self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
         super(MeetingPhoto, self).save(*args, **kwargs)
 
@@ -160,6 +161,7 @@ class FeedPhoto(TimeStampedMixin):
         # https://stackoverflow.com/a/49296707
         base = 1200
         img = Image.open(self.image)
+        img_format = img.format
         (width, height) = img.size
 
         if width < base and height < base:
@@ -169,7 +171,7 @@ class FeedPhoto(TimeStampedMixin):
             factor = base / width if base / width < base / height else base / height
         img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
         img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=60)
+        img.save(img_io, img_format, quality=60)
         self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
         super(FeedPhoto, self).save(*args, **kwargs)
 
