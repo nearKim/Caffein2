@@ -2,6 +2,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load imagekit %}
+{% block title %}
+    <title>짝모~</title>
+{% endblock %}
 {% block content %}
     <div class="card-box mt-150">
         {% for meeting in object_list %}
@@ -33,10 +36,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="photo-container row" style="position:relative;">
                         {% for photo in meeting.photos.all %}
-                            <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
+                            <div class="photo-slide fade">
+                                <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
+                            </div>
                         {% endfor %}
+                        <a class="prev">&#10094;</a>
+                        <a class="next">&#10095;</a>
+
                     </div>
                     <div class="row" style="padding:16px;">
                         <section>
@@ -60,9 +68,46 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            {# 사진 슬라이드를 위한 처리 #}
+            {# 기본 css로 사진이 디폴트로 hide 처리 되어있는데 각 card의 첫번째 사진은 보여줘야 한다. #}
+            $('.card .photo-slide:nth-child(1)').show()
 
-        {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
-        {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
+            $('.prev').on('click', function (event) {
+                {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                let index = $(this).siblings('.photo-slide:visible').index()
+                {# 일단 현재 사진을 숨긴다 #}
+                $(this).siblings('.photo-slide:visible').hide()
+                if (index === 0) {
+                    {# 현재 사진이 첫번째 사진일 경우 #}
+                    {# 마지막 사진을 보여준다. #}
+                    $(this).siblings('.photo-slide').last().show()
+
+                } else {
+                    {# 현재 사진이 첫번째 사진이 아닐 때 #}
+                    {# 인덱스-1번째 사진을 보여준다 #}
+                    $(this).siblings('.photo-slide').eq(index - 1).show()
+                }
+
+            })
+            $('.next').on('click', function (event) {
+                {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                let index = $(this).siblings('.photo-slide:visible').index()
+                let length = $(this).siblings('.photo-slide').length
+
+                {# 일단 현재 사진을 숨긴다 #}
+                $(this).siblings('.photo-slide:visible').hide()
+                if (index === length - 1) {
+                    {# 현재 사진이 마지막 사진일 때 #}
+                    {# 첫번째 사진을 보여준다 #}
+                   $(this).siblings('.photo-slide').first().show()
+                } else{
+                    {# 인덱스+1번째 사진을 보여준다 #}
+                    $(this).siblings('.photo-slide').eq(index + 1).show()
+                }
+            })
+
+            {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
+            {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
             $(':input').on('keypress', function (event) {
                 if (event.which === 13) {
                     $(this).closest('form').trigger('submit')

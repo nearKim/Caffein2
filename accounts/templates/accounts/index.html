@@ -195,28 +195,18 @@
                 {% endif %}
 
                 <div class="row">
-                    <div class="btn-group-lg mt-100 " >
+                    <div class="btn-group-lg mt-100 ">
                         <a href="{% url 'cafes:cafes-search' %}" class="btn white" style="margin-right: 10px;">커모 열기</a>
+                        <a href="{% url 'partners:meeting-list' %}" class="btn green">짝모 보기</a>
                         {% if partner_set %}
-                            <a href="{% url 'partners:meeting-list' %}" class="btn green" >짝모 보기</a>
-                            <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">짝모 등록</a>
+                            <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">
+                                짝모 등록</a>
                         {% else %}
-                            <a href="{% url 'partners:meeting-list' %}" class="btn disabled">짝모 보기</a>
                             <a href="{% url 'partners:meeting-create' %}" class="btn disabled">짝모 등록</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            {#            <div id="coffee" class="btn-group-lg">#}
-            {#                <a href="{% url 'meetings:meetings-list' %}" class="btn">모임 보기</a>#}
-            {#                <a href="{% url 'cafes:cafes-search' %}" class="btn">커모 열기</a>#}
-            {#            </div>#}
-            {#            <div id="partner" class="btn-group-lg">#}
-            {#                <a href="{% url 'partners:detail' user.id %}" class="btn">짝모 현황</a>#}
-            {#                <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>#}
-            {#                <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>#}
-            {#            </div>#}
-            {#            <br>#}
         </div>
     </section>
     <section class="portfolio">
