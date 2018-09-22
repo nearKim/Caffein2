@@ -7,9 +7,10 @@
     <div class="col-xs-9">
         <p>
             {% if comment.author.profile_pic %}
-                {% thumbnail "25x25 " comment.author.profile_pic  -- class="img-profile"%}
-                {% else %}
-                <img src="{% static 'assets/img/default-avatar.png' %}" class="img-profile">
+                {% thumbnail "25x25 " comment.author.profile_pic -- class="img-profile" %}
+            {% else %}
+                <img src="{% static 'assets/img/default-avatar.png' %}" class="img-profile"
+                     style="width: 100%; max-width: 25px;height: auto;">
             {% endif %}
             {{ comment.author.name }} {{ comment.content }}
         </p>
