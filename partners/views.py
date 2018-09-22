@@ -22,7 +22,7 @@ class PartnerMeetingListView(FormMixin, ListView):
     # TODO: Add infinite scroll feature
     model = PartnerMeeting
     form_class = CommentForm
-    ordering = ['-created', '-modified']
+    # ordering =
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(PartnerMeetingListView, self).get_context_data(**kwargs)
@@ -37,7 +37,8 @@ class PartnerMeetingListView(FormMixin, ListView):
             .select_related('partner') \
             .prefetch_related('photos') \
             .prefetch_related('comments__meeting') \
-            .filter(created__gte=latest_os.semester_start)
+            .filter(created__gte=latest_os.semester_start)\
+            .order_by('-created', '-modified')
 
 
 class PartnerMeetingDeleteView(DeleteView):
@@ -77,7 +78,6 @@ class PartnerMeetingCreateView(FaceBookPostMixin, PartnerMeetingUpdateCreateMixi
         try:
             latest_partner = Partner.related_partner_user(request.user)
             current_os = OperationScheme.latest()
-            print(latest_partner)
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
             if latest_partner is None:
                 raise Http404

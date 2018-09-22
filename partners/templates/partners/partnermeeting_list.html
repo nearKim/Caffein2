@@ -8,7 +8,7 @@
             <div class="card center-block">
                 <div class="container-fluid">
                     <div class="row" style="margin-bottom:10px; margin-top:10px;">
-                        <div class="col-xs-5">
+                        <div class="col-xs-4">
                             {% if meeting.author.profile_pic %}
                                 {% thumbnail "30x30" meeting.author.profile_pic -- class="img-profile" %}
                             {% else %}
@@ -17,13 +17,25 @@
                             {% endif %}
                             &nbsp; {{ meeting.author.name }}
                         </div>
-                        <div class="col-xs-7 text-right " style="font-size:calc(0.5vw + 9px);">
-                            {{ meeting.created | date:"m월 d일 A h시i분" }}
+                        <div class="col-xs-8 text-right " style="font-size:calc(0.5vw + 9px);">
+                            {{ meeting.created | date:"m월d일 A h시 i분" }}
+                            <div class="dropdown-option">
+                                <span class="glyphicon glyphicon-option-vertical"></span>
+                                <div class="dropdown-content text-center">
+                                    <a href="{% url 'partners:meeting-update' meeting.pk %}">수정하기</a>
+                                    <form action="{% url 'partners:meeting-delete' meeting.pk %}"
+                                          method="post">{% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.path }}">
+                                        <div class="delete-instagram">삭제하기</div>
+                                    </form>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
-                        {% for p in meeting.photos.all %}
-                            <img src="{{ p.image.url }}" style="width: 100%; height: auto"/>
+                        {% for photo in meeting.photos.all %}
+                            <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
                         {% endfor %}
                     </div>
                     <div class="row" style="padding:16px;">
@@ -45,12 +57,44 @@
     </div>
 {% endblock %}
 {% block javascript %}
-    {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
     <script type="text/javascript">
+
         $(document).ready(function () {
-            $(':input').on('keypress', function(event) {
-                if(event.which === 13) {
+
+        {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
+        {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
+            $(':input').on('keypress', function (event) {
+                if (event.which === 13) {
                     $(this).closest('form').trigger('submit')
+                }
+            })
+
+            {# dropdown-option div를 클릭하면 드롭다운을 열어준다 #}
+            $('.dropdown-option').on('click', function (event) {
+                $(this).find('.dropdown-content')
+                    .first()[0]
+                    .classList
+                    .toggle("show")
+            })
+
+            {# 삭제버튼을 누르면 해당 글을 삭제한다 #}
+            $('.delete-instagram').on('click', function (event) {
+                let flag = confirm('정말 지우시겠습니까?')
+                if (flag) {
+                    $(this).closest('form').trigger('submit')
+                }
+            })
+
+            {# glyphicon을 담은 span을 클릭한 것이 아니라면 드롭다운을 닫아준다  #}
+            $(window).on('click', function (event) {
+                if (!event.target.matches('span')) {
+                    let dropdowns = document.getElementsByClassName("dropdown-content");
+
+                    for (element of dropdowns) {
+                        if (element.classList.contains('show')) {
+                            element.classList.remove('show')
+                        }
+                    }
                 }
             })
         })
