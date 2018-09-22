@@ -81,17 +81,12 @@
         <nav>
             <ul class="box-primary-nav">
                 <li class="box-label">Caffe人</li>
-                {% if request.user.is_authenticated %}
                     <li><a href="{% url 'core:entrypoint' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
+                {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a></li>
                     <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
-                    <!--FIXME: 사진첩? 다른기능?-->
-                    <li><a href="#">사진첩</a></li>
-                {% else %}
-                    <!--FIXME: 다른기능?-->
-                    <li><a href="{% url 'core:index' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
-                    <li><a href="#">공지사항</a></li>
-                    <li><a href="#">사진첩</a></li>
+                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a></li>
+                    <li><a href="{% url 'cafes:cafes-search' %}">카페 검색</a></li>
                 {% endif %}
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:old-register' user.id %}">기존회원 재가입</a></li>
