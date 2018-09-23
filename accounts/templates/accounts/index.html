@@ -78,7 +78,7 @@
 
                     {% else %}
                         {# 현재 유저가 아래짝지일 때 #}
-                        <div class="row mb-50">
+                        <div class="row">
                             <div class="col-xs-12">
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
@@ -170,6 +170,11 @@
                                     <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                 </div>
                             {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mt-50">
+                                <h2>{{ score }}점</h2>
+                            </div>
                         </div>
                     {% endif %}
 
