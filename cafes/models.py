@@ -46,6 +46,7 @@ class Cafe(TimeStampedMixin):
     closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3, blank=True)
     closed_holiday = models.BooleanField(_('공휴일 휴무 여부'))
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='uploader')
+    last_modifier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None, null=True, related_name='modifier')
     # image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
 
     # naver api

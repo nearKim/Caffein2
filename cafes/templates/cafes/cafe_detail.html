@@ -8,12 +8,12 @@
     <section class="contact">
         <div class="container-fluid" style="margin-top:30px; margin-bottom: 30px">
             {% for photo in cafe.photos.all %}
-               <img src="{{ photo.image.url }}">
+                <img src="{{ photo.image.url }}">
             {% empty %}
                 <p class="lead center">사진을 등록해주세요!</p>
             {% endfor %}
         </div>
-    <hr>
+        <hr>
         <div class="container">
             <div class="row">
                 <div class="col-sm-8">
@@ -23,6 +23,12 @@
                             {% thumbnail "30x30" cafe.uploader.profile_pic %}
                         {% endif %}
                         {{ cafe.uploader.name }} 님이 {{ cafe.created|date:"Y년 m월 d일" }}에 등록
+                    </h6>
+                    <h6>
+                        {% if cafe.last_modifier.profile_pic %}
+                            {% thumbnail "30x30" cafe.last_modifier.profile_pic %}
+                        {% endif %}
+                        {{ cafe.last_modifier.name }} 님이 {{ cafe.updated|date:"Y년 m월 d일" }}에 마지막으로 수정
                     </h6>
                     <hr>
                     <div class="row">
@@ -38,8 +44,8 @@
                         </div>
                         <div class="col-sm-10">
                             {% if cafe.description %}
-                            <h5>{{ cafe.description }}</h5>
-                                {% else %}
+                                <h5>{{ cafe.description }}</h5>
+                            {% else %}
                                 <p>정보를 등록해주세요!</p>
                             {% endif %}
                         </div>
@@ -49,9 +55,9 @@
                         </div>
                         <div class="col-sm-10">
                             {% if cafe.phone %}
-                            <h5>{{ cafe.phone }}</h5>
+                                <h5>{{ cafe.phone }}</h5>
                             {% else %}
-                            <p>정보를 등록해주세요!</p>
+                                <p>정보를 등록해주세요!</p>
                             {% endif %}
                         </div>
                         <div class="col-sm-2">
