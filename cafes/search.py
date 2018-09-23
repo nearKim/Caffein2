@@ -21,7 +21,7 @@ def search_place(request):
             return render(request, 'cafes/place_search.html', context={'places': ''})
 
         encText = urllib.parse.quote(place)
-        url = "https://openapi.naver.com/v1/search/local?display=20&query=" + encText  # json 결과
+        url = "https://openapi.naver.com/v1/search/local?display=10&query=" + encText  # json 결과
 
         request_obj = urllib.request.Request(url)
         request_obj.add_header("X-Naver-Client-Id", NAVER_CLIENT_ID)
