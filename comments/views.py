@@ -1,13 +1,15 @@
-from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 # Create your views here.
 from django.views.generic import CreateView, UpdateView, DeleteView
 
 from comments.models import Comment
+from core.mixins import ValidAuthorRequiredMixin
 from core.models import Instagram, Meeting
 
 
-class InstagramCommentCreateView(CreateView):
+class InstagramCommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
 
@@ -19,7 +21,7 @@ class InstagramCommentCreateView(CreateView):
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
-class MeetingCommentCreateView(CreateView):
+class MeetingCommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
 
@@ -31,7 +33,7 @@ class MeetingCommentCreateView(CreateView):
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
-class CommentUpdateView(UpdateView):
+class CommentUpdateView(ValidAuthorRequiredMixin, UpdateView):
     model = Comment
     template_name_suffix = '_update_form'
     fields = ['content']
@@ -40,7 +42,7 @@ class CommentUpdateView(UpdateView):
         return Comment.objects.get(pk=self.kwargs['pk']).get_absolute_url()
 
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(ValidAuthorRequiredMixin, DeleteView):
     model = Comment
 
     def get_success_url(self):

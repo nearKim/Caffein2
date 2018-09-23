@@ -1,4 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -15,7 +18,7 @@ from django.views.generic.edit import (
 from accounts.models import ActiveUser
 from cafes.models import Cafe
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin
+from core.mixins import FaceBookPostMixin, StaffRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
 from .models import (
@@ -26,7 +29,7 @@ from core.models import Meeting, MeetingPhoto, OperationScheme
 
 
 # 모든 모임을 한 화면에 보여주는 ListView
-class EveryMeetingListView(ListView):
+class EveryMeetingListView(LoginRequiredMixin, ListView):
     model = OfficialMeeting
     template_name = 'meetings/meeting_list.html'
     ordering = ['-created']
@@ -40,7 +43,7 @@ class EveryMeetingListView(ListView):
 
 # CRUD for OfficialMeeting
 
-class OfficialMeetingCreateView(FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
+class OfficialMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 공식모임을 생성하였습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -51,7 +54,8 @@ class OfficialMeetingCreateView(FaceBookPostMixin, OfficialMeetingCreateUpdateMi
         return super(OfficialMeetingCreateView, self).form_valid(form)
 
 
-class OfficialMeetingUpdateView(OfficialMeetingCreateUpdateMixin, UpdateView):
+class OfficialMeetingUpdateView(StaffRequiredMixin, OfficialMeetingCreateUpdateMixin, UpdateView):
+
     def form_valid(self, form):
         instance = form.save()
         MeetingPhoto.objects.filter(meeting=instance).delete()
@@ -64,11 +68,11 @@ class OfficialMeetingUpdateView(OfficialMeetingCreateUpdateMixin, UpdateView):
         return super(OfficialMeetingUpdateView, self).form_valid(form)
 
 
-class OfficialMeetingListView(ListView):
+class OfficialMeetingListView(LoginRequiredMixin, ListView):
     model = OfficialMeeting
 
 
-class OfficialMeetingDetailView(FormMixin, DetailView):
+class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = OfficialMeeting
     form_class = CommentForm
 
@@ -80,13 +84,13 @@ class OfficialMeetingDetailView(FormMixin, DetailView):
         return context
 
 
-class OfficialMeetingDeleteView(DeleteView):
+class OfficialMeetingDeleteView(StaffRequiredMixin, DeleteView):
     model = OfficialMeeting
     success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CoffeeEducation
-class CoffeeEducationCreateView(FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
+class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 커피교육을 열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -97,7 +101,7 @@ class CoffeeEducationCreateView(FaceBookPostMixin, CoffeeEducationCreateUpdateMi
         return super(CoffeeEducationCreateView, self).form_valid(form)
 
 
-class CoffeeEducationUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
+class CoffeeEducationUpdateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
         MeetingPhoto.objects.filter(meeting=instance).delete()
@@ -110,11 +114,11 @@ class CoffeeEducationUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
         return super(CoffeeEducationUpdateView, self).form_valid(form)
 
 
-class CoffeeEducationListView(ListView):
+class CoffeeEducationListView(LoginRequiredMixin, ListView):
     model = CoffeeEducation
 
 
-class CoffeeEducationDetailView(FormMixin, DetailView):
+class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = CoffeeEducation
     form_class = CommentForm
 
@@ -126,13 +130,13 @@ class CoffeeEducationDetailView(FormMixin, DetailView):
         return context
 
 
-class CoffeeEducationDeleteView(DeleteView):
+class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
     model = CoffeeEducation
     success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CoffeeMeeting
-class CoffeeMeetingCreateView(FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
+class CoffeeMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
@@ -153,7 +157,7 @@ class CoffeeMeetingCreateView(FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin,
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 
-class CoffeeMeetingUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
+class CoffeeMeetingUpdateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def get_form_kwargs(self):
@@ -173,16 +177,16 @@ class CoffeeMeetingUpdateView(CoffeeEducationCreateUpdateMixin, UpdateView):
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
 
 
-class CoffeeMeetingDeleteView(DeleteView):
+class CoffeeMeetingDeleteView(StaffRequiredMixin, DeleteView):
     model = CoffeeMeeting
     success_url = reverse_lazy('meetings:meetings-list')
 
 
-class CoffeeMeetingListView(ListView):
+class CoffeeMeetingListView(LoginRequiredMixin, ListView):
     model = CoffeeMeeting
 
 
-class CoffeeMeetingDetailView(FormMixin, DetailView):
+class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     model = CoffeeMeeting
     form_class = CommentForm
 
@@ -195,6 +199,7 @@ class CoffeeMeetingDetailView(FormMixin, DetailView):
 
 
 # Participate View
+@login_required()
 def participate_meeting(request, pk):
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
