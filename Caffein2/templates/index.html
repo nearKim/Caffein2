@@ -862,7 +862,7 @@
     <script type="text/javascript" src="{% static "assets/js/wow.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/owl.carousel.min.js" %}"></script>
 {% endblock %}
-
+{% block initial-script %}
 <script type="text/javascript">
     $(window).on('load', function () {
         new WOW().init();
@@ -903,5 +903,6 @@
         });
     });
 </script>
+{% endblock %}
 </body>
 </html>

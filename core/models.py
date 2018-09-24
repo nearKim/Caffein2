@@ -1,17 +1,13 @@
 from io import BytesIO
 
 from PIL import Image
-from django.contrib import messages
 from django.core.files.base import ContentFile
 from django.db import models
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from comments.models import Comment
-from core.mixins import Postable, TimeStampedMixin
-# from partners.models import Partners
 
 from .mixins import (
     TimeStampedMixin,
