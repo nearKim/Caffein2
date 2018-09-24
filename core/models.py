@@ -35,7 +35,7 @@ class Instagram(Postable):
 class Meeting(Postable):
     title = models.CharField(_('제목'), max_length=50, blank=True)
     meeting_date = models.DateTimeField(_('날짜 및 시간'))
-    max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
+    max_participants = models.PositiveSmallIntegerField(_('최대 참석인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
     class Meta:

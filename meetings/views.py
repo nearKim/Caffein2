@@ -136,7 +136,7 @@ class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
 
 
 # CoffeeMeeting
-class CoffeeMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
+class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
@@ -157,7 +157,7 @@ class CoffeeMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeMeeti
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 
-class CoffeeMeetingUpdateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
+class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
     template_name_suffix = '_update_form'
 
     def get_form_kwargs(self):
@@ -177,7 +177,7 @@ class CoffeeMeetingUpdateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMix
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
 
 
-class CoffeeMeetingDeleteView(StaffRequiredMixin, DeleteView):
+class CoffeeMeetingDeleteView(LoginRequiredMixin, DeleteView):
     model = CoffeeMeeting
     success_url = reverse_lazy('meetings:meetings-list')
 

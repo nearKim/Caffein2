@@ -64,6 +64,8 @@
 
 
 
+
+
                             {% if request.user.is_authenticated %}{% url 'core:entrypoint' %}{% else %}{% url 'core:index' %}{% endif %}">
                         <img src="{% static "assets/img/logo.png" %}" width="80" alt="Logo"></a>
                     <!-- box-nav -->
@@ -865,7 +867,7 @@
 {% endblock %}
 
 <script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load', function () {
         new WOW().init();
 
         // initialise flexslider
