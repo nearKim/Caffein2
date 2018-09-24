@@ -16,7 +16,7 @@ from django.views.generic.edit import (
 )
 
 from accounts.models import ActiveUser
-from cafes.models import Cafe
+from cafes.models import Cafe, CafePhoto
 from comments.forms import CommentForm
 from core.mixins import FaceBookPostMixin, StaffRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
@@ -151,9 +151,16 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
         instance.participants.add(author_active)
         self.message = '{}님이 커모를  열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
-            for f in self.request.FILES.getlist('images'):
-                photo = MeetingPhoto(meeting=instance, image=f)
-                photo.save()
+            if not 'save_cafephoto' in self.request.POST:
+                # 사용자가 그냥 flag를 넣지 않았다면 그냥 모임사진으로 저장한다.
+                for f in self.request.FILES.getlist('images'):
+                    photo = MeetingPhoto(meeting=instance, image=f)
+                    photo.save()
+            else:
+                # 사용자가 flag를 넣었으면 카페 자체의 사진으로 저장한다.
+                for f in self.request.FILES.getlist('images'):
+                    photo = CafePhoto(cafe_id=self.request.POST['cafe'], image=f)
+                    photo.save()
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 

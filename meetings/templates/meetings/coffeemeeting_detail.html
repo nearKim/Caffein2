@@ -3,10 +3,13 @@
 {% load imagekit %}
 {% load static %}
 
+{% block title %}
+    <title>커모</title>
+{% endblock %}
+
 {% block content %}
     <!--네이버맵 자바스크립트 로딩-->
     {% include "core/navermap_script.html" %}
-    <title>커모</title>
     <!--본문-->
     <section class="contact">
         <h1 class="text-center">{{ coffeemeeting.title }}</h1>
@@ -27,9 +30,11 @@
                 </p>
 
                 <p class="mb-50">
-                   <b class="libre-text-lg">카페: {{ coffeemeeting.cafe }}</b><a target="_blank" href="{% url 'cafes:cafes-detail' coffeemeeting.cafe.id %}" class="lead">(카페 정보 보기)</a>
+                    <b class="libre-text-lg">카페: {{ coffeemeeting.cafe }}</b><a target="_blank"
+                                                                                href="{% url 'cafes:cafes-detail' coffeemeeting.cafe.id %}"
+                                                                                class="lead">(카페 정보 보기)</a>
                 </p>
-            <!--네이버맵 뷰-->
+                <!--네이버맵 뷰-->
                 <div id="map" style="width:100%;height:400px;"></div>
                 <script type="text/javascript">
                     let x = "{{ coffeemeeting.cafe.mapx }}"
@@ -62,7 +67,7 @@
                     {% endfor %}
                     ( {{ coffeemeeting.participants.count }} )명 <br>
                 </p>
-            <!--참여 메세지-->
+                <!--참여 메세지-->
                 {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
@@ -71,16 +76,16 @@
                     </ul>
                 {% endif %}
 
-        <!--참여버튼-->
+                <!--참여버튼-->
                 <form action="{% url 'meetings:participate' pk=coffeemeeting.pk %}" method="post">{% csrf_token %}
                     {# FIXME: Participant중에 현재 user가 존재한다면 텍스트를 참여 취소로 바꿔야 한다. 취소시 alert창을 띄워야겠지.#}
                     <button id="btn-participate" class="btn btn-default center-block">참여</button>
                 </form>
                 <hr>
             </div>
-        <!--댓글-->
+            <!--댓글-->
             <div class="row col-sm-6">
-                {% include 'comments/comment_view_create.html' with goto='meetings:coffee-meeting-detail'%}
+                {% include 'comments/comment_view_create.html' with goto='meetings:coffee-meeting-detail' %}
             </div>
 
             <!--삭제/수정버튼-->

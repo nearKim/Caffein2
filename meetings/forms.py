@@ -1,6 +1,7 @@
 from django.forms import (
     ModelForm,
     forms,
+    BooleanField,
     ClearableFileInput,
     DateTimeInput,
     HiddenInput)
@@ -68,6 +69,8 @@ class CoffeeMeetingForm(ModelForm):
 
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='카페 사진',
                              help_text='카페 사진이 있으면 첨부해주세요!', required=False)
+    save_cafephoto = BooleanField(required=False,initial=False, label='카페 정보에 사진을 등록할까요?',
+                                  help_text='체크하면 카페 정보가 업데이트됩니다! 본인이 찍은 사진이면 등록해주세요!')
 
     def __init__(self, *args, **kwargs):
         # kwargs에서 form을 만드는데 필요없는 view에서 넘겨준 부가정보를 먼저 빼낸다
