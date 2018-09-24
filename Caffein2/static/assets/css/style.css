@@ -103,7 +103,7 @@ theme.
 	margin-top:5em;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
-    width: 70%;
+    width: 614px;
     border-radius: 5px;
 }
 .dropdown-option {
@@ -181,20 +181,19 @@ theme.
 }
 
 /* Fading animation */
-.fade {
+.fading {
   -webkit-animation-name: fade;
   -webkit-animation-duration: 1.5s;
   animation-name: fade;
-  animation-fill-mode: forwards;
   animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
+@-webkit-keyframes fading {
   from {opacity: .4}
   to {opacity: 1}
 }
 
-@keyframes fade {
+@keyframes fading {
   from {opacity: .4}
   to {opacity: 1}
 }

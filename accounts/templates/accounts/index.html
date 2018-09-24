@@ -221,10 +221,14 @@
                 <div class="col-sm-6" style="padding-right:5vw;">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3> 커모 </h3>
-                            <hr>
+                            <h2 style="margin:0;"> 커모 </h2>
+                            {# FIXME: 커모 더보기 버튼 추가!#}
+                            <a href="#" class="pull-right" style="margin:0;">
+                                <span class="glyphicon glyphicon-plus"></span> 더보기
+                            </a>
                         </div>
                     </div>
+                    <hr style="margin-top:10px;">
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}

@@ -11,7 +11,7 @@ class PartnerMeetingForm(ModelForm):
         model = PartnerMeeting
         fields = ['content', 'num_coffee', 'num_eat']
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}))
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='짝모 사진')
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)

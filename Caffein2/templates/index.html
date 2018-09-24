@@ -112,20 +112,7 @@
 {% block content %}
     <section class="box-intro">
         <div class="table-cell">
-
-            <h3 class="box-headline letters rotate-2">
-										<span class="box-words-wrapper">
-												<b class="is-visible">서울대학교&nbsp; 커피동아리&nbsp;</b>
-												<b>COFFEE&amp;DESSERT&nbsp;</b>
-										</span>
-            </h3>
-            <h1>카페인</h1>
-
-            {#            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login-modal">#}
-            {#                로그인#}
-            {#            </button>#}
-
-            <!-- Modal -->
+               <!-- Modal -->
             <div class="modal fade" id="modal-login" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -147,6 +134,15 @@
                     </div>
                 </div>
             </div>
+            <h3 class="box-headline letters rotate-2">
+										<span class="box-words-wrapper">
+												<b class="is-visible">서울대학교&nbsp; 커피동아리&nbsp;</b>
+												<b>COFFEE&amp;DESSERT&nbsp;</b>
+										</span>
+            </h3>
+            <h1>카페인</h1>
+
+
 
         </div>
         {#            <div class="mouse">#}
@@ -862,7 +858,6 @@
     <script type="text/javascript" src="{% static "assets/js/wow.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/owl.carousel.min.js" %}"></script>
 {% endblock %}
-{% block initial-script %}
 <script type="text/javascript">
     $(window).on('load', function () {
         new WOW().init();
@@ -903,6 +898,5 @@
         });
     });
 </script>
-{% endblock %}
 </body>
 </html>

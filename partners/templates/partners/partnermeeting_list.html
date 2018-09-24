@@ -29,7 +29,7 @@
                                     <form action="{% url 'partners:meeting-delete' meeting.pk %}"
                                           method="post">{% csrf_token %}
                                         <input type="hidden" name="next" value="{{ request.path }}">
-                                        <div class="delete-instagram">삭제하기</div>
+                                        <a href="#" class="delete-instagram">삭제하기</a>
                                     </form>
 
                                 </div>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="photo-container row" style="position:relative;">
                         {% for photo in meeting.photos.all %}
-                            <div class="photo-slide fade">
+                            <div class="photo-slide fading">
                                 <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
                             </div>
                         {% endfor %}
