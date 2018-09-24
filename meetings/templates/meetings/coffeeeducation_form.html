@@ -3,24 +3,31 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    <title> 커피 교육</title>
+    <title>커피 교육</title>
 {% endblock %}
-{% block jumbotron %}
-    <div class="container">
-    <h1 class="jumbotron">커피 교육 열기</h1>
-    <hr>
-{% endblock jumbotron %}
-{% block cafe_form %}
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" class="btn btn-default center-block" value="교육 열기">
-    </form>
-    </div>
-{% endblock cafe_form %}
+{% block content %}
+    <style> .btn {
+        min-width: auto !important;
+        line-height: 0;
+        margin: 0 !important;
+        display: inline-block !important;
+        border-radius: 4px;
+    }</style>
+    <div class="container mt-150">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">커피 교육 열기</h1>
+            <hr class="my-4">
+            <p>교육의 종류 및 난이도를 선택해주세요.</p>
+            <p>교육장소를 네이버지도에서 찾기 애매한 경우 직접 입력해주세요!</p>
+        </div>
 
-<script type="text/javascript">
-    {% block script %}
-        {{ block.super }}
-    {% endblock %}
-</script>
+        {% include 'cafes/place_search.html' %}
+
+        <form class="container mb-50" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-block center-block"
+                   style="margin-top:5px; border: 2px solid; font-size:25px;" value="교육 열기">
+        </form>
+    </div>
+{% endblock %}

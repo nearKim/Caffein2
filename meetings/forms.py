@@ -17,7 +17,8 @@ class OfficialMeetingForm(ModelForm):
         fields = ['title', 'content', 'category', 'location', 'meeting_date', 'max_participants', 'mapx', 'mapy']
         widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='사진',
+                             help_text='모임 관련 사진들이 있다면 첨부해주세요.', required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -37,10 +38,12 @@ class OfficialMeetingForm(ModelForm):
 class CoffeeEducationForm(ModelForm):
     class Meta:
         model = CoffeeEducation
-        fields = ['title', 'content', 'category', 'difficulty', 'location', 'meeting_date', 'max_participants', 'mapx', 'mapy']
+        fields = ['title', 'content', 'category', 'difficulty', 'location', 'meeting_date', 'max_participants', 'mapx',
+                  'mapy']
         widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='사진',
+                             help_text='교육 관련 사진들이 있으면 첨부해주세요.', required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -63,7 +66,8 @@ class CoffeeMeetingForm(ModelForm):
         fields = ['title', 'content', 'cafe', 'meeting_date', 'max_participants']
         widgets = {'meeting_date': DateTimeInput(attrs={'id': 'inline_datetimepicker'})}
 
-    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), required=False)
+    images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='카페 사진',
+                             help_text='카페 사진이 있으면 첨부해주세요!', required=False)
 
     def __init__(self, *args, **kwargs):
         # kwargs에서 form을 만드는데 필요없는 view에서 넘겨준 부가정보를 먼저 빼낸다

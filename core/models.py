@@ -114,7 +114,7 @@ class Meeting(Postable):
 
 
 class MeetingPhoto(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_meeting_photo_path)
+    image = models.ImageField(upload_to=get_meeting_photo_path, verbose_name=_('사진'))
     meeting = models.ForeignKey('core.Meeting', related_name='photos', verbose_name=_('모임'),
                                 on_delete=models.CASCADE)
 
@@ -145,7 +145,7 @@ class MeetingPhoto(TimeStampedMixin):
 
 
 class FeedPhoto(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_feed_photo_path)
+    image = models.ImageField(upload_to=get_feed_photo_path, verbose_name=_('사진'))
     instagram = models.ForeignKey('core.Instagram', default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
 

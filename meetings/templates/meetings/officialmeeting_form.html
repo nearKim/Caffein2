@@ -5,25 +5,33 @@
 {% block title %}
     <title>공식 모임</title>
 {% endblock %}
-{% block jumbotron %}
-    <div class="container">
-    <h1 class="jumbotron">공식 모임 열기</h1>
-    <hr>
-{% endblock jumbotron %}
+{% block content %}
+    <style> .btn {
+        min-width: auto !important;
+        line-height: 0;
+        margin: 0 !important;
+        display: inline-block !important;
+        border-radius: 4px;
+    }</style>
+    <div class="container mt-150">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">공식 모임 열기</h1>
+            <p class="lead"> 신환회/동소제/MT/장터를 개최합니다.</p>
+            <hr class="my-4">
+            <p>행사장소를 네이버지도에서 찾기 애매한 경우 직접 입력해주세요!</p>
+            <p>ex) 자하연과 문화관 사이 </p>
+        </div>
 
-{% block cafe_form %}
-    <form class="container" method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" class="btn btn-default center-block" value="모임 만들기"/>
-    </form>
+        {% include 'cafes/place_search.html' %}
+
+        <form class="container mb-50" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-block center-block" style="margin-top:5px; border: 2px solid; font-size:25px;"
+                   value="모임 만들기"/>
+        </form>
     </div>
-{% endblock cafe_form %}
-
-{#    TODO: relative positioned container 에러 해결#}
-<script type="text/javascript">
-    {% block script %}
-        {{ block.super }}
-
-    {% endblock %}
-</script>
-<script src="{% static 'meetings/js/datetimepicker.js' %}"></script>
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'meetings/js/datetimepicker.js' %}"></script>
+{% endblock %}
