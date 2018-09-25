@@ -11,7 +11,7 @@
             <p class="libre-text-lg mb-50">
                 사진
                 {% if user.profile_pic %}
-                {% thumbnail "300x300" user.profile_pic %}
+                {% thumbnail "300x300" user.profile_pic -- class="img-profile"%}
                 {% else %}
                 <small>이 없네요.</small>
                 {% endif %}

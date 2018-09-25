@@ -103,7 +103,7 @@ theme.
 	margin-top:5em;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
-    width: 70%;
+    width: 614px;
     border-radius: 5px;
 }
 .dropdown-option {
@@ -181,20 +181,19 @@ theme.
 }
 
 /* Fading animation */
-.fade {
+.fading {
   -webkit-animation-name: fade;
   -webkit-animation-duration: 1.5s;
   animation-name: fade;
-  animation-fill-mode: forwards;
   animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
+@-webkit-keyframes fading {
   from {opacity: .4}
   to {opacity: 1}
 }
 
-@keyframes fade {
+@keyframes fading {
   from {opacity: .4}
   to {opacity: 1}
 }
@@ -1092,9 +1091,7 @@ ul.tags li a:hover{
     display: table;
     height: 100vh;
     width: 100%;
-    background-image: url(../img/header.jpg);
-		background-attachment: fixed;
-    background-position: center center;
+    background: url(../img/header.jpg) fixed center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -2125,11 +2122,22 @@ footer a:hover {
     text-align: center;
 }
 
-.flex-direction-nav a:before {
-    font-size: 40px !important;
-    color: #000 !important;
+.flex-direction-nav a:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/left.png') !important;
+    width: 40px;
+    height: 40px;
 }
-
+.flex-direction-nav a.flex-next:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/right.png') !important;
+    width: 40px;
+    height: 40px;
+}
 @media only screen and (max-width : 768px){
  	#testimonials {
     padding: 200px 0 200px;

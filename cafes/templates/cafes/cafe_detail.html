@@ -3,18 +3,28 @@
 {% load imagekit %}
 {% load crispy_forms_tags %}
 
+{% block title %}
+    <title>{{ cafe.name }}</title>
+{% endblock %}
+
 {% block content %}
     {% include 'core/navermap_script.html' %}
     <section class="contact">
-        <div class="container-fluid" style="margin-top:30px; margin-bottom: 30px">
-            {% for photo in cafe.photos.all %}
-               <img src="{{ photo.image.url }}">
-            {% empty %}
-                <p class="lead center">사진을 등록해주세요!</p>
-            {% endfor %}
+        <div class="container-fluid mt-50 mb-50" style="margin-left: 20px; margin-right: 20px;">
+            <div class="flexslider carousel">
+                <ul class="slides">
+                    {% for photo in cafe.photos.all %}
+                        <li>
+                            <img src="{{ photo.image_thumb.url }}">
+                        </li>
+                    {% empty %}
+                        <p class="lead center">사진을 등록해주세요!</p>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    <hr>
-        <div class="container">
+        <hr>
+        <div class="container" style="margin-top: 10px;">
             <div class="row">
                 <div class="col-sm-8">
                     <h1>{{ cafe.name }}</h1>
@@ -23,6 +33,14 @@
                             {% thumbnail "30x30" cafe.uploader.profile_pic %}
                         {% endif %}
                         {{ cafe.uploader.name }} 님이 {{ cafe.created|date:"Y년 m월 d일" }}에 등록
+                    </h6>
+                    <h6>
+                        {% if cafe.last_modifier %}
+                            {% if cafe.last_modifier.profile_pic %}
+                                {% thumbnail "30x30" cafe.last_modifier.profile_pic %}
+                            {% endif %}
+                            {{ cafe.last_modifier.name }} 님이 {{ cafe.modified|date:"Y년 m월 d일" }}에 마지막으로 수정
+                        {% endif %}
                     </h6>
                     <hr>
                     <div class="row">
@@ -38,8 +56,8 @@
                         </div>
                         <div class="col-sm-10">
                             {% if cafe.description %}
-                            <h5>{{ cafe.description }}</h5>
-                                {% else %}
+                                <h5>{{ cafe.description }}</h5>
+                            {% else %}
                                 <p>정보를 등록해주세요!</p>
                             {% endif %}
                         </div>
@@ -49,9 +67,9 @@
                         </div>
                         <div class="col-sm-10">
                             {% if cafe.phone %}
-                            <h5>{{ cafe.phone }}</h5>
+                                <h5>{{ cafe.phone }}</h5>
                             {% else %}
-                            <p>정보를 등록해주세요!</p>
+                                <p>정보를 등록해주세요!</p>
                             {% endif %}
                         </div>
                         <div class="col-sm-2">
@@ -113,13 +131,58 @@
                 <div class="form-group-sm">
                     <div class="col-md-12 text-center">
                         <a href="{% url 'cafes:cafes-update' cafe.pk %}" class="btn btn-default">수정하기</a>
-                        <a href="{% url 'meetings:coffee-meeting-create' cafe.pk %}" class="btn btn-primary">커모열기</a>
+                        <a href="{% url 'meetings:coffee-meeting-create' cafe.pk %}" class="btn btn-default">커모열기</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 {% endblock content %}
-
 {% block javascript %}
+    <script type="text/javascript">
+        {% if request.user_agent.is_mobile %}
+            var minGridSize = 2;
+            var maxGridSize = 4;
+            var imgwidth = 150;
+        {% else %}
+            var minGridSize = 4;
+            var maxGridSize = 5;
+            var imgwidth = 260;
+        {% endif %}
+        (function () {
+
+            // store the slider in a local variable
+            var $window = $(window),
+                flexslider = {vars: {}};
+
+            // tiny helper function to add breakpoints
+            function getGridSize() {
+                return (window.innerWidth < 600) ? minGridSize :
+                    (window.innerWidth < 900) ? maxGridSize : maxGridSize + 1;
+            }
+
+
+            $window.load(function () {
+                $('.flexslider').flexslider({
+                    animation: "slide",
+                    prevText:'이전',
+                    nextText:'다음',
+                    animationLoop: false,
+                    controlNav: false,
+                    itemWidth: imgwidth,
+                    itemMargin: 5,
+                    minItems: getGridSize(), // use function to pull in initial value
+                    maxItems: getGridSize() // use function to pull in initial value
+                });
+            });
+
+            // check grid size on resize event
+            $window.resize(function () {
+                var gridSize = getGridSize();
+
+                flexslider.vars.minItems = gridSize;
+                flexslider.vars.maxItems = gridSize;
+            });
+        }());
+    </script>
 {% endblock javascript %}

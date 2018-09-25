@@ -1,6 +1,8 @@
 {% extends 'index.html' %}
 {% load imagekit %}
 {% load static %}
+{# 로그인에 성공하면 보게 되는 메인 인덱스 페이지이다. 짝지정모, 현재 진행중인 커모정보와 함께 최근 사진들이 있는 사진첩을 함께 보여준다. #}
+{# 3회에 걸쳐 분기한다. 1차로 짝지의 배정여부에 따라 분기하고 2차로 위짝지인지 아래짝지인지에 따라 분기하며 3차로 아래짝지의 수에 따라 분기한다.#}
 
 {% block content %}
     <section class="box-intro">
@@ -198,10 +200,10 @@
                     </div>
                 {% endif %}
 
-                <div class="row">
+                <div class="row btn-container">
                     <div class="btn-group-lg mt-50 ">
-                        <a href="{% url 'cafes:cafes-search' %}" class="btn white" style="margin-right: 10px;">커모 열기</a>
-                        <a href="{% url 'partners:meeting-list' %}" class="btn green">짝모 보기</a>
+                        <a href="{% url 'cafes:cafes-search' %}" class="btn" style="margin-right: 10px;">커모 열기</a>
+                        <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
                         {% if partner_set %}
                             <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">
                                 짝모 등록</a>
@@ -219,10 +221,14 @@
                 <div class="col-sm-6" style="padding-right:5vw;">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3> 커모 </h3>
-                            <hr>
+                            <h2 style="margin:0;"> 커모 </h2>
+                            {# FIXME: 커모 더보기 버튼 추가!#}
+                            <a href="#" class="pull-right" style="margin:0;">
+                                <span class="glyphicon glyphicon-plus"></span> 더보기
+                            </a>
                         </div>
                     </div>
+                    <hr style="margin-top:10px;">
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}

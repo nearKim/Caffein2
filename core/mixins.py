@@ -1,11 +1,14 @@
 import facebook
 from django.conf import settings
-from django.contrib.sites.models import Site
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.db import models
-from django.http import HttpRequest
+from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 
 from Caffein2.settings.dev import FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
+
+
+# Model Mixins
 
 
 class TimeStampedMixin(models.Model):
@@ -28,6 +31,7 @@ class Postable(TimeStampedMixin):
         abstract = True
 
 
+# View Mixins
 class FaceBookPostMixin:
     def get_success_url(self):
         url = super(FaceBookPostMixin, self).get_success_url()
@@ -42,4 +46,42 @@ class FaceBookPostMixin:
         return url
 
     class Meta:
-        abstract=True
+        abstract = True
+
+
+class StaffRequiredMixin(AccessMixin):
+    """현재 유저가 운영진이 아니라면 403을 반환한다"""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        elif not request.user.is_staff:
+            return HttpResponseForbidden()
+        else:
+            return super(StaffRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class StaffOrMeRequiredMixin(AccessMixin):
+    """운영진이거나 유저가 해당 객체 자신이 아니면 403을 반환한다"""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        elif self.get_object() != request.user and not request.user.is_staff:
+            return HttpResponseForbidden()
+        else:
+            return super(StaffOrMeRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class ValidAuthorRequiredMixin(AccessMixin):
+    """해당 객체의 author가 운영진이거나 객체의 author가 아니면 403을 반환한다"""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        elif self.get_object().author != request.user and not request.user.is_staff:
+            return HttpResponseForbidden()
+        else:
+            return super(ValidAuthorRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+

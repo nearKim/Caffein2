@@ -1,91 +1,66 @@
-{% extends 'index.html' %}
+{% extends 'meeting_detail_base.html' %}
 {% load crispy_forms_tags %}
 {% load imagekit %}
 {% load static %}
 
-{% block content %}
-    <!--네이버맵 자바스크립트 로딩-->
-    {% include "core/navermap_script.html" %}
-    <!--본문-->
-    <section class="contact">
-        <h1 class="text-center">커피 교육</h1>
-        <div class="libre-text-lg container">
-            <div class="row col-sm-6">
-                <h2>
-                    제목: {{ object.title }}
-                </h2>
-                <h4>
-                    작성자: {{ object.author }}
-                </h4>
-
-                {% for p in object.photos.all %}
-                    {% if p.image %}
-                        <img src="{{ p.image.url }}"/>
-                    {% endif %}
-                {% endfor %}
-
-                <p class="libre-text-lg mb-50">
-                    내용: <b>{{ object.content }}</b>
-                </p>
-                <p class="libre-text-lg mb-50">
-                    종류: <b>{{ object.get_category_display }}</b>
-                </p>
-                <p class="libre-text-lg mb-50">
-                    난이도: <b>{{ object.get_difficulty_display }}</b>
-                </p>
-                <p class="libre-text-lg mb-50">
-                    장소: <b>{{ object.location }}</b>
-                </p>
-
-                <!--네이버맵 뷰-->
-                <div id="map" style="width:100%;height:400px;"></div>
-                <script type="text/javascript">
-                    let x = "{{ object.mapx }}"
-                    let y = "{{ object.mapy }}"
-                    let location_title = "<h3>{{ object.location }}</h3>"
-                </script>
-                <script type="text/javascript" src="{% static 'core/js/navermap_view.js' %}"></script>
-
-            </div>
-            <div class="row col-sm-6">
-                <p class="libre-text-lg mb-50">
-                    날짜 및 시간: {{ object.meeting_date| date:"Y년 m월 d일 A h시 i분" }}
-                </p>
-                <p class="libre-text-lg mb-50">
-                    최대 참여 가능인원:
-                    {% with object.max_participants as max %}
-                        {% if max == 0 %}
-                            누구나
-                        {% else %}
-                            {{ max }}
-                        {% endif %}
-                    {% endwith %}
-                </p>
-                <p class="libre-text-lg mb-50"> 참여자:
-
-                    {% for participant in object.participants.all %}
-                        {% if participant.user.profile_pic %}
-                            {% thumbnail "25x25" participant.user.profile_pic %}
-                        {% endif %}
-
-                        {{ participant.user.name }},
-                    {% empty %} 아직 참여자가 없네요
-                    {% endfor %}
-                    ({{ object.participants.count }})명 <br>
-                </p>
-
-                <!--참여 버튼-->
-                <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
-                    <button class="btn btn-default center-block">참여</button>
-                </form>
-                <hr>
-
-                <!--댓글-->
-                {% include 'comments/comment_view_create.html' with goto='meetings:education-detail' %}
-                {# TODO: 운영진이면 수정/삭제 할 수 있는 버튼#}
-            </div>
-        </div>
-    </section>
+{% block title %}
+    <title>커피교육</title>
 {% endblock %}
-<hr>
+
+{% block navermap %}
+    <!-- 네이버지도 -->
+    <div class="map-container row">
+        {% if object.mapx %}
+            {# 커피교육과 공식모임의 경우 장소데이터가 없을 수도 있다. 그런 경우 아예 네이버지도를 삭제한다. #}
+            <div id="map" style="width:100%;height:400px;"></div>
+            <script type="text/javascript">
+                let x = "{{ object.mapx }}"
+                let y = "{{ object.mapy }}"
+                let location_title = "<h3>{{ object.location }}</h3>"
+            </script>
+            <script type="text/javascript" src="{% static 'core/js/navermap_view.js' %}"></script>
+        {% else %}
+            <div class="col-sm-12 text-center" style="margin-top:25px;margin-bottom: 25px;">
+                <h5>지도가 없어요!</h5>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block below-map %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-12 text-center" style="font-size: calc(0.6vw + 14px); font-weight: bold;">
+            {{ object.location }}
+        </div>
+    </div>
+    <div class="row"
+         style="font-size:calc(0.5vw + 14px);
+                        margin-top:20px;
+                        margin-bottom:20px;
+                        border-bottom: 1px solid #e5e5e5;">
+
+        <div class="col-sm-4 text-center">
+            {{ object.get_category_display }} ( {{ object.get_difficulty_display }} )
+        </div>
+        <div class="col-sm-2 text-center">
+            {% with object.max_participants as max %}
+                <span>
+                {% if max == 0 %}
+                    누구나
+                {% else %}
+                    {{ max }}명
+                {% endif %}
+            {% endwith %}
+            </span>
+        </div>
+        <div class="col-sm-6 text-center" style="font-weight: bold;">
+            <span>{{ object.meeting_date | date:"m월d일 A h시 i분" }}</span>
+        </div>
+    </div>
+{% endblock %}
+{% block comment-form %}
+    {% with meeting_comment=object.comments %}
+        {% include 'comments/comment_view_create.html' with goto='meetings:education-detail' comments=meeting_comment object=object %}
+    {% endwith %}
+{% endblock %}
 

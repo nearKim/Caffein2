@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -21,6 +22,7 @@ from django.views.generic.edit import (
 
 from accounts.category import DEPARTMENT_COLLEGE_MAP, College
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm, SelfUserChangeForm
+from core.mixins import StaffOrMeRequiredMixin
 from core.models import OperationScheme
 from .models import ActiveUser
 
@@ -70,6 +72,8 @@ class UserCreateView(CreateView):
         if not OperationScheme.can_new_register():
             return render(request, 'accounts/cannot_register.html',
                           context={'user': request.user})
+        elif request.user.is_authenticated:
+            return HttpResponse('왜 이미 로그인까지 하신분이 또 신입가입을 시도하십니까? 개발자를 괴롭히기 위함인가요?')
         else:
             # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
@@ -97,16 +101,17 @@ class UserCreateView(CreateView):
         return HttpResponse(_('가입인증 이메일이 보내졌습니다. 이메일을 확인해주세요.'))
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(StaffOrMeRequiredMixin, DetailView):
     model = get_user_model()
     fields = ['rule_confirm', 'email', 'name', 'phone', 'student_no', 'college', 'department', 'category',
               'profile_pic', 'join_year', 'join_semester']
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-    template_name_suffix = '_update_form'
+class UserUpdateView(StaffOrMeRequiredMixin, UpdateView):
     model = get_user_model()
     form_class = SelfUserChangeForm
+    template_name_suffix = '_update_form'
+
 
 
 # ActiveUser
@@ -148,11 +153,11 @@ class ActiveUserCreateView(LoginRequiredMixin, CreateView):
         return reverse('accounts:old-register-done')
 
 
+@login_required()
 def old_register_done(request):
     if request.method == 'GET':
         return render(request, 'accounts/old_register_done.html',
                       context={'user': request.user})
-
 
 
 # Deprecated

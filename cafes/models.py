@@ -1,17 +1,21 @@
+from io import BytesIO
+
+from PIL import Image
+from django.core.files.base import ContentFile
 from django.core.validators import URLValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from imagekit.models import ProcessedImageField
+from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
 
 from core.mixins import TimeStampedMixin
 
 
 def get_cafe_photo_path(instance, filename):
-    return 'cafes/{:%Y/%m/%d}/{}'.format(now(), filename)
+    return 'media/cafes/{}/{:%Y/%m/%d}/{}'.format(instance.cafe.id, now(), filename)
 
 
 class Cafe(TimeStampedMixin):
@@ -46,6 +50,8 @@ class Cafe(TimeStampedMixin):
     closed_day = models.CharField(_('휴무일'), choices=DAY_CATEGORY, max_length=3, blank=True)
     closed_holiday = models.BooleanField(_('공휴일 휴무 여부'))
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name='uploader')
+    last_modifier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None, null=True,
+                                      related_name='modifier')
     # image = models.ImageField(_('이미지'), upload_to=get_cafe_photo_path, blank=True)
 
     # naver api
@@ -68,13 +74,30 @@ class Cafe(TimeStampedMixin):
 
 
 class CafePhoto(models.Model):
-    image = ProcessedImageField(upload_to=get_cafe_photo_path,
-                                processors=[ResizeToFill(300, 340)],
-                                format='JPEG',
-                                options={'quality': 60},
-                                verbose_name=_('카페 사진'))
+    image = models.ImageField(upload_to=get_cafe_photo_path, verbose_name=_('카페 사진'))
+    image_thumb = ImageSpecField(source='image',
+                                 processors=[ResizeToFill(300, 340)],
+                                 format='JPEG',
+                                 options={'quality': 60})
     cafe = models.ForeignKey('cafes.Cafe', related_name='photos', on_delete=models.CASCADE, verbose_name=_('카페'))
 
     class Meta:
         verbose_name = _('카페 사진')
         verbose_name_plural = _('카페 사진')
+
+    def save(self, *args, **kwargs):
+        base = 1200
+        img = Image.open(self.image)
+        img_format = img.format
+        (width, height) = img.size
+
+        if width < base and height < base:
+            factor = 1
+        else:
+            # 너비와 높이 중 큰쪽 대한 비율로 맞춘다.
+            factor = base / width if base / width < base / height else base / height
+        img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
+        img_io = BytesIO()
+        img.save(img_io, img_format, quality=60)
+        self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
+        super(CafePhoto, self).save(*args, **kwargs)
