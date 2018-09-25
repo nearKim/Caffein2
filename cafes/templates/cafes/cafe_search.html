@@ -55,7 +55,7 @@
                         create-url={% url 'meetings:coffee-meeting-create' cafe.id %} detail-url={% url 'cafes:cafes-detail' cafe.id %}>
                         <td>{{ cafe.name }}</td>
                         <td>{{ cafe.address }}</td>
-                        <td>{{ cafe.description }}</td>
+                        <td>{{ cafe.description | truncatechars:60 }}</td>
                         <td>{{ cafe.phone }}</td>
                     </tr>
                 {% endfor %}

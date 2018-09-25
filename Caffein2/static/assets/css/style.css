@@ -2122,11 +2122,22 @@ footer a:hover {
     text-align: center;
 }
 
-.flex-direction-nav a:before {
-    font-size: 40px !important;
-    color: #000 !important;
+.flex-direction-nav a:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/left.png') !important;
+    width: 40px;
+    height: 40px;
 }
-
+.flex-direction-nav a.flex-next:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/right.png') !important;
+    width: 40px;
+    height: 40px;
+}
 @media only screen and (max-width : 768px){
  	#testimonials {
     padding: 200px 0 200px;

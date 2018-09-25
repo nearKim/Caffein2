@@ -165,7 +165,10 @@
             $window.load(function () {
                 $('.flexslider').flexslider({
                     animation: "slide",
+                    prevText:'이전',
+                    nextText:'다음',
                     animationLoop: false,
+                    controlNav: false,
                     itemWidth: imgwidth,
                     itemMargin: 5,
                     minItems: getGridSize(), // use function to pull in initial value
