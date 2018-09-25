@@ -3,6 +3,7 @@ from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin, AdminSite
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, sensitive_post_parameters_m
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -111,6 +112,9 @@ class ActiveUserAdmin(ModelAdmin):
         return match_urls + urls
 
     def partner_match_view(self, request):
+        # 짝지 매칭을 위한 템플릿을 뿌려주는 뷰
+        if not (request.user.is_staff or request.user.is_superuser):
+            return HttpResponseForbidden()
         latest_os = OperationScheme.latest()
         year, semester = latest_os.current_year, latest_os.current_semester
 
@@ -141,6 +145,11 @@ class ActiveUserAdmin(ModelAdmin):
         return TemplateResponse(request, "admin/match_partner.html", context)
 
     def match_partner(self, request):
+        # 실제로 짝지를 매칭해주는 뷰
+
+        if not (request.user.is_superuser or request.user.is_staff):
+            return HttpResponseForbidden()
+
         year, semester = request.POST.get('year'), request.POST.get('semester')
 
         # 넘어오는 리스트는 ActiveUser의 pk들을 담고 있다
