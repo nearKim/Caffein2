@@ -1,0 +1,203 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% load imagekit %}
+{% load static %}
+
+{% block content %}
+    {# FIXME: 수정 삭제버튼 위치 #}
+    <!--네이버맵 자바스크립트 로딩-->
+    {% include "core/navermap_script.html" %}
+    <!--본문-->
+    <div class="card center-block mt-150" style="max-width: 90%;">
+        <div class="container-fluid">
+            <div class="row" style="margin-top:10px;">
+                <div class="col-sm-8 text-center">
+                    <span style="font-size: calc(0.8vw + 12px); font-weight: bold;">{{ object.title }}</span>
+                </div>
+                <div class="col-sm-4 text-center">
+                    {% if object.author.profile_pic %}
+                        {% thumbnail "30x30" object.author.profile_pic -- class="img-profile" %}
+                    {% else %}
+                        <img src="{% static 'assets/img/default-avatar.png' %}" width="30" height="30"
+                             class="img-profile">
+                    {% endif %}
+                    <span style="font-size:calc(0.5vw + 10px);">{{ object.author.name }}</span>
+                </div>
+            </div>
+            <hr style="margin-top:5px;">
+
+            <!-- 카페 관련 사진 -->
+            <div class="photo-container row" style="position:relative;">
+                {% if object.photos.exists %}
+                    {% for photo in object.photos.all %}
+                        {% if photo.image %}
+                            <div class="photo-slide fading">
+                                <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <i class="prev lnr lnr-chevron-left" ></i>
+                    <i class="next lnr lnr-chevron-right" ></i>
+                {% else %}
+                    <div class="col-sm-12 text-center" style="margin-bottom: 20px;">
+                        <h5>사진이 없어요!</h5>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% block navermap %}
+            {% endblock %}
+
+            {% block below-map %}
+            {% endblock %}
+
+            <!-- 참가자 및 참여버튼 -->
+            <div class="participant-container row" style="margin-top: 20px;">
+                <div class="col-sm-2 text-center" style="margin-bottom: 15px;">
+                    참가자
+                </div>
+                <div class="col-sm-10" style="margin-bottom: 15px;">
+                    {% for participant in object.participants.all %}
+                        <span>
+
+                        {% if participant.user.profile_pic %}
+                            {% thumbnail "25x25" participant.user.profile_pic -- class="img-profile" %}
+                        {% else %}
+                            <img src="{% static 'assets/img/default-avatar.png' %}" width="25" height="25"
+                                 class="img-profile">
+                        {% endif %}
+                            {{ participant.user.name }},
+                        </span>
+                        ( {{ object.participants.count }} )명 <br>
+                    {% empty %}
+                        <span>아직 참여자가 없네요</span>
+                    {% endfor %}
+                </div>
+
+                <div class="message-container row">
+                    <div class="col-sm-12 text-center">
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    {% if message.tags %}
+                                        <li class="{{ message.tags }}">{{ message }}</li>
+                                    {% else %}
+                                        <li>{{ message }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
+                        {% if participated %}
+                            <button id="btn-participate" onclick="return alert('정말 취소하시겠습니까?');"
+                                    class="btn btn-default btn-block">참여 취소
+                            </button>
+                        {% else %}
+                            <button id="btn-participate" onclick="return alert('참여하시겠습니까?');"
+                                    class="btn btn-default btn-block">참여 하기!
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            <div class="row" style="padding:16px;">
+                <section style="font-size: calc(0.5vw + 10px);">
+                    <b>{{ object.author.name }}</b>
+                    {{ object.content }}
+                </section>
+                <section id="section-comment" style="margin-top:16px;">
+                    <!--댓글 리스트-->
+                    {% block comment-form %}
+
+                    {% endblock %}
+                </section>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {# 사진 슬라이드를 위한 처리 #}
+            {# 기본 css로 사진이 디폴트로 hide 처리 되어있는데 각 card의 첫번째 사진은 보여줘야 한다. #}
+            $('.card .photo-slide:nth-child(1)').show()
+
+            $('.prev').on('click', function (event) {
+                {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                let index = $(this).siblings('.photo-slide:visible').index()
+                {# 일단 현재 사진을 숨긴다 #}
+                $(this).siblings('.photo-slide:visible').hide()
+                if (index === 0) {
+                    {# 현재 사진이 첫번째 사진일 경우 #}
+                    {# 마지막 사진을 보여준다. #}
+                    $(this).siblings('.photo-slide').last().show()
+
+                } else {
+                    {# 현재 사진이 첫번째 사진이 아닐 때 #}
+                    {# 인덱스-1번째 사진을 보여준다 #}
+                    $(this).siblings('.photo-slide').eq(index - 1).show()
+                }
+
+            })
+            $('.next').on('click', function (event) {
+                {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                let index = $(this).siblings('.photo-slide:visible').index()
+                let length = $(this).siblings('.photo-slide').length
+
+                {# 일단 현재 사진을 숨긴다 #}
+                $(this).siblings('.photo-slide:visible').hide()
+                if (index === length - 1) {
+                    {# 현재 사진이 마지막 사진일 때 #}
+                    {# 첫번째 사진을 보여준다 #}
+                    $(this).siblings('.photo-slide').first().show()
+                } else {
+                    {# 인덱스+1번째 사진을 보여준다 #}
+                    $(this).siblings('.photo-slide').eq(index + 1).show()
+                }
+            })
+
+            {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
+            {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
+            $(':input').on('keypress', function (event) {
+                if (event.which === 13) {
+                    $(this).closest('form').trigger('submit')
+                }
+            })
+
+            {# dropdown-option div를 클릭하면 드롭다운을 열어준다 #}
+            $('.dropdown-option').on('click', function (event) {
+                $(this).find('.dropdown-content')
+                    .first()[0]
+                    .classList
+                    .toggle("show")
+            })
+
+            {# 삭제버튼을 누르면 해당 글을 삭제한다 #}
+            $('.delete-instagram').on('click', function (event) {
+                let flag = confirm('정말 지우시겠습니까?')
+                if (flag) {
+                    $(this).closest('form').trigger('submit')
+                }
+            })
+
+            {# glyphicon을 담은 span을 클릭한 것이 아니라면 드롭다운을 닫아준다  #}
+            $(window).on('click', function (event) {
+                if (!event.target.matches('span')) {
+                    let dropdowns = document.getElementsByClassName("dropdown-content");
+
+                    for (element of dropdowns) {
+                        if (element.classList.contains('show')) {
+                            element.classList.remove('show')
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}
