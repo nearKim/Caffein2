@@ -49,7 +49,7 @@
                 <script type="text/javascript">
                     let x = "{{ coffeemeeting.cafe.mapx }}"
                     let y = "{{ coffeemeeting.cafe.mapy }}"
-                    let location_title = "<h3>{{ object.location }}</h3>"
+                    let location_title = "<h3>{{ coffeemeeting.location }}</h3>"
                 </script>
                 <script type="text/javascript" src="{% static 'core/js/navermap_view.js' %}"></script>
             </div>
@@ -147,6 +147,7 @@
     </div>
 
 {% endblock %}
+
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(function () {
