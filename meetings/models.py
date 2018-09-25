@@ -2,8 +2,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from core.mixins import TimeStampedMixin, Postable
-from comments.models import Comment
 from core.models import Meeting
 
 
