@@ -37,7 +37,7 @@ class PartnerMeetingListView(LoginRequiredMixin, FormMixin, ListView):
             .select_related('author') \
             .select_related('partner') \
             .prefetch_related('photos') \
-            .prefetch_related('comments__meeting') \
+            .prefetch_related('comments__author')\
             .filter(created__gte=latest_os.semester_start) \
             .order_by('-created', '-modified')
 
