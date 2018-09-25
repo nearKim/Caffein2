@@ -73,8 +73,11 @@ class OfficialMeetingListView(LoginRequiredMixin, ListView):
 
 
 class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
-    model = OfficialMeeting
     form_class = CommentForm
+    queryset = OfficialMeeting.objects \
+        .prefetch_related('participants') \
+        .prefetch_related('participants__user') \
+        .select_related('author')
 
     def get_context_data(self, **kwargs):
         context = super(OfficialMeetingDetailView, self).get_context_data()
@@ -119,8 +122,11 @@ class CoffeeEducationListView(LoginRequiredMixin, ListView):
 
 
 class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
-    model = CoffeeEducation
     form_class = CommentForm
+    queryset = CoffeeEducation.objects \
+        .prefetch_related('participants') \
+        .prefetch_related('participants__user') \
+        .select_related('author')
 
     def get_context_data(self, **kwargs):
         context = super(CoffeeEducationDetailView, self).get_context_data()
@@ -194,12 +200,18 @@ class CoffeeMeetingListView(LoginRequiredMixin, ListView):
 
 
 class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
-    model = CoffeeMeeting
     form_class = CommentForm
+    queryset = CoffeeMeeting.objects \
+        .prefetch_related('participants') \
+        .prefetch_related('participants__user') \
+        .select_related('cafe') \
+        .select_related('author')
 
     def get_context_data(self, **kwargs):
         context = super(CoffeeMeetingDetailView, self).get_context_data()
         context['user'] = self.request.user
+        context['participated'] = True if ActiveUser.objects.filter(
+            user=self.request.user).latest() in self.object.participants.all() else False
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
@@ -210,13 +222,12 @@ class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
 def participate_meeting(request, pk):
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
-
         if meeting.can_participate():
-            # 참여가능인원이 다 차지 않은 경우
-            active_user = get_object_or_404(ActiveUser, user=request.user)
+            # 참여가능인원이 다 차지 않은 경우 가장 최신의 활동회원 객체를 불러온다.
+            active_user = ActiveUser.objects.filter(user=request.user).latest()
             # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
             flag = meeting.participate_or_not(active_user)
-            messages.info(request, "참여했습니다") if flag else messages.info(request, "참여 취소되었습니다.")
+            messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
         else:
             messages.error(request, '참여 인원이 다 찼습니다.')
