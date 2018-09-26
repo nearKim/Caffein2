@@ -12,7 +12,7 @@ from .category import (
     DEPARTMENT_CHOICES,
     COLLEGE_CHOICES
 )
-from .validator import (
+from .validators import (
     snumail_validator,
     student_no_validator,
     phone_validator,

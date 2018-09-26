@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from comments.models import Comment
+from meetings.validators import meeting_date_validator
 
 from .mixins import (
     TimeStampedMixin,
@@ -67,7 +68,7 @@ class Instagram(Postable):
 
 class Meeting(Postable):
     title = models.CharField(_('제목'), max_length=50, blank=True)
-    meeting_date = models.DateTimeField(_('날짜 및 시간'))
+    meeting_date = models.DateTimeField(_('날짜 및 시간'), validators=[meeting_date_validator, ])
     max_participants = models.PositiveSmallIntegerField(_('최대 참석인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
@@ -207,11 +208,14 @@ class OperationScheme(models.Model):
                                     help_text=_('학기 종료일이 지정되면 짝지 점수가 더이상 카운팅되지 않습니다.'))
 
     new_register_start = models.DateTimeField(_('신입 가입 시작일'))
-    new_register_end = models.DateTimeField(_('신입 가입 종료일'), blank=True, null=True, help_text=_('종료일이 지정되기 전까지 신입회원 가입페이지가 계속 보여집니다.'))
+    new_register_end = models.DateTimeField(_('신입 가입 종료일'), blank=True, null=True,
+                                            help_text=_('종료일이 지정되기 전까지 신입회원 가입페이지가 계속 보여집니다.'))
     old_register_start = models.DateTimeField(_('기존 가입 시작일'))
-    old_register_end = models.DateTimeField(_('기존 가입 종료일'), blank=True, null=True, help_text=_('종료일이 지정되기 전까지 기존회원 가입페이지가 계속 보여집니다.'))
+    old_register_end = models.DateTimeField(_('기존 가입 종료일'), blank=True, null=True,
+                                            help_text=_('종료일이 지정되기 전까지 기존회원 가입페이지가 계속 보여집니다.'))
 
-    coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0, help_text=_('실수형 점수입니다. 모임에 같은 짝지끼리 참석한 경우 이 점수를 추가로 부여받습니다. 예: 2.0'))
+    coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0,
+                                     help_text=_('실수형 점수입니다. 모임에 같은 짝지끼리 참석한 경우 이 점수를 추가로 부여받습니다. 예: 2.0'))
     eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))
 
     bank_account = models.CharField(_('입금 계좌'), max_length=30, help_text=_('반드시 회장의 계좌여야 합니다.'))

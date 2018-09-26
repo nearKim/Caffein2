@@ -144,7 +144,7 @@ USE_TZ = False
 
 # Login settings
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'home/'
+LOGIN_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
