@@ -6,7 +6,7 @@ from core.mixins import StaffRequiredAdminMixin
 from .models import Cafe, CafePhoto
 
 
-class CafePhotoInline(admin.TabularInline):
+class CafePhotoInline(StaffRequiredAdminMixin, admin.TabularInline):
     model = CafePhoto
 
 

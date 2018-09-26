@@ -10,11 +10,11 @@ from .models import (
 from core.models import Meeting, MeetingPhoto
 
 
-class MeetingPhotoInline(TabularInline):
+class MeetingPhotoInline(StaffRequiredAdminMixin, TabularInline):
     model = MeetingPhoto
 
 
-class MeetingCommentInline(TabularInline):
+class MeetingCommentInline(StaffRequiredAdminMixin, TabularInline):
     model = Comment
     # 혼선방지를 위해 instagram은 제외함
     exclude = ('instagram',)

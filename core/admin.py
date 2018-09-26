@@ -6,7 +6,6 @@ from .models import (
     Instagram,
     FeedPhoto
 )
-from comments.models import Comment
 
 
 class OperationSchemeAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):

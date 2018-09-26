@@ -20,11 +20,11 @@ class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
     ordering = ('-partner_year', '-partner_semester')
 
 
-class FeedPhotoInline(TabularInline):
+class FeedPhotoInline(StaffRequiredAdminMixin, TabularInline):
     model = FeedPhoto
 
 
-class FeedCommentInline(TabularInline):
+class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
     model = Comment
     # 혼선방지를 위해 meeting은 제외함
     exclude = ('meeting',)
