@@ -18,7 +18,7 @@
                 {% if partner_set %}
                     {% if is_up %}
                         {# 현재 로그인한 유저가 위짝지일 때  #}
-                        <div class="row">
+                        <div class="row mb-50">
                             <div class="col-xs-12">
                                 {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
                                 {% if user.profile_pic %}
@@ -80,7 +80,7 @@
 
                     {% else %}
                         {# 현재 유저가 아래짝지일 때 #}
-                        <div class="row">
+                        <div class="row mb-50">
                             <div class="col-xs-12">
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
@@ -205,7 +205,7 @@
                         <a href="{% url 'cafes:cafes-search' %}" class="btn" style="margin-right: 10px;">커모 열기</a>
                         <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
                         {% if partner_set %}
-                            <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">
+                            <a href="{% url 'partners:meeting-create' %}" class="btn" style="margin-left:10px;">
                                 짝모 등록</a>
                         {% else %}
                             <a href="{% url 'partners:meeting-create' %}" class="btn disabled">짝모 등록</a>
@@ -270,7 +270,11 @@
                 <div class="col-sm-6" style="padding-left:5vw;">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3> 사진첩 </h3>
+                            <h2 style="margin: 0;"> 사진첩 </h2>
+                            {# FIXME: 사진 더보기 버튼 추가!#}
+                            <a href="#" class="pull-right" style="margin:0;">
+                                <span class="glyphicon glyphicon-plus"></span> 더보기
+                            </a>
                             <hr>
                         </div>
                     </div>

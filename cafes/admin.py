@@ -1,6 +1,8 @@
 # Register your models here.
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+
+from core.mixins import StaffRequiredAdminMixin
 from .models import Cafe, CafePhoto
 
 
@@ -9,7 +11,7 @@ class CafePhotoInline(admin.TabularInline):
 
 
 @admin.register(Cafe)
-class CafeAdmin(admin.ModelAdmin):
+class CafeAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('uploader', 'name', 'address', 'description', 'phone', 'price')}),
         (_('커피 정보'), {'fields': ('machine', 'grinder')}),
