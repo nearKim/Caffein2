@@ -180,6 +180,5 @@ if DEBUG:
     NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
     NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
 else:
-    # FIXME: Heroku prod 환경에서 유효
     NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
     NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']

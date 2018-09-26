@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from PIL import Image, ExifTags
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
 from django.urls import reverse
@@ -16,7 +17,6 @@ from .mixins import (
 
 
 def get_feed_photo_path(instance, filename):
-    # FIXME: Uploader information must be set in the path
     return 'media/feed/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
@@ -102,7 +102,7 @@ class Meeting(Postable):
         return self.participants.count()
 
     def update_partner_score(self, active_user, increment):
-        # TODO: 커모, 교육 참가시 가산점 제도 확
+        # TODO: 커모, 교육 참가시 가산점 제도 확정
         from partners.models import Partner
         # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
         related_partner = Partner.related_partner_activeuser(active_user)
@@ -203,22 +203,23 @@ class OperationScheme(models.Model):
 
     semester_start = models.DateField(_('학기 시작일'), help_text=_('1학기는 3월 2일, 2학기는 9월 1일'))
     # 학기 종료일 = 짝지 마감일
-    semester_end = models.DateField(_('학기 종료일'), blank=True, null=True, default=None)
+    semester_end = models.DateField(_('학기 종료일'), blank=True, null=True, default=None,
+                                    help_text=_('학기 종료일이 지정되면 짝지 점수가 더이상 카운팅되지 않습니다.'))
 
     new_register_start = models.DateTimeField(_('신입 가입 시작일'))
-    new_register_end = models.DateTimeField(_('신입 가입 종료일'), blank=True, null=True)
+    new_register_end = models.DateTimeField(_('신입 가입 종료일'), blank=True, null=True, help_text=_('종료일이 지정되기 전까지 신입회원 가입페이지가 계속 보여집니다.'))
     old_register_start = models.DateTimeField(_('기존 가입 시작일'))
-    old_register_end = models.DateTimeField(_('기존 가입 종료일'), blank=True, null=True)
+    old_register_end = models.DateTimeField(_('기존 가입 종료일'), blank=True, null=True, help_text=_('종료일이 지정되기 전까지 기존회원 가입페이지가 계속 보여집니다.'))
 
-    coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0, help_text=_('실수형 점수입니다. 예: 2.0'))
+    coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0, help_text=_('실수형 점수입니다. 모임에 같은 짝지끼리 참석한 경우 이 점수를 추가로 부여받습니다. 예: 2.0'))
     eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))
 
-    bank_account = models.CharField(_('입금 계좌'), max_length=30)
+    bank_account = models.CharField(_('입금 계좌'), max_length=30, help_text=_('반드시 회장의 계좌여야 합니다.'))
     bank = models.CharField(_('입금 은행'), choices=BANK_CHOICES, max_length=2)
 
     # 어떠한 일이 있어도 이 relation의 tuple 정보는 삭제되면 안됨
     # 피치 못할 경우 동일인이 회장을 2회 할 가능성 존재
-    boss = models.ForeignKey('accounts.ActiveUser', on_delete=models.DO_NOTHING)
+    boss = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
     new_pay = models.PositiveIntegerField(_('신입회원 가입비'))
     old_pay = models.PositiveIntegerField(_('기존회원 가입비'))

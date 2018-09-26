@@ -47,10 +47,12 @@
 <body class="animsition">
 
 <!-- Border -->
+{% if not request.user_agent.is_mobile %}
 <span class="frame-line top-frame visible-lg"></span>
 <span class="frame-line right-frame visible-lg"></span>
 <span class="frame-line bottom-frame visible-lg"></span>
 <span class="frame-line left-frame visible-lg"></span>
+{% endif %}
 <!-- HEADER  -->
 <header class="main-header">
     <div class="container-fluid">
@@ -100,6 +102,9 @@
                 {% else %}
                     <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
                 {% endif %}
+            {% if request.user.is_staff %}
+                    <li><a href="{% url 'admin:index' %}">운영진 페이지</a></li>
+            {% endif %}
                 <li class="box-social"><a href="https://www.facebook.com/groups/snucaffein/"><i class="fa fa-facebook"
                                                                                                 aria-hidden="true"></i></a>
                 </li>

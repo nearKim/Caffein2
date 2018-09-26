@@ -3,7 +3,7 @@ from django.urls import path
 from cafes.search import search_place
 from .views import (
     CafeDetailView,
-    index,
+    CafeListView,
     CafeCreateView,
     CafeUpdateView,
     CafeSearchView
@@ -12,7 +12,7 @@ from .views import (
 app_name = 'cafes'
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', CafeListView.as_view(), name='cafes-list'),
     path('detail/<int:pk>', CafeDetailView.as_view(), name='cafes-detail'),
     path('create', CafeCreateView.as_view(), name='cafes-create'),
     path('update/<int:pk>', CafeUpdateView.as_view(), name='cafes-update'),

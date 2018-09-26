@@ -170,8 +170,7 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
 
-class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
-    template_name_suffix = '_update_form'
+class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingUpdateView, self).get_form_kwargs()

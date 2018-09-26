@@ -1,11 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
-
-# if not settings.configured:
-#     # TODO: Production 레벨에서 Production 세팅으로 전환
-#     settings.configure('Caffein2.settings.dev', DEBUG=True)
-
 from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import (
@@ -105,7 +100,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     department = models.CharField(_('학과'), choices=DEPARTMENT_CHOICES, max_length=2)
 
     category = models.CharField(_('분류'), max_length=1, choices=STUDENT_CATEGORY)
-    # TODO: 디폴트 이미지가 있으면 좋을듯
     profile_pic = ProcessedImageField(upload_to=get_profile_path,
                                       processors=[Thumbnail(100, 100)],
                                       format='JPEG',
