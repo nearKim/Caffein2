@@ -17,7 +17,6 @@ from .mixins import (
 
 
 def get_feed_photo_path(instance, filename):
-    # FIXME: Uploader information must be set in the path
     return 'media/feed/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
@@ -103,7 +102,7 @@ class Meeting(Postable):
         return self.participants.count()
 
     def update_partner_score(self, active_user, increment):
-        # TODO: 커모, 교육 참가시 가산점 제도 확
+        # TODO: 커모, 교육 참가시 가산점 제도 확정
         from partners.models import Partner
         # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
         related_partner = Partner.related_partner_activeuser(active_user)
