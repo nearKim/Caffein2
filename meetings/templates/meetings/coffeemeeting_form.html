@@ -1,40 +1,52 @@
+{% extends 'index.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% block style %}
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
 
+{% endblock %}
+{% block content %}
+{# bootstrap datetimepicer의 am/pm 버튼은 btn-primary와 btn을 동시 상속받기에 style.css의 버튼 스타일과 겹친다. 명시적으로 크기를 줄여준다.   #}
+    <style> .btn {
+        min-width: auto !important;
+        line-height: 0;
+        margin: 0 !important;
+        display: inline-block !important;
+        border-radius: 4px;
+    }</style>
 
-</head>
-<body>
-<h1 class="text-center">커모 열기!</h1>
-<div class="container">
-
-    <hr>
-    <form method="post"  enctype="multipart/form-data">{% csrf_token %}
-        {{ form | crispy }}
-        <input type="submit" class="btn btn-default center-block" value="커모 열기!"/>
-    </form>
-</div>
-<script type="text/javascript">
-    {# TODO: relative positioned container 에러 해결#}
-    $(function () {
-        $('#id_cafe').css("pointer-events", "none");
-        $("#inline_datetimepicker").datetimepicker({
-            inline: true,
-            sideBySide: true,
-            {#locale:'ko',#}
-            format: 'YYYY-MM-DD hh:mm a',
+    <div class="container mt-100" >
+        <h1 class="text-center">커모 열기!</h1>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row" style="padding:10px;">
+                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                        {{ form | crispy }}
+                        <input type="submit" class="btn-block btn" style="margin-top:5px; border: 2px solid; font-size:25px;"  value="커모 열기!"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript">
+        $(function () {
+            $('#id_cafe').css("pointer-events", "none");
+            $("#inline_datetimepicker").datetimepicker({
+                inline: true,
+                sideBySide: true,
+                {#locale:'ko',#}
+                format: 'YYYY-MM-DD hh:mm a',
+            });
         });
-    });
-</script>
-</body>
+    </script>
+{% endblock %}

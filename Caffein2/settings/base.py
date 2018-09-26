@@ -65,6 +65,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     'django_user_agents',
+
+    # AWS
+    'storages',
 ]
 USER_AGENTS_CACHE = None
 SITE_ID = 1
@@ -74,10 +77,6 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
-
-    # whitenoise
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -144,6 +143,7 @@ USE_TZ = False
 
 # Login settings
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'home/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

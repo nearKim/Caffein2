@@ -97,14 +97,57 @@ theme.
     max-width: 70px;
     max-height: 70px;
 }
+<<<<<<< HEAD
+=======
+/* 짝모 instagram에서 사용됨*/
+>>>>>>> upstream/master
 .card {
 	margin-bottom:5em;
 	margin-top:5em;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
+<<<<<<< HEAD
     width: 70%;
     border-radius: 5px;
 }
+=======
+    width: 614px;
+    border-radius: 5px;
+}
+.dropdown-option {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 6em;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.dropdown a:hover {background-color: #ddd;}
+
+.dropdown-content div {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown div:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+/* 댓글창을 인스타그램 형식으로 보여줌 */
+>>>>>>> upstream/master
 #textfield-comment {
 	display: flex;
 	background: 0 0;
@@ -119,10 +162,60 @@ theme.
 
 }
 
+<<<<<<< HEAD
 
 
 
 /* KARMO*/
+=======
+.photo-slide {display: none }
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Fading animation */
+.fading {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fading {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fading {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+
+/* KARMO 자체 템플릿*/
+>>>>>>> upstream/master
 *{
 	outline:0;padding: 0;margin:0;
 	-webkit-box-sizing:border-box;
@@ -1014,9 +1107,13 @@ ul.tags li a:hover{
     display: table;
     height: 100vh;
     width: 100%;
+<<<<<<< HEAD
     background-image: url(../img/header.jpg);
 		background-attachment: fixed;
     background-position: center center;
+=======
+    background: url(../img/header.jpg) fixed center center;
+>>>>>>> upstream/master
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -2045,6 +2142,7 @@ footer a:hover {
     color: #333;
     letter-spacing: 2px;
     text-align: center;
+<<<<<<< HEAD
 }
 
 .flex-direction-nav a:before {
@@ -2052,6 +2150,26 @@ footer a:hover {
     color: #000 !important;
 }
 
+=======
+}
+
+.flex-direction-nav a:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/left.png') !important;
+    width: 40px;
+    height: 40px;
+}
+.flex-direction-nav a.flex-next:before  {
+    content: " ";
+    display: block;
+    /*FIXME: 좀더 괜찮은 좌우 이미지*/
+    background: url('../img/right.png') !important;
+    width: 40px;
+    height: 40px;
+}
+>>>>>>> upstream/master
 @media only screen and (max-width : 768px){
  	#testimonials {
     padding: 200px 0 200px;

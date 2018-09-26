@@ -1,17 +1,13 @@
 from io import BytesIO
 
-from PIL import Image
-from django.contrib import messages
+from PIL import Image, ExifTags
 from django.core.files.base import ContentFile
 from django.db import models
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from comments.models import Comment
-from core.mixins import Postable, TimeStampedMixin
-# from partners.models import Partners
 
 from .mixins import (
     TimeStampedMixin,
@@ -28,6 +24,43 @@ def get_meeting_photo_path(instance, filename):
     return 'media/meeting/{:%Y/%m/%d}/{}'.format(now(), filename)
 
 
+def rotate_and_resize(image):
+    # 저장시 가로/세로의 최고 길이는 1200px이다.
+    base = 1200
+    image = Image.open(image)
+    img_format = image.format
+
+    # exif 태그를 검색하여 사진의 회전여부를 판단한다.
+    try:
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+        exif = dict(image._getexif().items())
+
+        if exif[orientation] == 3:
+            image = image.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+            image = image.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+            image = image.rotate(90, expand=True)
+    except (AttributeError, KeyError, IndexError):
+        # 사진에 exif 태그가 없으면 그대로 진행한다.
+        pass
+    # 회전 컨트롤이 완료된 이미지의 크기를 얻는다
+    (width, height) = image.size
+
+    if width < base and height < base:
+        # 둘다 1200픽셀 미만이면 그대로 저장한다
+        factor = 1
+    else:
+        # 너비와 높이 중 큰쪽 대한 비율로 맞춘다.
+        factor = base / width if base / width < base / height else base / height
+    image = image.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
+    img_io = BytesIO()
+    image.save(img_io, img_format, quality=60)
+    return img_io
+
+
 class Instagram(Postable):
     pass
 
@@ -35,7 +68,7 @@ class Instagram(Postable):
 class Meeting(Postable):
     title = models.CharField(_('제목'), max_length=50, blank=True)
     meeting_date = models.DateTimeField(_('날짜 및 시간'))
-    max_participants = models.PositiveSmallIntegerField(_('참석 인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
+    max_participants = models.PositiveSmallIntegerField(_('최대 참석인원'), default=0, help_text=_('인원제한을 없애려면 0으로 설정하세요.'))
     participants = models.ManyToManyField('accounts.ActiveUser', verbose_name='참석자')
 
     class Meta:
@@ -114,7 +147,7 @@ class Meeting(Postable):
 
 
 class MeetingPhoto(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_meeting_photo_path)
+    image = models.ImageField(upload_to=get_meeting_photo_path, verbose_name=_('사진'))
     meeting = models.ForeignKey('core.Meeting', related_name='photos', verbose_name=_('모임'),
                                 on_delete=models.CASCADE)
 
@@ -128,23 +161,13 @@ class MeetingPhoto(TimeStampedMixin):
 
     def save(self, *args, **kwargs):
         # https://stackoverflow.com/a/49296707
-        base = 1200
-        img = Image.open(self.image)
-        (width, height) = img.size
-
-        if width < base and height < base:
-            factor = 1
-        else:
-            factor = base / width if base / width < base / height else base / height
-        img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
-        img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=60)
+        img_io = rotate_and_resize(self.image)
         self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
         super(MeetingPhoto, self).save(*args, **kwargs)
 
 
 class FeedPhoto(TimeStampedMixin):
-    image = models.ImageField(upload_to=get_feed_photo_path)
+    image = models.ImageField(upload_to=get_feed_photo_path, verbose_name=_('사진'))
     instagram = models.ForeignKey('core.Instagram', default=None, related_name='photos', verbose_name=_('인스타'),
                                   on_delete=models.CASCADE)
 
@@ -158,18 +181,7 @@ class FeedPhoto(TimeStampedMixin):
 
     def save(self, *args, **kwargs):
         # https://stackoverflow.com/a/49296707
-        base = 1200
-        img = Image.open(self.image)
-        (width, height) = img.size
-
-        if width < base and height < base:
-            factor = 1
-        else:
-            # 너비와 높이 중 큰쪽 대한 비율로 맞춘다.
-            factor = base / width if base / width < base / height else base / height
-        img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
-        img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=60)
+        img_io = rotate_and_resize(self.image)
         self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
         super(FeedPhoto, self).save(*args, **kwargs)
 

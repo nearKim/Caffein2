@@ -1,13 +1,15 @@
 {% load static %}
 <div id="naver-map-search">
     {# Search Bar #}
-    <form id="form-search-place" class="form-inline md-form mr-auto mb-4" search-url="{% url 'cafes:search-place' %}"
-          method="get">
+    <form id="form-search-place" class="form-inline md-form mr-auto" search-url="{% url 'cafes:search-place' %}"
+          method="get" style="margin-bottom: 15px;">
         {% csrf_token %}
         <div class="active-purple-3 active-purple-4">
-            <input id="input-search-place" type="text" class="form-control mr-sm-2"
+            <input id="input-search-place" type="text" class="form-control"
                    placeholder="장소 검색">
-            <button id="btn-search-place" type="button" class="btn-outline-warning form-inline btn-rounded btn-sm my-0">
+            <button id="btn-search-place" type="submit"
+                    style="box-shadow: 0 8px 8px 0 rgba(0,0,0,0.2), 0 6px 8px 0 rgba(0,0,0,0.19); border-radius: 8px; padding: 5px 24px;background-color: lightgray; "
+                    class="form-inline">
                 검색
             </button>
         </div>

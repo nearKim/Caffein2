@@ -4,13 +4,23 @@
 
 {% block content %}
     <section class="contact">
-    <div class="container">
-        <h1 class="jumbotron">카페 정보 수정하기</h1>
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form | crispy }}
-        <input class="btn btn-default center-block" type="submit" value="수정하기"/>
-    </form>
-    </div>
+        <div class="container">
+            <h1 class="jumbotron">카페 정보 수정하기</h1>
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ form | crispy }}
+                <input class="btn btn-default center-block" type="submit" value="수정하기"/>
+            </form>
+        </div>
     </section>
+{% endblock %}
 
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#inline_timepicker_1, #inline_timepicker_2").timepicker({
+                'interval': 15,
+                'timeFormat': 'hh:mm p',
+            })
+        });
+    </script>
 {% endblock %}

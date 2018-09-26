@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ClearableFileInput, forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, TimeInput
 
 from cafes.models import Cafe
 
@@ -9,6 +9,8 @@ class CafeCreateUpdateForm(ModelForm):
         model = Cafe
         fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price', 'from_time', 'to_time',
                   'closed_day', 'closed_holiday', 'link', 'road_address', 'mapx', 'mapy']
+        widgets = {'from_time': TimeInput(attrs={'id':'inline_timepicker_1'}),
+                   'to_time': TimeInput(attrs={'id':'inline_timepicker_2'})}
 
     images = forms.FileField(required=False, widget=ClearableFileInput(attrs={'multiple': True}))
 
@@ -18,3 +20,5 @@ class CafeCreateUpdateForm(ModelForm):
         self.fields['road_address'].widget = HiddenInput()
         self.fields['mapx'].widget = HiddenInput()
         self.fields['mapy'].widget = HiddenInput()
+        self.fields['from_time'].input_formats = ["%I:%M %p"]
+        self.fields['to_time'].input_formats = ["%I:%M %p"]

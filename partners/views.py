@@ -1,6 +1,7 @@
 from django.contrib import messages
-from django.http import Http404
-from django.shortcuts import redirect, render, render_to_response
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404, HttpResponseForbidden
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import (
@@ -9,20 +10,20 @@ from django.views.generic.edit import (
     DeleteView, FormMixin)
 
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin
+from core.mixins import FaceBookPostMixin, ValidAuthorRequiredMixin
 from core.models import FeedPhoto, OperationScheme
-from .forms import PartnerMeetingForm
+from partners.forms import PartnerMeetingForm
+from partners.models import PartnerMeeting
 from .models import (
     PartnerMeeting,
     Partner
 )
 
 
-class PartnerMeetingListView(FormMixin, ListView):
+class PartnerMeetingListView(LoginRequiredMixin, FormMixin, ListView):
     # TODO: Add infinite scroll feature
     model = PartnerMeeting
     form_class = CommentForm
-    ordering = ['-created', '-modified']
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(PartnerMeetingListView, self).get_context_data(**kwargs)
@@ -36,11 +37,12 @@ class PartnerMeetingListView(FormMixin, ListView):
             .select_related('author') \
             .select_related('partner') \
             .prefetch_related('photos') \
-            .prefetch_related('comments__meeting') \
-            .filter(created__gte=latest_os.semester_start)
+            .prefetch_related('comments__author')\
+            .filter(created__gte=latest_os.semester_start) \
+            .order_by('-created', '-modified')
 
 
-class PartnerMeetingDeleteView(DeleteView):
+class PartnerMeetingDeleteView(ValidAuthorRequiredMixin, DeleteView):
     model = PartnerMeeting
     success_url = reverse_lazy('partners:meeting-list')
 
@@ -59,7 +61,7 @@ class PartnerMeetingUpdateCreateMixin:
         return form_kwargs
 
 
-class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
+class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCreateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
         FeedPhoto.objects.filter(instagram=instance).delete()
@@ -71,13 +73,12 @@ class PartnerMeetingUpdateView(PartnerMeetingUpdateCreateMixin, UpdateView):
         return super(PartnerMeetingUpdateView, self).form_valid(form)
 
 
-class PartnerMeetingCreateView(FaceBookPostMixin, PartnerMeetingUpdateCreateMixin, CreateView):
+class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMeetingUpdateCreateMixin, CreateView):
     def get(self, request, **kwargs):
         # 유저가 속한 최신의 짝지 객체를 가져온다.
         try:
             latest_partner = Partner.related_partner_user(request.user)
             current_os = OperationScheme.latest()
-            print(latest_partner)
             # 짝지 객체가 있는경우 짝지의 년도-학기를 현재 최신의 운영정보의 년도-학기와 비교한다
             if latest_partner is None:
                 raise Http404

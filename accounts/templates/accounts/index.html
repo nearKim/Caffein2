@@ -1,6 +1,11 @@
 {% extends 'index.html' %}
 {% load imagekit %}
 {% load static %}
+<<<<<<< HEAD
+=======
+{# 로그인에 성공하면 보게 되는 메인 인덱스 페이지이다. 짝지정모, 현재 진행중인 커모정보와 함께 최근 사진들이 있는 사진첩을 함께 보여준다. #}
+{# 3회에 걸쳐 분기한다. 1차로 짝지의 배정여부에 따라 분기하고 2차로 위짝지인지 아래짝지인지에 따라 분기하며 3차로 아래짝지의 수에 따라 분기한다.#}
+>>>>>>> upstream/master
 
 {% block content %}
     <section class="box-intro">
@@ -12,11 +17,19 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+<<<<<<< HEAD
             <div class="container-fluid">
                 {% if partner_set %}
                     {% if is_up %}
                         {# 현재 로그인한 유저가 위짝지일 때  #}
                         <div class="row mb-50">
+=======
+            <div class="container-fluid mt-150">
+                {% if partner_set %}
+                    {% if is_up %}
+                        {# 현재 로그인한 유저가 위짝지일 때  #}
+                        <div class="row">
+>>>>>>> upstream/master
                             <div class="col-xs-12">
                                 {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
                                 {% if user.profile_pic %}
@@ -77,9 +90,14 @@
                         </div>
 
                     {% else %}
+<<<<<<< HEAD
 
                         {# 현재 유저가 아래짝지일 때 #}
                         <div class="row mb-50">
+=======
+                        {# 현재 유저가 아래짝지일 때 #}
+                        <div class="row">
+>>>>>>> upstream/master
                             <div class="col-xs-12">
                                 {% if user.profile_pic %}
                                     {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
@@ -172,6 +190,14 @@
                                 </div>
                             {% endif %}
                         </div>
+<<<<<<< HEAD
+=======
+                        <div class="row">
+                            <div class="col-sm-12 mt-50">
+                                <h2>{{ score }}점</h2>
+                            </div>
+                        </div>
+>>>>>>> upstream/master
                     {% endif %}
 
                 {% else %}
@@ -194,6 +220,7 @@
                     </div>
                 {% endif %}
 
+<<<<<<< HEAD
                 <div class="row">
                     <div class="btn-group-lg mt-100 " >
                         <a href="{% url 'cafes:cafes-search' %}" class="btn white" style="margin-right: 10px;">커모 열기</a>
@@ -202,11 +229,22 @@
                             <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">짝모 등록</a>
                         {% else %}
                             <a href="{% url 'partners:meeting-list' %}" class="btn disabled">짝모 보기</a>
+=======
+                <div class="row btn-container">
+                    <div class="btn-group-lg mt-50 ">
+                        <a href="{% url 'cafes:cafes-search' %}" class="btn" style="margin-right: 10px;">커모 열기</a>
+                        <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
+                        {% if partner_set %}
+                            <a href="{% url 'partners:meeting-create' %}" class="default-btn" style="margin-left:10px;">
+                                짝모 등록</a>
+                        {% else %}
+>>>>>>> upstream/master
                             <a href="{% url 'partners:meeting-create' %}" class="btn disabled">짝모 등록</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
             {#            <div id="coffee" class="btn-group-lg">#}
             {#                <a href="{% url 'meetings:meetings-list' %}" class="btn">모임 보기</a>#}
             {#                <a href="{% url 'cafes:cafes-search' %}" class="btn">커모 열기</a>#}
@@ -217,11 +255,14 @@
             {#                <a href="{% url 'partners:meeting-create' %}" class="btn">짝모 등록</a>#}
             {#            </div>#}
             {#            <br>#}
+=======
+>>>>>>> upstream/master
         </div>
     </section>
     <section class="portfolio">
         <div class="container text-center">
             <div class="row mt-100">
+<<<<<<< HEAD
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
@@ -229,12 +270,26 @@
                             <hr>
                         </div>
                     </div>
+=======
+                <div class="col-sm-6" style="padding-right:5vw;">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2 style="margin:0;"> 커모 </h2>
+                            {# FIXME: 커모 더보기 버튼 추가!#}
+                            <a href="#" class="pull-right" style="margin:0;">
+                                <span class="glyphicon glyphicon-plus"></span> 더보기
+                            </a>
+                        </div>
+                    </div>
+                    <hr style="margin-top:10px;">
+>>>>>>> upstream/master
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}
                                 <div class="div-coffee-meeting row hvr-glow"
                                      meeting-detail="{% url 'meetings:coffee-meeting-detail' meeting.pk %}"
                                      style="height:10%; margin-bottom:20px;">
+<<<<<<< HEAD
                                     <div class="col-xs-4">
                                         {% if meeting.photos.all %}
                                             {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
@@ -242,6 +297,15 @@
                                             <img src="{% static 'assets/img/default-cafe.jpg' %}"
                                                  style="width: 100%; max-width: 100px;height: auto;">
                                             {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
+=======
+                                    <div class="col-xs-4 text-right">
+                                        {% if meeting.photos.all %}
+                                            {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
+                                        {% else %}
+                                            {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
+                                            <img src="{% static 'assets/img/default-cafe.jpg' %}"
+                                                 style="width: 80%; max-width: 100px;height: auto;">
+>>>>>>> upstream/master
                                         {% endif %}
                                     </div>
                                     <div class="col-xs-8" style="position:relative;">
@@ -252,12 +316,20 @@
                                         <div class="row" style="margin-top:8%;">
                                             <div class="col-xs-6"
                                                  style="position: absolute; bottom: 0; left: 0;">
+<<<<<<< HEAD
                                                 <h5 style="font-size: 1vw;">작성자
+=======
+                                                <h5 style="font-size: calc(0.8vw + 5px);">작성자
+>>>>>>> upstream/master
                                                     &nbsp; {{ meeting.author.name }}</h5>
                                             </div>
                                             <div class="col-xs-6 "
                                                  style="position: absolute; bottom: 0; right: 0;">
+<<<<<<< HEAD
                                                 <h5 style="font-size: 1vw;">참가자
+=======
+                                                <h5 style="font-size: calc(0.8vw + 5px);">참가자
+>>>>>>> upstream/master
                                                     &nbsp; {{ meeting.participants.count }}명 </h5>
                                             </div>
                                         </div>
@@ -267,7 +339,11 @@
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="col-sm-6">
+=======
+                <div class="col-sm-6" style="padding-left:5vw;">
+>>>>>>> upstream/master
                     <div class="row">
                         <div class="col-sm-12">
                             <h3> 사진첩 </h3>
