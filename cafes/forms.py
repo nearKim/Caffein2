@@ -9,8 +9,8 @@ class CafeCreateUpdateForm(ModelForm):
         model = Cafe
         fields = ['name', 'address', 'description', 'phone', 'machine', 'grinder', 'price', 'from_time', 'to_time',
                   'closed_day', 'closed_holiday', 'link', 'road_address', 'mapx', 'mapy']
-        widgets = {'from_time': TimeInput(attrs={'id':'inline_timepicker_1'}),
-                   'to_time': TimeInput(attrs={'id':'inline_timepicker_2'})}
+        widgets = {'from_time': TimeInput(attrs={'id':'inline_timepicker_1'}, format="%I:%M %p"),
+                   'to_time': TimeInput(attrs={'id':'inline_timepicker_2'}, format="%I:%M %p")}
 
     images = forms.FileField(required=False, widget=ClearableFileInput(attrs={'multiple': True}))
 
