@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import User, ActiveUser
-from accounts.validator import year_validator
+from accounts.validators import year_validator
 from core.models import Instagram, OperationScheme
 
 
