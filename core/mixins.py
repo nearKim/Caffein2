@@ -1,3 +1,5 @@
+import os
+
 import facebook
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
@@ -5,7 +7,7 @@ from django.db import models
 from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext_lazy as _
 
-from Caffein2.settings.dev import FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
+from Caffein2.settings.dev import DEBUG, FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
 
 
 # Model Mixins
@@ -36,7 +38,10 @@ class FaceBookPostMixin:
     def get_success_url(self):
         url = super(FaceBookPostMixin, self).get_success_url()
         # 그래프 API객체를 SDK를 통해 가져온다
-        graph = facebook.GraphAPI(FACEBOOK_TOKEN)
+        if DEBUG:
+            graph = facebook.GraphAPI(FACEBOOK_TOKEN)
+        else:
+            graph = facebook.GraphAPI(os.environ['FACEBOOK_APP_TOKEN_60'])
         # 그룹아이디를 이용하여 put_object를 통해 그룹에 글을 쓴다.
         # 메세지는 상속받는 클래스의 생성자에서 각각 다르게 설정해야겠지
         message = self.message if self.message else 'test'
