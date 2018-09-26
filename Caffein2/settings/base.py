@@ -65,6 +65,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     'django_user_agents',
+
+    # AWS
+    'storages',
 ]
 USER_AGENTS_CACHE = None
 SITE_ID = 1
