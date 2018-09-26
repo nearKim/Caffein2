@@ -11,6 +11,7 @@ from django.views.generic.list import ListView
 from accounts.models import User
 from .models import Form, Question, Choice, UserAnswer
 from core.models import OperationScheme
+from core.mixins import StaffRequiredMixin
 
 
 class FormListView(LoginRequiredMixin, ListView):
@@ -18,7 +19,7 @@ class FormListView(LoginRequiredMixin, ListView):
     template_name = 'surveys/survey_list.html'
 
 
-class FormCreate(LoginRequiredMixin, CreateView):
+class FormCreate(LoginRequiredMixin, StaffRequiredMixin, CreateView):
     model = Form
     template_name = 'surveys/survey_create.html'
     fields = '__all__'

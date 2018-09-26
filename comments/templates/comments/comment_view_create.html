@@ -52,7 +52,6 @@
 {% endfor %}
 <div class="col-xs-12" style="margin-top:20px;">
     {# 짝지 리스트 댓글창에서 댓글을 단 경우 instagram comment로 넘겨야 한다#}
-    {#TODO: 추후 댓글모델 분리할 필요 없이 다형성을 구현해보자#}
     {% if goto == 'partners:meeting-list' %}
         <form action="{% url 'comments:instagram-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
             {{ comment_form | crispy }}

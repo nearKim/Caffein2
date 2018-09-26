@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
+from core.mixins import StaffRequiredAdminMixin
 from core.models import OperationScheme
 from partners.models import Partner
 from .models import (
@@ -22,7 +23,7 @@ User = get_user_model()
 
 
 @admin.register(User)
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
 
@@ -89,13 +90,14 @@ class UserAdmin(BaseUserAdmin):
         queryset.update(is_active=False)
         self.message_user(request, str(queryset.count()) + "명의 사용자가 비활성화 되었습니다.")
 
+
     is_new.short_description = _('신입 여부')
     activate_and_add_active.short_description = _('신규회원으로 확정!')
     invalidate_user.short_description = _('비활성화')
 
 
 @admin.register(ActiveUser)
-class ActiveUserAdmin(ModelAdmin):
+class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_display = ('user', '_is_new', 'active_year', 'active_semester', 'is_paid',)
     list_filter = (
         'active_year', 'active_semester', 'is_paid', 'user__join_year', 'user__join_semester', 'user__college')

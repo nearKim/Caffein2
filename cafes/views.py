@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.shortcuts import render
 from django.views.generic import (
     ListView,
@@ -12,13 +13,40 @@ from cafes.forms import CafeCreateUpdateForm
 from cafes.models import Cafe, CafePhoto
 
 # deprecated
-@login_required
-def index(request):
-    num_cafes = Cafe.objects.all().count()
-    context = {
-        'num_cafes': num_cafes,
-    }
-    return render(request, 'cafes/index.html', context=context)
+from meetings.models import CoffeeMeeting
+
+
+class CafeListView(LoginRequiredMixin, ListView):
+    context_object_name = 'cafes'
+    paginate_by = 10
+
+    def get_queryset(self):
+        if self.request.GET['sort'] == 'popularity':
+            queryset = Cafe.objects.prefetch_related('photos') \
+                .select_related('last_modifier') \
+                .select_related('uploader') \
+                .prefetch_related('coffeemeeting_set') \
+                .annotate(num_meetings=Count('coffeemeeting')) \
+                .order_by('-num_meetings')
+        elif self.request.GET['sort'] == 'recent':
+            queryset = Cafe.objects.prefetch_related('photos') \
+                .select_related('last_modifier') \
+                .select_related('uploader') \
+                .all() \
+                .order_by('-created')
+        elif self.request.GET['sort'] == 'photo':
+            queryset = Cafe.objects.prefetch_related('photos') \
+                .select_related('last_modifier') \
+                .select_related('uploader') \
+                .annotate(num_photo=Count('photos')) \
+                .order_by('-num_photo')
+        else:
+            # Random
+            queryset = Cafe.objects.prefetch_related('photos') \
+                .select_related('last_modifier') \
+                .select_related('uploader') \
+                .all().order_by('?')
+        return queryset
 
 
 class CafeDetailView(LoginRequiredMixin, DetailView):
@@ -77,3 +105,14 @@ class CafeSearchView(LoginRequiredMixin, ListView):
         else:
             qs = Cafe.objects.none()
         return qs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CafeSearchView, self).get_context_data(*args, **kwargs)
+        if Cafe.objects.all().count() > 2:
+            # 현재 카페들중 3개를 랜덤하게 뽑아온다. 카페들은 많아봤자 몇십~몇백개일 것이므로 퍼포먼스 이슈는 없다.
+            context['random_cafes'] = Cafe.objects \
+                                          .select_related('uploader') \
+                                          .select_related('last_modifier') \
+                                          .prefetch_related('photos') \
+                                          .order_by('?')[:3]
+        return context
