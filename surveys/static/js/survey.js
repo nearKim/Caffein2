@@ -1,6 +1,6 @@
 var addOption = function() {
     var html = "<div class=\"answer-type\">";
-    html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Enter option text\">";
+    html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"옵션을 입력해주세요.\">";
     html += "<button class=\"btn btn-danger delete-option\">옵션 삭제</button>";
     html += "</div>";
     return html;

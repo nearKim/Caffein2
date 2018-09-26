@@ -184,7 +184,7 @@ def survey_result(request, pk):
 def delete_form(request, pk):
     form = Form.objects.get(id=pk)
     form.delete()
-    return redirect('surveys:surveys-list')
+    return redirect('surveys:survey-list')
 
 
 # form의 상태를 open, close로 변화
@@ -196,4 +196,4 @@ def change_form_state(request, pk):
     else:
         form.opened = True
     form.save()
-    return redirect('surveys:surveys-list')
+    return redirect('surveys:survey-list')

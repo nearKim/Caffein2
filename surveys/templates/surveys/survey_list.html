@@ -8,7 +8,7 @@
                 <div align="right" style="margin-right: 100px;">
                     <a href="{% url 'surveys:survey-create' %}" class="btn btn-info">새로운 양식</a>
                 </div>
-                <h2 align="left" style="margin-left: 100px;">Opened form</h2>
+                <h2 align="left" style="margin-left: 100px;">설문중인 양식</h2>
                 <div class="row">
                     {% for form in object_list %}
                         {% if form.opened %}
@@ -44,7 +44,7 @@
                     {% endfor %}
                 </div>
                 <hr style="border: 1px solid #ccc; margin: 20px;">
-                <h2 align="left" style="margin-left: 100px;">Closed form</h2>
+                <h2 align="left" style="margin-left: 100px;">설문 종료된 양식</h2>
                 <div class="row">
                     {% for form in object_list %}
                         {% if form.opened == False %}
