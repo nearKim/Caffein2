@@ -50,7 +50,7 @@ class Photo(TimeStampedMixin):
         verbose_name_plural = 'photos'
 
     def __str__(self):
-        return self.title
+        return self.file.name
 
     def get_absolute_url(self):
         return reverse('photo_albums:photo_detail', args=(self.id,))

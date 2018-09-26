@@ -26,7 +26,6 @@
                     </h6>
                     <hr>
                     <div class="row">
-
                         <div class="col-sm-2">
                             <h5>주소</h5>
                         </div>
@@ -38,14 +37,22 @@
                             <h5>설명</h5>
                         </div>
                         <div class="col-sm-10">
+                            {% if cafe.description %}
                             <h5>{{ cafe.description }}</h5>
+                                {% else %}
+                                <p>정보를 등록해주세요!</p>
+                            {% endif %}
                         </div>
 
                         <div class="col-sm-2">
                             <h5>전화번호</h5>
                         </div>
                         <div class="col-sm-10">
+                            {% if cafe.phone %}
                             <h5>{{ cafe.phone }}</h5>
+                            {% else %}
+                            <p>정보를 등록해주세요!</p>
+                            {% endif %}
                         </div>
                         <div class="col-sm-2">
                             <h5>가격대</h5>

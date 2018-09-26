@@ -4,16 +4,14 @@ from django.contrib.auth.views import (
 )
 from django.urls import path, reverse_lazy
 
-from .views import (
-    index,
-)
+from .views import entrypoint
 
-app_name = 'comments'
+app_name = 'core'
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('login/', LoginView.as_view(template_name='core/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:login')), name='logout'),
+    path('', entrypoint, name='entrypoint'),
+    path('home/', LoginView.as_view(template_name='index.html', ), name='index'),
+    path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:index')), name='logout'),
 
 
 

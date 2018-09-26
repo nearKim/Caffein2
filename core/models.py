@@ -1,5 +1,11 @@
+from io import BytesIO
+
+from PIL import Image
 from django.contrib import messages
+from django.core.files.base import ContentFile
 from django.db import models
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -116,6 +122,26 @@ class MeetingPhoto(TimeStampedMixin):
         verbose_name = _('모임 사진')
         verbose_name_plural = _('모임 사진')
 
+    def get_absolute_url(self):
+        # 각 meeting의 디테일뷰로 이동
+        return self.meeting.cast().get_absolute_url()
+
+    def save(self, *args, **kwargs):
+        # https://stackoverflow.com/a/49296707
+        base = 1200
+        img = Image.open(self.image)
+        (width, height) = img.size
+
+        if width < base and height < base:
+            factor = 1
+        else:
+            factor = base / width if base / width < base / height else base / height
+        img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
+        img_io = BytesIO()
+        img.save(img_io, 'JPEG', quality=60)
+        self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
+        super(MeetingPhoto, self).save(*args, **kwargs)
+
 
 class FeedPhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_feed_photo_path)
@@ -125,6 +151,27 @@ class FeedPhoto(TimeStampedMixin):
     class Meta:
         verbose_name = _('피드 사진')
         verbose_name_plural = _('피드 사진')
+
+    def get_absolute_url(self):
+        # 인스타그램의 경우 짝모에서만 사용되므로 단일객체를 볼 필요 없이 바로 짝모리스트로 이동한다.
+        return reverse('partners:meeting-list')
+
+    def save(self, *args, **kwargs):
+        # https://stackoverflow.com/a/49296707
+        base = 1200
+        img = Image.open(self.image)
+        (width, height) = img.size
+
+        if width < base and height < base:
+            factor = 1
+        else:
+            # 너비와 높이 중 큰쪽 대한 비율로 맞춘다.
+            factor = base / width if base / width < base / height else base / height
+        img = img.resize((int(width * factor), int(height * factor)), Image.ANTIALIAS)
+        img_io = BytesIO()
+        img.save(img_io, 'JPEG', quality=60)
+        self.image.save(self.image.name, ContentFile(img_io.getvalue()), save=False)
+        super(FeedPhoto, self).save(*args, **kwargs)
 
 
 class OperationScheme(models.Model):

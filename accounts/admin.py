@@ -2,11 +2,13 @@ from django.conf.urls import url
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin, AdminSite
 from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, sensitive_post_parameters_m
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.debug import sensitive_post_parameters
 
 from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from core.models import OperationScheme
@@ -22,6 +24,8 @@ User = get_user_model()
 class UserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
+
+    view_on_site = False
 
     list_display = ('email', 'name', 'phone', 'student_no', 'college',
                     'department', 'category', 'rule_confirm', 'survey_done', 'is_new')
@@ -106,9 +110,8 @@ class ActiveUserAdmin(ModelAdmin):
         ]
         return match_urls + urls
 
-    def partner_match_view(self, request, **kwargs):
-        # Admin의 전역 view에 추가되는 OS객체를 추출한다
-        latest_os = kwargs.pop('extra_context')['os']
+    def partner_match_view(self, request):
+        latest_os = OperationScheme.latest()
         year, semester = latest_os.current_year, latest_os.current_semester
 
         # 활동회원 중 이번학기 회원들을 불러온다
@@ -126,7 +129,7 @@ class ActiveUserAdmin(ModelAdmin):
 
         # 각 활동회원들 중 현재 매칭된 회원은 없애준다
         new_actives = new_actives.difference(matched_users)
-        old_actives = old_actives.difference(matched_users)
+        old_actives = old_actives.difference(matched_users).order_by('user__name')
 
         # 각각을 다른 context에 넣어 뿌려준다
         context = dict(
@@ -137,7 +140,7 @@ class ActiveUserAdmin(ModelAdmin):
         )
         return TemplateResponse(request, "admin/match_partner.html", context)
 
-    def match_partner(self, request, **kwargs):
+    def match_partner(self, request):
         year, semester = request.POST.get('year'), request.POST.get('semester')
 
         # 넘어오는 리스트는 ActiveUser의 pk들을 담고 있다

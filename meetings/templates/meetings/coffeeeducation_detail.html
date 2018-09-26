@@ -38,6 +38,7 @@
                 </p>
 
                 <!--네이버맵 뷰-->
+                <div id="map" style="width:100%;height:400px;"></div>
                 <script type="text/javascript">
                     let x = "{{ object.mapx }}"
                     let y = "{{ object.mapy }}"
@@ -48,7 +49,7 @@
             </div>
             <div class="row col-sm-6">
                 <p class="libre-text-lg mb-50">
-                    날짜 및 시간: {{ object.meeting_date| date:"Y년 m월 d일 h시 i분" }}
+                    날짜 및 시간: {{ object.meeting_date| date:"Y년 m월 d일 A h시 i분" }}
                 </p>
                 <p class="libre-text-lg mb-50">
                     최대 참여 가능인원:

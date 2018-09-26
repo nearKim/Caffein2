@@ -25,7 +25,8 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="select-multiple-new">여러명을 선택하려면 CTRL(또는 cmd)키를 누르세요</label>
-                    <select name="news" multiple class="form-control" id="select-multiple-new">
+                    <select name="news" multiple class="form-control" id="select-multiple-new" size="{{ news |length }}">
+
                         {% for new in news %}
                             <option value="{{ new.pk }}">{{ new }}</option>
                         {% endfor %}
@@ -35,7 +36,7 @@
             <div class="col-sm-6">
                  <div class="form-group">
                     <label for="select-multiple-old">기존회원은 한명만 선택해야 합니다</label>
-                    <select name="olds" multiple class="form-control" id="select-multiple-old">
+                    <select name="olds" multiple class="form-control" id="select-multiple-old" size="{{ old | length }}">
                         {% for old in olds %}
                             <option value="{{ old.pk }}">{{ old }}</option>
                         {% endfor %}

@@ -4,11 +4,22 @@
 
 {% block content %}
 <div class="contact container">
-
+    <h1 class="text-center">회원 정보 수정</h1>
+    <p class="lead">현재 회원정보는 프로필 사진만 수정할 수 있습니다.</p>
+    <p class="lead">기타 정보 수정은 운영진에게 문의하세요.</p>
+    <hr>
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
         {{ form | crispy }}
         <input type="submit" class="btn btn-default center-block" value="정보 수정"/>
     </form>
 </div>
+{% endblock content %}
 
-{% endblock content %}}
+{% block javascript %}
+<script type="text/javascript">
+// 제출 버튼을 누르면 순간적으로 disabled를 풀어준다.
+$('form').on('submit', () => {
+    $("select").prop('disabled', false)
+})
+</script>
+{% endblock %}

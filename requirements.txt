@@ -11,17 +11,24 @@ django-heroku==0.3.1
 django-imagekit==4.0.2
 django-multiupload==0.5.2
 django-tables2==1.21.2
+django-user-agents==0.3.2
 docopt==0.6.2
 ExifRead==2.1.2
+-e git+https://github.com/mobolic/facebook-sdk.git@5ebe9acfd2689939e2cce267fabd33ad509e3df5#egg=facebook_sdk
 gunicorn==19.9.0
 idna==2.7
 pilkit==2.0
 Pillow==5.2.0
 psycopg2==2.7.5
+pyparsing==2.2.0
 pytz==2018.4
+PyYAML==3.13
+raven==6.9.0
 requests==2.19.1
 six==1.11.0
 sqlparse==0.2.4
+ua-parser==0.8.0
 urllib3==1.23
+user-agents==1.1.0
 whitenoise==4.0
 yarg==0.1.9
