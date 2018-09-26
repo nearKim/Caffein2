@@ -1,6 +1,7 @@
 from storages.backends.s3boto3 import S3Boto3Storage, SpooledTemporaryFile
 import os
 
+
 class MediaStorage(S3Boto3Storage):
     location = 'media'
     file_overwrite = False

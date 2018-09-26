@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'raven.contrib.django.raven_compat',
     'django_user_agents',
+
+    # AWS
     'storages',
 ]
 USER_AGENTS_CACHE = None
