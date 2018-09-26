@@ -1,4 +1,5 @@
 {% extends 'index.html' %}
+{% load static %}
 <head>
     {% block title %}
         <title>카페 검색</title>
@@ -10,7 +11,7 @@
               crossorigin="anonymous">
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
                 integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -27,7 +28,9 @@
             <h1 class="display-4">카페 검색하기</h1>
             <hr class="my-4">
             <p class="lead">커모를 열기 위한 카페를 카페인 데이터베이스에서 검색합니다.</p>
-            <p class="lead">만일 여기서 카페가 검색되지 않는다면 직접 <a href="{% url 'cafes:cafes-create' %}" style="color:hotpink;text-decoration: underline;">카페를 등록</a>해주세요!</p>
+            <p class="lead">만일 여기서 카페가 검색되지 않는다면 직접 <a href="{% url 'cafes:cafes-create' %}"
+                                                       style="color:hotpink;text-decoration: underline;">카페를 등록</a>해주세요!
+            </p>
         </div>
         <nav class="navbar navbar-light bg-light">
             <form id="form-search-cafe" class="form-inline" action="{% url 'cafes:cafes-search' %}" method="get"
@@ -91,10 +94,6 @@
 
     </script>
 {% endblock %}
-
-{% block custom-javascript %}
-{% endblock %}
-</html>
 
 
 
