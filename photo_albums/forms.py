@@ -40,15 +40,10 @@ class PhotoFormCrop(forms.ModelForm):
         h = self.cleaned_data.get('height')
 
         image = Image.open(photo.file)
-
         cropped_image = image.crop((x, y, w+x, h+y))
-
-        #cropped_image.save(photo.file.path)
         fh = storage.open(photo.file.name, 'w')
         cropped_image.save(fh, 'PNG')
         fh.close()
-
-
 
         return photo
 
