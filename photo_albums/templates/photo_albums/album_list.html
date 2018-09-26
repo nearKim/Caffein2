@@ -1,5 +1,5 @@
 {% extends "album_base.html" %}
-{% block title %}album_list.html{% endblock %}
+{% block title %}앨범 목록{% endblock %}
 {% load staticfiles %}
 {% block extrastyle %}{% static "css/photo.css" %}{% endblock %}
 
@@ -9,7 +9,7 @@
         <div id="content" style="margin-top: 100px; margin-bottom: 100px">
             <h1> Photo Album</h1>
             <div align="right" style="margin-right: 100px;">
-                <a class="btn btn-primary" href="{% url "photo_albums:album_create" %}">New Album</a>
+                <a class="btn btn-primary" href="{% url "photo_albums:album_create" %}">새로운 앨범</a>
             </div>
             {% for item in object_list %}
 
@@ -25,7 +25,7 @@
                     {% for photo in item.photo_set.all|slice:":7" %}
                         <div class="album-list-photo" style="display:inline;margin-left: 10px;">
                             <a href="{{ photo.get_absolute_url }}">
-                                <img src="{{ photo.file.thumb_url }}" alt="thumbnail" style="border: 1px solid #ccc;">
+                                <img src="{{ photo.thumbnail.url }}" alt="thumbnail" style="border: 1px solid #ccc;">
                             </a>
                         </div>
                     {% endfor %}

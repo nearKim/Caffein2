@@ -1,5 +1,5 @@
 {% extends "album_base.html" %}
-{% block title %}Album Detail{% endblock %}
+{% block title %}앨범{% endblock %}
 {% load staticfiles %}
 {% block extrastyle %}{% static "css/photo.css" %}{% endblock %}
 
@@ -7,12 +7,12 @@
     <div class="box-intro">
         <div id="content" style="margin-top: 100px; margin-bottom: 100px;">
         <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px"
-                   href="{% url 'photo_albums:album_list' %}">Back</a>
+                   href="{% url 'photo_albums:album_list' %}">뒤로</a>
             <h2 style="display: inline">{{ object.name }}</h2>
             &emsp;<b><i>{{ object.description }} </i></b>
             <i> {{ object.created }}</i>&emsp;
             {# if user.is_staff or user == object.uploader #}
-                <a class="btn btn-info" style="margin: 50px; position: absolute; right: 0px; top: 50px" href="{% url "photo_albums:album_edit" album_id=object.id %}">Edit</a>
+                <a class="btn btn-info" style="margin: 50px; position: absolute; right: 0px; top: 50px" href="{% url "photo_albums:album_edit" album_id=object.id %}">편집</a>
             {# endif #}
             <hr>
 
@@ -20,7 +20,7 @@
                 {% for photo in object.photo_set.all %}
                     <div class="album-detail-photo" style="display:inline;margin-left: 10px">
                         <a href="{{ photo.get_absolute_url }}">
-                            <img src="{{ photo.file.thumb_url }}" alt="thumbnail"
+                            <img src="{{ photo.thumbnail.url }}" alt="thumbnail"
                                  style="border: 1px solid #ccc; margin: 20px;">
                         </a>
                     </div>
