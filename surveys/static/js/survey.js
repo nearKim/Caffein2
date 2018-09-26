@@ -1,7 +1,7 @@
 var addOption = function() {
     var html = "<div class=\"answer-type\">";
     html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Enter option text\">";
-    html += "<button class=\"btn btn-danger delete-option\">Delete Option</button>";
+    html += "<button class=\"btn btn-danger delete-option\">옵션 삭제</button>";
     html += "</div>";
     return html;
 }
@@ -41,7 +41,7 @@ var addQuestion = function() {
     default_answer_type += "</div>";
     new_question.find('.answer').append(default_answer_type);
     // new_question.attr('id', 'question-card-' + (++question_card_id));
-    var delete_btn = "<button class=\"btn btn-danger delete-question\">Delete</button>";
+    var delete_btn = "<button class=\"btn btn-danger delete-question\">삭제</button>";
     new_question.append(delete_btn);
     $('.card-holder').append(new_question);
 };
@@ -52,7 +52,7 @@ var duplicateQuestion = function() {
     var question_type_value = original_question.find('.question-type').val();
     duplicate_question.find('.question-type').val(question_type_value);
     if (original_question.is(':first-child')) {
-        var delete_btn = "<button class=\"btn btn-danger delete-question\">Delete</button>";
+        var delete_btn = "<button class=\"btn btn-danger delete-question\">삭제</button>";
         duplicate_question.append(delete_btn);
     }
     original_question.after(duplicate_question);
@@ -68,8 +68,8 @@ var changeQuestionType = function(type) {
         case 'choice_one':
         case 'choice_many':
             html = "<div class=\"answer-type\">";
-            html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Option 1\" value=\"Option 1\">";
-            html += "<button class=\"btn btn-primary add-option\">Add Option</button>";
+            html += "<input type=\"text\" class=\"form-control option\" name=\"option\" placeholder=\"Option 1\" value=\"옵션 1\">";
+            html += "<button class=\"btn btn-primary add-option\">옵션 추가</button>";
             html += "</div>";
             break;
         case 'binary':
@@ -145,8 +145,7 @@ $(document).ready(function() {
 
     $('.create-form').on('click', '.delete-option', function(e) {
         e.preventDefault();
-        console.log(this);
-        $(this).parents('.answer-type').remove();
+        $(this).parents()[0].remove();
     });
 
     $(document).on('submit', '.create-form', function(e) {
