@@ -58,8 +58,6 @@ def survey_fill(request, user_id, pk):
     if request.method == 'GET':
         form = Form.objects.get(id=pk)
         questions = Question.objects.filter(form=form).order_by('id')
-        #questions = list(questions)
-        #questions.reverse()
         choices = Choice.objects.filter(question__in=questions).order_by('id')
         context = {
             'form': form,
@@ -94,7 +92,7 @@ def survey_fill(request, user_id, pk):
             'purpose': form.purpose,
             'bank': info.get_bank_display(),
             'account': info.bank_account,
-            'boss_name': info.boss.user.name,
+            'boss_name': info.boss.name,
             'new_pay': info.new_pay,
             'old_pay': info.old_pay
         }
@@ -108,8 +106,6 @@ def survey_fill_new(request, user_id):
             # 가장 최근의 신입양식을 보여줌
             form = Form.objects.filter(purpose='join_new', opened=True)[0]
             questions = Question.objects.filter(form=form).order_by('id')
-            #questions = list(questions)
-            #questions.reverse()
             choices = Choice.objects.filter(question__in=questions).order_by('id')
         # 신입 가입을 위한 양식이 없는 경우 예외처리
         except (ObjectDoesNotExist, IndexError):
@@ -153,7 +149,7 @@ def survey_fill_new(request, user_id):
             'purpose': form.purpose,
             'bank': info.get_bank_display(),
             'account': info.bank_account,
-            'boss_name': info.boss.user.name,
+            'boss_name': info.boss.name,
             'new_pay': info.new_pay,
             'old_pay': info.old_pay
         }
