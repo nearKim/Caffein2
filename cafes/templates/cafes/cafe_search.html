@@ -113,6 +113,9 @@
                 <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
             {% endif %}
         </a>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
+        </ul>
         <div class="card-body">
             <h5 class="card-title">{{ cafe.name }}</h5>
             {% if cafe.description %}
@@ -140,7 +143,8 @@
     {% endif %}
     <div class="row" style="margin:30px;">
         <div class="col-sm-12">
-            <a href="{% url 'cafes:cafes-list' %}?sort=random" class="btn btn-info btn-block"><i class="fa fa-coffee"></i> &nbsp; 카페 더보기</a>
+            <a href="{% url 'cafes:cafes-list' %}?sort=random" class="btn btn-info btn-block"><i
+                    class="fa fa-coffee"></i> &nbsp; 카페 더보기</a>
         </div>
 
     </div>
