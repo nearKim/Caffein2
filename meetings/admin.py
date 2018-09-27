@@ -23,6 +23,7 @@ class MeetingCommentInline(StaffRequiredAdminMixin, TabularInline):
 @admin.register(CoffeeMeeting)
 class CoffeeMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('cafe',)
+    search_fields = ('cafe__name',)
     inlines = (MeetingCommentInline, MeetingPhotoInline,)
 
 

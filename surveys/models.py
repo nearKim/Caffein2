@@ -14,6 +14,8 @@ class Form(TimeStampedMixin):
 
     class Meta:
         ordering = ['-created']
+        verbose_name = '설문'
+        verbose_name_plural = '설문'
 
     def __str__(self):
         return self.title
