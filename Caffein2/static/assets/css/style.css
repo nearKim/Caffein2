@@ -97,6 +97,7 @@ theme.
     max-width: 70px;
     max-height: 70px;
 }
+
 /* Used in meeting templates */
 .card {
 	margin-bottom:5em;
@@ -199,6 +200,7 @@ theme.
   from {opacity: .4}
   to {opacity: 1}
 }
+
 
 
 /* KARMO template*/

@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="box-intro">
+    <span class="messages">{{ messages }}</span>
     {% if form.purpose == 'join_old' and can_old_register or form.purpose == 'join_new' and can_new_register or form.purpose == 'survey' %}
         <!--<form action="#" method="POST" class="submit-form">{% csrf_token %}-->
         <form action="{% url 'surveys:survey-fill' user_id=user.id pk=form.id %}" method="POST"

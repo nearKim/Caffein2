@@ -7,9 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from Caffein2.settings.dev import FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
 
-
 # Model Mixins
-
 
 class TimeStampedMixin(models.Model):
     """TimeStamp가 필요한 모든 모델에 사용되는 Mixin"""

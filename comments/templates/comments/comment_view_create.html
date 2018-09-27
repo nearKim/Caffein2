@@ -5,8 +5,13 @@
 
 <div class="comment-container">
 {% for comment in comments.all %}
+<<<<<<< HEAD
+    <div class="col-xs-9">
+        <p>
+=======
     <div class="col-xs-9 text-left" style="padding-left: 0;">
         <p style="font-size: calc(0.3vw + 10px);">
+>>>>>>> upstream/master
             {% if comment.author.profile_pic %}
                 {% thumbnail "25x25 " comment.author.profile_pic -- class="img-profile" %}
             {% else %}
@@ -16,17 +21,25 @@
             {{ comment.author.name }} {{ comment.content }}
         </p>
     </div>
+<<<<<<< HEAD
+    <div class="col-xs-3 text-right">
+=======
     <div class="col-xs-3 text-right" style="font-size: 10px;">
+>>>>>>> upstream/master
         {% if user == comment.author %}
             <form action="{% url 'comments:comment-delete' pk=comment.pk %}" method="post"
                   style="display: inline; ">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.path }}">
+<<<<<<< HEAD
+                <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
+=======
                 {% if request.user_agent.is_mobile %}
                     <button onclick="return confirm('정말로 삭제합니까?');">삭제</button>
                 {% else %}
                     <button class="btn-xs" onclick="return confirm('정말로 삭제합니까?');">삭제</button>
                 {% endif %}
+>>>>>>> upstream/master
             </form>
             {% if not request.user_agent.is_mobile %}
                 <form action="{% url 'comments:comment-update' pk=comment.pk %}" method="post"
@@ -52,7 +65,11 @@
         <form action="{% url 'comments:meeting-comment-create' pk=object.pk %}" method="post">{% csrf_token %}
             {{ comment_form | crispy }}
             <input type="hidden" name="next" value="{% url goto pk=object.pk %}">
+<<<<<<< HEAD
+            <input input-comment-create type="submit" class="btn btn-default center-block" style="display: none;"/>
+=======
             <input id="input-comment-create" type="submit" class="btn btn-default center-block" style="display: none;"/>
+>>>>>>> upstream/master
         </form>
     {% endif %}
 </div>

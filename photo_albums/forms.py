@@ -1,6 +1,7 @@
 from PIL import Image
 from django import forms
 from .models import Album, Photo
+from django.core.files.storage import default_storage as storage
 
 
 class AlbumForm(forms.ModelForm):
@@ -40,7 +41,9 @@ class PhotoFormCrop(forms.ModelForm):
 
         image = Image.open(photo.file)
         cropped_image = image.crop((x, y, w+x, h+y))
+        fh = storage.open(photo.file.name, 'w')
+        cropped_image.save(fh, 'PNG')
+        fh.close()
 
-        cropped_image.save(photo.file.path)
         return photo
 

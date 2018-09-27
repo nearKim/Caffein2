@@ -1,6 +1,6 @@
 {% extends "album_base.html" %}
 
-{% block title %}Photo Detail{% endblock %}
+{% block title %}사진{% endblock %}
 
 {% load staticfiles %}
 {% block extrastyle %}{% static "css/photo.css" %}{% endblock %}
@@ -10,7 +10,7 @@
         <div class="table-cell ">
             <div id="content">
                 <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 100px"
-                   href="{% url 'photo_albums:album_detail' object.album.id %}">Back</a>
+                   href="{% url 'photo_albums:album_detail' object.album.id %}">뒤로</a>
                 <h2>{{ object.album.name }}</h2>
                 <table class="photo-detail" style="margin-left: 100px; margin-right: 100px; margin-top: 50px;">
                     <tr>
@@ -23,15 +23,15 @@
 
                         <td>
                             <ul>
-                                <li>Date Uploaded</li>
+                                <li>업로드 날짜</li>
                                 <p>{{ object.created }}</p>
-                                <li>Album Name</li>
+                                <li>앨범 이름</li>
                                 <p>
                                     <a href="{% url 'photo_albums:album_detail' object.album.id %}">{{ object.album.name }}</a>
                                 </p>
                                 {% if user.is_staff or user == object.uploader or user == object.album.uploader%}
                                     <a class="btn btn-danger" style="float:right;" onclick="return confirm('정말 지우시겠습니까?');"
-                                       href="{% url "photo_albums:delete_photo_to_detail" pk=photo.id %}">delete</a>
+                                       href="{% url "photo_albums:delete_photo_to_detail" pk=photo.id %}">삭제</a>
                                 {% endif %}
                             </ul>
                         </td>
