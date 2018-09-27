@@ -42,8 +42,9 @@ class AlbumEditView(LoginRequiredMixin, View):
         else:
             photos_list = Photo.objects.filter(album_id=album_id, uploader=self.request.user)
         return render(self.request, 'photo_albums/album_edit.html', {'photos': photos_list,
-                                                                    'album_id': album_id,
-                                                                    'uploader': Album.objects.get(pk=album_id).uploader})
+                                                                     'album_name': Album.objects.get(pk=album_id).name,
+                                                                     'album_id': album_id,
+                                                                     'uploader': Album.objects.get(pk=album_id).uploader})
 
     def post(self, request, album_id):
         form = PhotoFormCrop(self.request.POST, self.request.FILES)
@@ -65,7 +66,7 @@ class AlbumEditView(LoginRequiredMixin, View):
             photo.save()
             # 페이지의 table에 바로 데이터를 붙이기위해 해당 데이터를 같이 전송.
             data = {'is_valid': True, 'name': photo.file.name, 'url': photo.file.url, 'id': photo.id,
-                    'absolute_url': photo.get_absolute_url(), 'thumb_url': photo.file.thumb_url}
+                    'absolute_url': photo.get_absolute_url(), 'thumb_url': photo.thumbnail.url}
             return JsonResponse(data)
 
 

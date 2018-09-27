@@ -53,6 +53,9 @@
                     <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
                 {% endif %}
             </a>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
+            </ul>
             <div class="card-body">
                 <h5 class="card-title">{{ cafe.name }}</h5>
                 {% if cafe.description %}
