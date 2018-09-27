@@ -169,6 +169,11 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
                     photo.save()
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(CoffeeMeetingCreateView, self).get_context_data(**kwargs)
+        context['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        return context
+
 
 class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
 
