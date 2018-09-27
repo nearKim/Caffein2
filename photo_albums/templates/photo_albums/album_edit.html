@@ -1,6 +1,6 @@
 {% extends 'album_base_edit.html' %}
 {% load static %}
-{% block title %}Edit Album{% endblock %}
+{% block title %}앨범 편집{% endblock %}
 
 {% block javascript %}
     <script src="{% static 'core/js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
@@ -13,8 +13,8 @@
 
 {% block content %}
     <h1 class="page-header" style="margin: 100px;">
-        Photo Album
-        <small>/ edit</small>
+        {{ album_name }}
+        <small>/ 편집</small>
     </h1>
     <div class="row" style="margin: 100px;">
         <div class="col-md-12">
@@ -26,7 +26,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button type="submit" class="btn btn-danger pull-right" onclick="return confirm('정말 지우시겠습니까?');">
-                        <span class="glyphicon glyphicon-trash"></span> Clear All Photos
+                        <span class="glyphicon glyphicon-trash"></span> 모든 사진 제거
                     </button>
                 </form>
                 {% endif %}
@@ -34,7 +34,7 @@
                 {# for file select upload #}
                 <div style="display: inline;">
                     <button type="button" class="btn btn-primary js-upload-photos pull-left" style="height: 40px;">
-                        <span class="fa fa-cloud-upload"></span> Select Images
+                        <span class="fa fa-cloud-upload"></span> 폴더에서 선택
                     </button>
                     <input id="fileupload" accept=".jpg, .jpeg, .png" type="file" name="file" multiple
                            style="display: none;"
@@ -47,7 +47,7 @@
                     <form name="crop" method="post" enctype="multipart/form-data" id="formUpload"
                           class="btn btn-success" style="height: 40px; margin-left: 10px;">
                         {% csrf_token %}
-                        <label for="id_file"><span class="fa fa-crop"></span> Crop Image</label>
+                        <label for="id_file"><span class="fa fa-crop"></span> 수정후 업로드</label>
                         <input type="file" name="file" accept=".jpg, .jpeg, .png" id="id_file" style="display: none;">
                         <input type="hidden" name="x" id="id_x"/>
                         <input type="hidden" name="y" id="id_y"/>
@@ -57,9 +57,9 @@
                 </div>
 
                 {# for drag and drop upload #}
-                <div class="well text-muted text-center" style="padding-top: 4rem; padding-bottom: 4rem; margin-top: 70px;"">
+                <div class="well text-muted text-center" style="padding-top: 4rem; padding-bottom: 4rem; margin-top: 70px;">
                     <span class="fa fa-arrow-down" style="font-size: 4rem;"></span>
-                    <h3>Drop Photos Here to Upload</h3>
+                    <h3>마우스로 파일을 끌어오세요.</h3>
                 </div>
                 <input id="fileupload" accept=".jpg, .jpeg, .png" type="file" name="file" multiple
                        style="display: none;"
@@ -70,7 +70,7 @@
                 <table id="gallery" class="table table-bordered">
                     <thead>
                     <tr>
-                        <th>Photo</th>
+                        <th>사진</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,12 +78,12 @@
                         <tr>
                             <td>
                                 <a href="{{ photo.get_absolute_url }}">
-                                    <img src="{{ photo.file.thumb_url }}" alt="thumbnail"
+                                    <img src="{{ photo.thumbnail.url }}" alt="thumbnail"
                                          style="border: 1px solid #ccc; margin: 20px;">
                                 </a>
                                 <a href="{{ photo.file.url }}">{{ photo.file.name }}</a>
                                 <a class="btn btn-danger" style="float:right;"
-                                   href="{% url "photo_albums:delete_photo" pk=photo.id %}">delete</a>
+                                   href="{% url "photo_albums:delete_photo" pk=photo.id %}">삭제</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -98,7 +98,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title">Crop the photo</h4>
+                                <h4 class="modal-title">수정후 업로드</h4>
                             </div>
                             <div class="modal-body">
                                 <img src="" id="image" style="max-width: 100%;">
@@ -127,7 +127,7 @@
                                         <span class="fa fa-refresh"></span>
                                     </button>
                                 </div>
-                                <button type="button" class="btn btn-primary js-crop-and-upload">Crop and upload
+                                <button type="button" class="btn btn-primary js-crop-and-upload">업로드
                                 </button>
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title">Uploading...</h4>
+                                <h4 class="modal-title">업로드 중...</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="progress">

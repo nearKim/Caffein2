@@ -3,8 +3,10 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from core.mixins import TimeStampedMixin
-from .fields import ThumbnailImageField
 from django.conf import settings
+
+from imagekit.models import ImageSpecField
+from imagekit.processors import Thumbnail
 
 
 def get_album_photo_path(instance, filename):
@@ -40,9 +42,15 @@ class Photo(TimeStampedMixin):
                                  on_delete=models.CASCADE,
                                  null=True,
                                  related_name='photo_uploader')
-    # 파일이 입력되면서 썸네일이 만들어짐
-    file = ThumbnailImageField(_('이미지'),
-                               upload_to=get_album_photo_path)
+
+    file = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
+
+    thumbnail = ImageSpecField(
+        source='file',
+        processors=[Thumbnail(128, 128)],
+        format='JPEG',
+        options={'quality': 60}
+    )
 
     class Meta:
         ordering = ['-created']
@@ -54,3 +62,5 @@ class Photo(TimeStampedMixin):
 
     def get_absolute_url(self):
         return reverse('photo_albums:photo_detail', args=(self.id,))
+
+

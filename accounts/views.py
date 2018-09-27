@@ -113,7 +113,6 @@ class UserUpdateView(StaffOrMeRequiredMixin, UpdateView):
     template_name_suffix = '_update_form'
 
 
-
 # ActiveUser
 class ActiveUserCreateView(LoginRequiredMixin, CreateView):
     model = ActiveUser
