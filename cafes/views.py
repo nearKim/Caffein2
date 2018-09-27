@@ -1,6 +1,8 @@
+import random
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count
+from django.db.models import Count, Case, When
 from django.shortcuts import render
 from django.views.generic import (
     ListView,
@@ -11,9 +13,6 @@ from django.views.generic import (
 
 from cafes.forms import CafeCreateUpdateForm
 from cafes.models import Cafe, CafePhoto
-
-# deprecated
-from meetings.models import CoffeeMeeting
 
 
 class CafeListView(LoginRequiredMixin, ListView):
@@ -26,26 +25,36 @@ class CafeListView(LoginRequiredMixin, ListView):
                 .select_related('last_modifier') \
                 .select_related('uploader') \
                 .prefetch_related('coffeemeeting_set') \
-                .annotate(num_meetings=Count('coffeemeeting')) \
+                .annotate(num_meetings=Count('coffeemeeting', distinct=True)) \
                 .order_by('-num_meetings')
         elif self.request.GET['sort'] == 'recent':
             queryset = Cafe.objects.prefetch_related('photos') \
                 .select_related('last_modifier') \
                 .select_related('uploader') \
-                .all() \
+                .prefetch_related('coffeemeeting_set') \
+                .annotate(num_meetings=Count('coffeemeeting', distinct=True)) \
                 .order_by('-created')
         elif self.request.GET['sort'] == 'photo':
             queryset = Cafe.objects.prefetch_related('photos') \
                 .select_related('last_modifier') \
                 .select_related('uploader') \
-                .annotate(num_photo=Count('photos')) \
+                .prefetch_related('coffeemeeting_set') \
+                .annotate(num_meetings=Count('coffeemeeting', distinct=True)) \
+                .annotate(num_photo=Count('photos', distinct=True)) \
                 .order_by('-num_photo')
         else:
             # Random
-            queryset = Cafe.objects.prefetch_related('photos') \
+            # https://stackoverflow.com/a/37648265
+            cafe_id_list = list(Cafe.objects.values_list('id', flat=True))
+            random.shuffle(cafe_id_list)
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cafe_id_list)])
+            queryset = Cafe.objects \
                 .select_related('last_modifier') \
                 .select_related('uploader') \
-                .all().order_by('?')
+                .prefetch_related('photos') \
+                .prefetch_related('coffeemeeting_set') \
+                .annotate(num_meetings=Count('coffeemeeting')) \
+                .order_by(preserved)
         return queryset
 
 
@@ -110,9 +119,14 @@ class CafeSearchView(LoginRequiredMixin, ListView):
         context = super(CafeSearchView, self).get_context_data(*args, **kwargs)
         if Cafe.objects.all().count() > 2:
             # 현재 카페들중 3개를 랜덤하게 뽑아온다. 카페들은 많아봤자 몇십~몇백개일 것이므로 퍼포먼스 이슈는 없다.
+            cafe_id_list = list(Cafe.objects.values_list('id', flat=True))
+            cafe_id_list_3 = random.sample(cafe_id_list, 3)
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cafe_id_list_3)])
             context['random_cafes'] = Cafe.objects \
                                           .select_related('uploader') \
                                           .select_related('last_modifier') \
                                           .prefetch_related('photos') \
-                                          .order_by('?')[:3]
+                                          .prefetch_related('coffeemeeting_set') \
+                                          .annotate(num_meetings=Count('coffeemeeting')) \
+                                          .order_by(preserved)
         return context

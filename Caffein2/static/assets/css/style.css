@@ -100,6 +100,7 @@ theme.
 /* Used in meeting templates */
 .card {
 	margin-bottom:5em;
+    background-color: white;
 	margin-top:5em;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
@@ -209,7 +210,7 @@ theme.
 
 body{
 		background: #fff;
-		color:#777;
+		color:#F5F5F5;
     font:400 14px/1.8 'Cantarell', sans-serif;
 		-webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
