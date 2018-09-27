@@ -26,10 +26,13 @@
     <div class="container" style="padding-top:150px; background-color: #fafafa;">
         <div class="text-center">
             <h2>카페 리스트</h2>
+            <p class="lead" style="margin-bottom: 20px;">카페인 회원들이 등록한 카페들이에요!</p>
             <hr class="my-4">
-            <p class="lead" style="margin-bottom: 20px;">지금까지 카페인에서 커모를 했던 카페들이에요!</p>
+            <h6>여러분들이 알고 있는 <a href="{% url 'cafes:cafes-create' %}" style="color:hotpink;text-decoration: underline;">카페를
+                등록</a>하면 여기에 정보가 나타납니다. </h6>
+            <h6>그러면 회원들이 카페에서 커모를 열 수 있어요!</h6>
         </div>
-        <div class="row text-center" style="margin-bottom: 30px;">
+        <div class="row text-center mt-50">
             <div class="col-sm-12">
                 <a id="btn-pop" href="{% url 'cafes:cafes-list' %}?sort=popularity" class="btn" role="button">인기순</a>
                 <a id="btn-recent" href="{% url 'cafes:cafes-list' %}?sort=recent" class="btn" role="button">최신순</a>
