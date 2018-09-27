@@ -44,6 +44,9 @@ class EveryMeetingListView(LoginRequiredMixin, ListView):
 # CRUD for OfficialMeeting
 
 class OfficialMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:official-detail', kwargs={'pk': self.object.id})
+
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 공식모임을 생성하였습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -55,6 +58,8 @@ class OfficialMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, OfficialM
 
 
 class OfficialMeetingUpdateView(StaffRequiredMixin, OfficialMeetingCreateUpdateMixin, UpdateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:official-detail', kwargs={'pk': self.object.id})
 
     def form_valid(self, form):
         instance = form.save()
@@ -94,6 +99,9 @@ class OfficialMeetingDeleteView(StaffRequiredMixin, DeleteView):
 
 # CoffeeEducation
 class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:education-detail', kwargs={'pk': self.object.id})
+
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 커피교육을 열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -105,6 +113,9 @@ class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEdu
 
 
 class CoffeeEducationUpdateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMixin, UpdateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:education-detail', kwargs={'pk': self.object.id})
+
     def form_valid(self, form):
         instance = form.save()
         MeetingPhoto.objects.filter(meeting=instance).delete()
@@ -143,6 +154,9 @@ class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
 
 # CoffeeMeeting
 class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
+
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
@@ -169,8 +183,15 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
                     photo.save()
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(CoffeeMeetingCreateView, self).get_context_data(**kwargs)
+        context['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        return context
+
 
 class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
 
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingUpdateView, self).get_form_kwargs()
