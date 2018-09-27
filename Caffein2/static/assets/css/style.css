@@ -211,8 +211,8 @@ theme.
 }
 
 body{
-		background: #fff;
-		color:#F5F5F5;
+		background: #F5F5F5;
+		color: black;
     font:400 14px/1.8 'Cantarell', sans-serif;
 		-webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
