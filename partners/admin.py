@@ -13,13 +13,6 @@ from .models import (
 )
 
 
-@admin.register(Partner)
-class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
-    list_filter = ('partner_year', 'partner_semester')
-    search_fields = ('up_partner', 'down_partner_1', 'down_partner_2', 'down_partner_3')
-    ordering = ('-partner_year', '-partner_semester')
-
-
 class FeedPhotoInline(StaffRequiredAdminMixin, TabularInline):
     model = FeedPhoto
 
@@ -30,7 +23,13 @@ class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
     exclude = ('meeting',)
 
 
+@admin.register(Partner)
+class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
+    list_filter = ('partner_year', 'partner_semester')
+    search_fields = ('up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name', 'down_partner_3__user__name')
+    ordering = ('-partner_year', '-partner_semester')
+
+
 @admin.register(PartnerMeeting)
 class PartnerMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
     inlines = (FeedPhotoInline, FeedCommentInline)
-

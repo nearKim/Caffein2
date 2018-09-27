@@ -1,9 +1,11 @@
 from django.contrib import admin
+
+from core.mixins import StaffRequiredAdminMixin
 from .models import Form
 from django.utils.safestring import mark_safe
 
 
-class FormAdmin(admin.ModelAdmin):
+class FormAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):
     list_display = ['title', 'purpose', 'opened', 'answer_num', 'result', 'owner', 'id']
     list_display_links = ['title', 'id']
     actions = ['make_opened', 'make_closed']

@@ -30,8 +30,8 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
     view_on_site = False
 
     list_display = ('email', 'name', 'phone', 'student_no', 'college',
-                    'department', 'category', 'rule_confirm', 'survey_done', 'is_new')
-    list_filter = ('join_year', 'join_semester', 'survey_done', 'college', 'category')
+                    'department', 'category', 'rule_confirm', 'is_staff', 'survey_done', 'is_new',)
+    list_filter = ('is_staff', 'join_year', 'join_semester', 'survey_done', 'college', 'category')
     list_per_page = 200
     readonly_fields = ('survey_done', 'rule_confirm')
     fieldsets = (
@@ -52,7 +52,7 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
         (_('추가정보'), {'fields': ('rule_confirm', 'survey_done')}),
         (_('중요 날짜'), {'fields': ('join_year', 'join_semester')})
     )
-    search_fields = ('email',)
+    search_fields = ('email', 'name', 'phone', 'student_no')
     ordering = ('-date_joined',)
     actions = ['invalidate_user', 'activate_and_add_active', ]
 
@@ -64,6 +64,14 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
             return False
 
     is_new.boolean = True
+
+    def is_staff(self, obj):
+        if obj.is_staff:
+            return True
+        else:
+            return False
+
+    is_staff.boolean = True
 
     def activate_and_add_active(self, request, queryset):
         """신규회원 가입시 설문도 작성하고 가입비도 납부했을 경우 운영자가 확인하여 로그인활성화 및 활동회원으로 추가한다."""
@@ -90,7 +98,6 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
         queryset.update(is_active=False)
         self.message_user(request, str(queryset.count()) + "명의 사용자가 비활성화 되었습니다.")
 
-
     is_new.short_description = _('신입 여부')
     activate_and_add_active.short_description = _('신규회원으로 확정!')
     invalidate_user.short_description = _('비활성화')
@@ -103,6 +110,8 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
         'active_year', 'active_semester', 'is_paid', 'user__join_year', 'user__join_semester', 'user__college')
     list_editable = ('is_paid',)
     ordering = ('-active_year', '-active_semester')
+    search_fields = ('user__name',)
+
     list_per_page = 150
 
     def get_urls(self):
