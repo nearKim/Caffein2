@@ -1,64 +1,36 @@
-'''
 from django.contrib import admin
-
-from .models import Choice, Question
-
-
-class ChoiceInline(admin.TabularInline):
-    model = Choice
-    extra = 3
-
-
-class QuestionAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (None,               {'fields': ['question_text']}),
-        ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
-    ]
-    inlines = [ChoiceInline]
-    list_display = ('question_text', 'pub_date', 'was_published_recently')
-    list_filter = ['pub_date']
-    search_fields = ['question_text']
-
-admin.site.register(Question, QuestionAdmin)
-'''
-from django.contrib import admin
-
-from .models import Form, Question, Choice, TextAnswer, ChoiceOneAnswer, \
-    ChoiceManyAnswer, BinaryAnswer
+from .models import Form
+from django.utils.safestring import mark_safe
 
 
 class FormAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'owner')
+    list_display = ['title', 'purpose', 'opened', 'answer_num', 'result', 'owner', 'id']
+    list_display_links = ['title', 'id']
+    actions = ['make_opened', 'make_closed']
+    ordering = ['-id', 'opened']
 
+    # 결과창으로 가는 링크 생성
+    def result(self, post):
+        return mark_safe('<a href="http://localhost:8000/surveys/result/{}">응답</a>'.format(post.id))
+    result.short_description = '응답보기'
 
-class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'question_text', 'form')
+    # 각 Form당 응답한 사람 수를 생성
+    def answer_num(self, post):
+        return mark_safe('<u>{}</u>명'.format(post.users.count()))
+    answer_num.short_description = '응답자'
 
+    # 선택한 Form의 상태를 open으로 변경
+    def make_opened(self, request, queryset):
+        updated_cnt = queryset.update(opened=True)
+        self.message_user(request, '{}개의 Form을 열었습니다'.format(updated_cnt))
+    make_opened.short_description = '지정 Form을 열기'
 
-class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'choice_text', 'question')
-
-
-class TextAnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'question', 'user')
-
-
-class McqOneAnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'choice', 'question', 'user')
-
-
-class McqManyAnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_choices', 'question', 'user')
-
-
-class BinaryAnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'answer_option', 'question', 'user')
+    # 선택한 Form의 상태를 close로 변경
+    def make_closed(self, request, queryset):
+        updated_cnt = queryset.update(opened=False)
+        self.message_user(request, '{}개의 Form을 닫았습니다'.format(updated_cnt))
+    make_closed.short_description = '지정 Form을 닫기'
 
 
 admin.site.register(Form, FormAdmin)
-admin.site.register(Question, QuestionAdmin)
-admin.site.register(Choice, ChoiceAdmin)
-admin.site.register(TextAnswer, TextAnswerAdmin)
-admin.site.register(ChoiceOneAnswer, McqOneAnswerAdmin)
-admin.site.register(ChoiceManyAnswer, McqManyAnswerAdmin)
-admin.site.register(BinaryAnswer, BinaryAnswerAdmin)
+

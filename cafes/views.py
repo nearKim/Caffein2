@@ -17,7 +17,8 @@ from cafes.models import Cafe, CafePhoto
 
 class CafeListView(LoginRequiredMixin, ListView):
     context_object_name = 'cafes'
-    paginate_by = 10
+    # 한번에 3개 혹은 4개씩 나타날 확률이 크다.
+    paginate_by = 12
 
     def get_queryset(self):
         if self.request.GET['sort'] == 'popularity':
