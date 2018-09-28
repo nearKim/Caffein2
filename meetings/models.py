@@ -6,12 +6,13 @@ from core.models import Meeting
 
 
 class OfficialMeeting(Meeting):
-    INTRODUCTION, WELCOME, MT, MARKET = 'i', 'w', 'm', 'k'
+    INTRODUCTION, WELCOME, MT, MARKET, ETC = 'i', 'w', 'm', 'k', 'e'
     EVENT_CATEGORY = (
         (INTRODUCTION, '동소제'),
         (WELCOME, '신환회'),
         (MT, 'MT'),
-        (MARKET, '장터')
+        (MARKET, '장터'),
+        (ETC, '기타')
     )
 
     category = models.CharField(_('분류'), max_length=1, choices=EVENT_CATEGORY)
