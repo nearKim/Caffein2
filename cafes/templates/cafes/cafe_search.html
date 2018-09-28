@@ -100,42 +100,39 @@
     </div>
     {% if random_cafes.exists %}
         <div class="card-deck mb-50">
-        {% for cafe in random_cafes %}
-            {% if request.user_agent.is_mobile %}
-                <div class="card mx-auto" style="width: 18rem; max-width: 80%;">
-            {% else %}
-                <div class="card" style="width: 18rem; max-width: 80%;">
-            {% endif %}
-        <a href="{% url 'cafes:cafes-detail' cafe.pk %}">
-            {% if cafe.photos.exists %}
-                <img class="card-img-top" src="{{ cafe.photos.all.0.image_thumb.url }}">
-            {% else %}
-                <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
-            {% endif %}
-        </a>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
-        </ul>
-        <div class="card-body">
-            <h5 class="card-title">{{ cafe.name }}</h5>
-            {% if cafe.description %}
-                <p class="card-text">{{ cafe.description }}</p>
-            {% else %}
-                <p class="card-text">아직 카페 설명이 없어요. 채워주세요!</p>
-            {% endif %}
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">
-                {% if cafe.uploader.profile_pic %}
-                    {% thumbnail "30x30" cafe.uploader.profile_pic %}
-                {% endif %}
-                {{ cafe.uploader.name }} 님이 등록한 카페입니다.
-            </small>
-        </div>
+            {% for cafe in random_cafes %}
+                <div class="card {% if request.user_agent.is_mobile %}mx-auto{% endif %}"
+                     style="width: 18rem; max-width: 80%;">
+                    <a href="{% url 'cafes:cafes-detail' cafe.pk %}">
+                        {% if cafe.photos.exists %}
+                            <img class="card-img-top" src="{{ cafe.photos.all.0.image_thumb.url }}">
+                        {% else %}
+                            <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
+                        {% endif %}
+                    </a>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
+                    </ul>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ cafe.name }}</h5>
+                        {% if cafe.description %}
+                            <p class="card-text">{{ cafe.description }}</p>
+                        {% else %}
+                            <p class="card-text">아직 카페 설명이 없어요. 채워주세요!</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            {% if cafe.uploader.profile_pic %}
+                                {% thumbnail "30x30" cafe.uploader.profile_pic %}
+                            {% endif %}
+                            {{ cafe.uploader.name }} 님이 등록한 카페입니다.
+                        </small>
+                    </div>
 
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% else %}
         <div class="col-sm-12 mb-50">
             <p class="lead">아직 충분한 카페 데이터가 모이지 않았습니다.</p>
