@@ -36,8 +36,8 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-                    <i class="prev lnr lnr-chevron-left" ></i>
-                    <i class="next lnr lnr-chevron-right" ></i>
+                    <i class="prev lnr lnr-chevron-left"></i>
+                    <i class="next lnr lnr-chevron-right"></i>
                 {% else %}
                     <div class="col-sm-12 text-center" style="margin-bottom: 20px;">
                         <h5>사진이 없어요!</h5>
@@ -98,16 +98,25 @@
                             </button>
                         {% else %}
                             <button id="btn-participate" onclick="return alert('참여하시겠습니까?');"
-                                    class="btn btn-default btn-block">참여 하기!
+                                    class="btn btn-info btn-block">참여 하기!
                             </button>
                         {% endif %}
                     </form>
-                    {% if user == object.author or user.is_staff %}
-                        <a class="btn btn-danger btn-block" data-method="delete" href="{% url 'meetings:delete-meeting' pk=object.pk %}" onclick="return confirm('정말 지우시겠습니까?');">삭제 하기!
-                        </a>
-                    {% endif %}
                 </div>
             </div>
+            {% if user == object.author or user.is_staff %}
+                <div class="row text-center" style="margin-top: 20px;">
+                    <div class="col-sm-6">
+                        {% block fix-button %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="btn btn-default btn-block" data-method="delete" role="button"
+                           href="{% url 'meetings:delete-meeting' pk=object.pk %}"
+                           onclick="return confirm('정말 지우시겠습니까?');">삭제 하기! </a>
+                    </div>
+                </div>
+            {% endif %}
             <div class="row" style="padding:16px;">
                 <section style="font-size: calc(0.5vw + 10px);">
                     <b>{{ object.author.name }}</b>
