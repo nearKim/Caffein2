@@ -2,9 +2,6 @@
 {% load static %}
 {% load imagekit %}
 
-{% block title %}
-    <title>카페 리스트</title>
-{% endblock %}
 {% block style %}
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -22,58 +19,69 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
 {% endblock %}
+
+{% block title %}
+    <title>커모 리스트</title>
+{% endblock %}
+
 {% block content %}
-    <div class="container-fluid mt-150 mb-100" style="padding-left:5%; padding-right:5%;">
+    <div class="container-fluid mt-150 mb-100" style="padding-left: 5%; padding-right: 5%;">
         <div class="text-center">
-            <h2>카페 리스트</h2>
-            <p class="lead" style="margin-bottom: 20px;">카페인 회원들이 등록한 카페들이에요!</p>
-            <hr class="my-4">
-            <h6>여러분들이 알고 있는 <a href="{% url 'cafes:cafes-create' %}" style="color:hotpink;text-decoration: underline;">카페를
-                등록</a>하면 여기에 정보가 나타납니다. </h6>
-            <h6>그러면 회원들이 카페에서 커모를 열 수 있어요!</h6>
+            <h2>커피 모임</h2>
+            <p class="lead">지금까지 총 <b>{{ page_obj.paginator.count }}번</b>의 커모가 열렸어요!</p>
+            <hr>
+            <p>사진을 클릭하면 커모 상세 페이지로 이동합니다</p>
         </div>
-        <div class="row text-center mt-50">
-            <div class="col-sm-12">
-                <a id="btn-pop" href="{% url 'cafes:cafes-list' %}?sort=popularity" class="btn" role="button">인기순</a>
-                <a id="btn-recent" href="{% url 'cafes:cafes-list' %}?sort=recent" class="btn" role="button">최신순</a>
-                <a id="btn-photo" href="{% url 'cafes:cafes-list' %}?sort=photo" class="btn" role="button">사진 많은 순</a>
-                <a id="btn-random" href="{% url 'cafes:cafes-list' %}?sort=random" class="btn" role="button">랜덤랜덤</a>
+        <div class="row">
+            <div class="col-sm-12 text-center" style="margin-top: 20px;">
+                <a href="{% url 'cafes:cafes-search' %}" role="button"
+                   class="btn btn-info btn-lg {% if request.user_agent.is_mobile %}btn-block{% endif %}">커모 열기</a>
             </div>
         </div>
-        <div class="card-deck text-center"
-             style="@include media-breakpoint-only(lg) {column-count: 4;}
-                @include media-breakpoint-only(xl) {column-count: 5;}">
-            {% for cafe in cafes %}
-
-                <div class="card {% if request.user_agent.is_mobile %} mx-auto {% endif %}"
-                     style="width: 18rem; max-width: 80%;">
-                    <a href="{% url 'cafes:cafes-detail' cafe.pk %}">
-                        {% if cafe.photos.exists %}
-                            <img class="card-img-top" src="{{ cafe.photos.all.0.image_thumb.url }}">
+        <div class="card-deck text-center">
+            <!-- Card -->
+            <!-- 만일 모바일로 들어왔다면 중앙 정렬을 위해서 마진을 조절한다 -->
+            {% for object in object_list %}
+                <div class="card {% if request.user_agent.is_mobile %}mx-auto{% endif %} {% if object.is_past_due %} should-overlay {% endif %} mb-4">
+                    <div class="card-header">
+                        {% if object.author.profile_pic %}
+                            {% thumbnail "30x30" object.author.profile_pic -- class="img-profile" %}
                         {% else %}
-                            <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
+                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30" height="30"
+                                 class="img-profile">
+                        {% endif %}
+                        {{ object.author.name }}
+                    </div>
+                    <a href="{% url 'meetings:coffee-meeting-detail' object.pk %}">
+                        {% if object.photos.exists %}
+                            <img class="card-img-top" src="{{ object.photos.all.0.image.url }}">
+                        {% elif object.cafe.photos.exists %}
+                            <img class="card-img-top" src="{{ object.cafe.photos.all.0.image.url }}">
+                        {% else %}
+                            {% static 'assets/img/default-cafe.jpg' %}
                         {% endif %}
                     </a>
+
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
+                        <li class="list-group-item">{{ object.cafe.name }}</li>
+                        <li class="list-group-item">{{ object.meeting_date | date:"m월d일 A h시 i분" }}</li>
+                        {% if object.max_participants == 0 %}
+                            <li class="list-group-item">누구나 참가 가능</li>
+                        {% else %}
+                            <li class="list-group-item">현재 {{ object.participants.all.count }}명
+                                / {{ object.max_participants }}명
+                            </li>
+                        {% endif %}
                     </ul>
                     <div class="card-body">
-                        <h5 class="card-title">{{ cafe.name }}</h5>
-                        {% if cafe.description %}
-                            <p class="card-text">{{ cafe.description }}</p>
-                        {% else %}
-                            <p class="card-text">아직 카페 설명이 없어요. 채워주세요!</p>
-                        {% endif %}
+                        <h5 class="card-title">{{ object.title }}</h5>
+                        <p class="card-text">{{ object.content | truncatechars:60 }}</p>
                     </div>
                     <div class="card-footer">
-                        <small class="text-muted">
-                            {% if cafe.uploader.profile_pic %}
-                                {% thumbnail "30x30" cafe.uploader.profile_pic %}
-                            {% endif %}
-                            {{ cafe.uploader.name }} 님이 등록한 카페입니다.
-                        </small>
+                        <small class="text-muted">{{ object.created |date:"Y년 m월 d일 A h시 i분" }}에 등록됨</small>
                     </div>
                 </div>
+
                 {# Responsive card-deck #}
                 {# https://www.codeply.com/go/k2zBsujRhJ#}
                 {% if forloop.counter|divisibleby:2 %}
@@ -90,6 +98,7 @@
                 {% endif %}
             {% endfor %}
         </div>
+
         {% if is_paginated %}
             <div class="row " style="padding:20px;">
                 <div class="col-sm-12">
@@ -120,28 +129,23 @@
                 </div>
             </div>
         {% endif %}
+
     </div>
 {% endblock %}
 
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(function () {
-            {# card크기 첫번째에 맞춘다. #}
+            {# 각 card의 크기를 첫번째 card의 크기에 맞춰서 줄여준다. 첫번째 card는 항상 최소값일 것이다. #}
             let minWidth = $(".card").first().width()
             $('.card').css('max-width', minWidth + 'px')
-            {# querystring에 따른 버튼 스타일 적용 #}
-            {% if request.GET.sort == 'popularity' %}
-                $('#btn-pop').removeAttr("href");
-                $('#btn-pop').addClass("btn-info");
-            {% elif request.GET.sort == 'recent' %}
-                $('#btn-recent').removeAttr("href");
-                $('#btn-recent').addClass("btn-info");
-            {% elif request.GET.sort == 'photo' %}
-                $('#btn-photo').removeAttr("href");
-                $('#btn-photo').addClass("btn-info");
-            {% elif request.GET.sort == 'random' %}
-                $('#btn-random').addClass("btn-info");
-            {% endif %}
-        });
+            {# 종료된 커모의 경우 className에 should-overlay를 삽입한다.#}
+            $(".should-overlay").css({'background-color': 'background-color: rgba(230, 230, 230, 1)', 'opacity': '0.5'})
+            {# a href를 없애고 포인터 이벤트도 없애준다. #}
+            $(".should-overlay").find('a').removeAttr("href").css("cursor", "pointer").css("pointer-events", "none")
+            {# Title은 약간 진하게 표시되어 있으므로 title을 변경하여 종료를 나타낸다.  #}
+            $(".should-overlay").find('.card-title').text('종료된 커모입니다')
+            $(".should-overlay").find('.card-text').text('')
+        })
     </script>
 {% endblock %}

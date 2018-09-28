@@ -92,10 +92,11 @@
                 <li class="box-label">Caffe人</li>
                 <li><a href="{% url 'core:entrypoint' %}">메인으로</a> <i class="lnr lnr-home"></i></li>
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a></li>
-                    <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a></li>
-                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a></li>
-                    <li><a href="{% url 'cafes:cafes-search' %}">카페 검색</a></li>
+                    <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a><i class="lnr lnr-user"></i></li>
+                    <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a><i class="lnr lnr-bubble"></i></li>
+                    <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup"></i></li>
+                    <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier"></i></li>
+                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a><i class="lnr lnr-camera"></i></li>
                 {% endif %}
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:old-register' user.id %}">기존회원 재가입</a></li>
