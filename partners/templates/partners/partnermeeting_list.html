@@ -18,7 +18,7 @@
                                 <img src="{% static 'assets/img/default-avatar.png' %}" width="30" height="30"
                                      class="img-profile">
                             {% endif %}
-                            &nbsp; {{ meeting.author.name }}
+                            &nbsp;<span style="font-size:calc(0.5vw + 10px);"> {{ meeting.author.name }}</span>
                         </div>
                         <div class="col-xs-8 text-right " style="font-size:calc(0.5vw + 9px);">
                             {{ meeting.created | date:"m월d일 A h시 i분" }}

@@ -92,6 +92,11 @@ class Meeting(Postable):
                 pass
         return self
 
+    # property
+    @property
+    def is_past_due(self):
+        return now() > self.meeting_date
+
     # General Use methods
     def can_participate(self):
         if self.max_participants == 0:

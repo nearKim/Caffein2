@@ -43,6 +43,7 @@ urlpatterns = [
     path('coffee-meeting/update/<int:pk>', CoffeeMeetingUpdateView.as_view(), name='coffee-meeting-update'),
     path('coffee-meeting/delete/<int:pk>', CoffeeMeetingDeleteView.as_view(), name='coffee-meeting-delete'),
     path('coffee-meeting/<int:pk>', CoffeeMeetingDetailView.as_view(), name='coffee-meeting-detail'),
+    path('coffee-meeting/', CoffeeMeetingListView.as_view(), name='coffee-meeting-list'),
 
     path('participate/<int:pk>/', participate_meeting, name='participate'),
 

@@ -1,0 +1,96 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load imagekit %}
+
+{% block style %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %}
+    <title>커모 리스트</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-150 mb-100" style="padding-left: 5%; padding-right: 5%;">
+        <div class="text-center">
+            <h2>커모 리스트</h2>
+            <p class="lead">지금까지 열린 모든 커모의 기록들</p>
+            <hr>
+        </div>
+        <div class="card-deck text-center">
+            {% for object in object_list %}
+                <!-- Card -->
+                <!-- 만일 모바일로 들어왔다면 중앙 정렬을 위해서 마진을 조절한다 -->
+
+                <div class="card {% if request.user_agent.is_mobile %}mx-auto{% endif %} {% if object.is_past_due %} should-overlay {% endif %}">
+                    <div class="card-header">
+                        {% if object.author.profile_pic %}
+                            {% thumbnail "30x30" object.author.profile_pic -- class="img-profile" %}
+                        {% else %}
+                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30" height="30"
+                                 class="img-profile">
+                        {% endif %}
+                        {{ object.author.name }}
+                    </div>
+                    <a href="{% url 'meetings:coffee-meeting-detail' object.pk %}">
+                        {% if object.photos.exists %}
+                            <img class="card-img-top" src="{{ object.photos.all.0.image.url }}">
+                        {% elif object.cafe.photos.exists %}
+                            <img class="card-img-top" src="{{ object.cafe.photos.all.0.image.url }}">
+                        {% else %}
+                            {% static 'assets/img/default-cafe.jpg' %}
+                        {% endif %}
+                    </a>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">{{ object.cafe.name }}</li>
+                        <li class="list-group-item">{{ object.meeting_date | date:"m월d일 A h시 i분" }}</li>
+                        {% if object.max_participants == 0 %}
+                            <li class="list-group-item">누구나 참가 가능</li>
+                        {% else %}
+                            <li class="list-group-item">현재 {{ object.participants.all.count }}명
+                                / {{ object.max_participants }}명
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ object.title }}</h5>
+                        <p class="card-text">{{ object.content | truncatechars:60 }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">{{ object.created |date:"Y년 m월 d일 A h시 i분" }}에 등록됨</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {# 종료된 커모의 경우 className에 should-overlay를 삽입한다.#}
+            $(".should-overlay").css({'background-color': 'background-color: rgba(230, 230, 230, 1)', 'opacity': '0.5'})
+            {# a href를 없애고 포인터 이벤트도 없애준다. #}
+            $(".should-overlay").find('a').removeAttr("href").css("cursor", "pointer").css("pointer-events", "none")
+            {# Title은 약간 진하게 표시되어 있으므로 title을 변경하여 종료를 나타낸다.  #}
+            $(".should-overlay").find('.card-title').text('종료된 커모입니다')
+            $(".should-overlay").find('.card-text').text('')
+
+        })
+    </script>
+{% endblock %}
