@@ -21,6 +21,7 @@ from .views import (
     CoffeeMeetingUpdateView,
 
     participate_meeting,
+    delete_meeting,
 )
 
 app_name = 'meetings'
@@ -45,5 +46,5 @@ urlpatterns = [
     path('coffee-meeting/<int:pk>', CoffeeMeetingDetailView.as_view(), name='coffee-meeting-detail'),
 
     path('participate/<int:pk>/', participate_meeting, name='participate'),
-
+    path('delete_meeting/<int:pk>', delete_meeting, name='delete_meeting'),
 ]

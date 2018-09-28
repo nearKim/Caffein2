@@ -102,6 +102,10 @@
                             </button>
                         {% endif %}
                     </form>
+                    {% if user == object.author or user.is_staff %}
+                        <a class="btn btn-danger btn-block" data-method="delete" href="{% url 'meetings:delete_meeting' pk=object.pk %}" onclick="return confirm('정말 지우시겠습니까?');">삭제 하기!
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="row" style="padding:16px;">

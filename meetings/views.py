@@ -244,11 +244,20 @@ def participate_meeting(request, pk):
         meeting = get_object_or_404(Meeting, pk=pk)
         if meeting.can_participate():
             # 참여가능인원이 다 차지 않은 경우 가장 최신의 활동회원 객체를 불러온다.
-            active_user = ActiveUser.objects.filter(user=request.user).latest()
-            # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
-            flag = meeting.participate_or_not(active_user)
-            messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
+            active_user = ActiveUser.objects.filter(user=request.user)
+            if active_user:
+                active_user = active_user.latest()
+                # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
+                flag = meeting.participate_or_not(active_user)
+                messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
         else:
             messages.error(request, '참여 인원이 다 찼습니다.')
             return redirect(meeting.cast())
+
+
+@login_required()
+def delete_meeting(request, pk):
+    meeting = get_object_or_404(Meeting, pk=pk)
+    meeting.delete()
+    return redirect("meetings:meetings-list")
