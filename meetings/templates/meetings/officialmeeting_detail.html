@@ -29,6 +29,11 @@
 
 {% block below-map %}
     <div class="row" style="margin-top: 20px;">
+        {% if user == object.author or user.is_staff %}
+            <a href="{% url 'meetings:official-update' pk=object.pk %}" class="btn btn-info btn-block">
+                수정하기
+            </a>
+        {% endif %}
         <div class="col-sm-12 text-center" style="font-size: calc(0.6vw + 14px); font-weight: bold;">
             {{ object.location }}
         </div>

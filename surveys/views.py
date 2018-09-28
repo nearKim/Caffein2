@@ -180,7 +180,8 @@ def survey_result(request, pk):
 @login_required
 def delete_form(request, pk):
     form = Form.objects.get(id=pk)
-    form.delete()
+    if request.user == form.owner or request.user.is_staff:
+        form.delete()
     return redirect('surveys:survey-list')
 
 
