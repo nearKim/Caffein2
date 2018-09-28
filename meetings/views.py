@@ -220,6 +220,8 @@ class CoffeeMeetingDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class CoffeeMeetingListView(LoginRequiredMixin, ListView):
+    paginate_by = 10
+
     def get_context_data(self, *args, **kwargs):
         context = super(CoffeeMeetingListView, self).get_context_data(*args, **kwargs)
         return context
@@ -231,7 +233,7 @@ class CoffeeMeetingListView(LoginRequiredMixin, ListView):
             .prefetch_related('cafe__photos') \
             .prefetch_related('participants__user') \
             .prefetch_related('photos') \
-            .all()
+            .all().order_by('-meeting_date')
         return queryset
 
 
