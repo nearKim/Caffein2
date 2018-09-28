@@ -8,9 +8,9 @@
                 <h4>{{ bank }} {{ account }} {{ boss_name }}(으)로 {{ new_pay }}원을 신청자 이름으로 입금하시면 가입 신청이 완료됩니다.</h4>
             {% elif purpose == 'join_old' %}
                 <h4>{{ bank }} {{ account }} {{ boss_name }}(으)로 {{ old_pay }}원을 신청자 이름으로 입금하시면 가입 신청이 완료됩니다.</h4>
-                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">Back</a>
+                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">홈으로</a>
             {% else %}
-                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">Back</a>
+                <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px" href="{% url 'surveys:survey-list' %}">홈으로</a>
             {% endif %}
         </div>
     </div>

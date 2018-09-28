@@ -46,5 +46,5 @@ urlpatterns = [
     path('coffee-meeting/<int:pk>', CoffeeMeetingDetailView.as_view(), name='coffee-meeting-detail'),
 
     path('participate/<int:pk>/', participate_meeting, name='participate'),
-    path('delete_meeting/<int:pk>', delete_meeting, name='delete_meeting'),
+    path('delete-meeting/<int:pk>', delete_meeting, name='delete-meeting'),
 ]

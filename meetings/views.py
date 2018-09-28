@@ -259,5 +259,6 @@ def participate_meeting(request, pk):
 @login_required()
 def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
-    meeting.delete()
+    if request.user == meeting.author or request.user.is_staff:
+        meeting.delete()
     return redirect("meetings:meetings-list")
