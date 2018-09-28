@@ -1373,6 +1373,7 @@ b i:last-child {
 footer.main-footer{
 		background-color: #000;
 		z-index: 0;
+        color:#fff;
 }
 
 footer p {

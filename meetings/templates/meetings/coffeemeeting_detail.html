@@ -21,15 +21,22 @@
 {% endblock %}
 
 {% block below-map %}
+
     <div class="row"
          style="font-size:calc(0.5vw + 14px);
                         margin-top:20px;
                         margin-bottom:20px;
                         border-bottom: 1px solid #e5e5e5;">
+    {% if user == object.author or user.is_staff %}
+            <a href="{% url 'meetings:education-update' pk=object.pk %}" class="btn btn-info btn-block">
+                수정하기
+            </a>
+            {% endif %}
         <div class="col-sm-4 text-center">
             <a target="_blank" style="font-weight: bold; font-size: calc(0.5vw + 17px);"
                href="{% url 'cafes:cafes-detail' object.cafe.id %}">{{ object.cafe }}</a>
         </div>
+
         <div class="col-sm-2 text-center">
             {% with object.max_participants as max %}
                 <span>
