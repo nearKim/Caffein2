@@ -154,13 +154,17 @@ class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
 
 # CoffeeMeeting
 class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        self.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        return super(CoffeeMeetingCreateView, self).dispatch(request, *args, **kwargs)
+
     def get_success_url(self, **kwargs):
         return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
 
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
         form_kwargs['request'] = self.request
-        form_kwargs['cafes'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        form_kwargs['cafes'] = self.cafe
         form_kwargs['read_only'] = True
         return form_kwargs
 
@@ -185,7 +189,7 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
 
     def get_context_data(self, **kwargs):
         context = super(CoffeeMeetingCreateView, self).get_context_data(**kwargs)
-        context['cafe'] = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+        context['cafe'] = self.cafe
         return context
 
 
@@ -216,7 +220,19 @@ class CoffeeMeetingDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class CoffeeMeetingListView(LoginRequiredMixin, ListView):
-    model = CoffeeMeeting
+    def get_context_data(self, *args, **kwargs):
+        context = super(CoffeeMeetingListView, self).get_context_data(*args, **kwargs)
+        return context
+
+    def get_queryset(self):
+        queryset = CoffeeMeeting.objects \
+            .select_related('author') \
+            .select_related('cafe') \
+            .prefetch_related('cafe__photos') \
+            .prefetch_related('participants__user') \
+            .prefetch_related('photos') \
+            .all()
+        return queryset
 
 
 class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
