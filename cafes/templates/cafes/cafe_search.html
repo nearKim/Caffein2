@@ -25,8 +25,9 @@
 
 
 {% block content %}
+    {# Naver Map #}
+    {% include "core/navermap_script.html" %}
     <div class="container" style="padding-top:150px; background-color: #fafafa;">
-
     <div class="jumbotron text-center" style="padding-top:60px; padding-bottom:60px;">
         <h1>카페 검색하기</h1>
         <hr class="my-4">
@@ -45,8 +46,8 @@
         </form>
     </nav>
 
-    <div class="table-responsive" style="overflow-x:auto; padding: 10px;">
-        <table class="table">
+    <div class="table-responsive-sm" style="overflow-x:auto; padding: 10px;">
+        <table class="table table-hover">
             <thead>
             <tr class="text-center">
                 <th>카페 이름</th>
@@ -58,8 +59,11 @@
             <tbody>
             {% for cafe in cafe_list %}
                 <tr class="clickable-row active" style="white-space: nowrap;"
-                    create-url={% url 'meetings:coffee-meeting-create' cafe.id %} detail-url={% url 'cafes:cafes-detail' cafe.id %}>
-                    <td>{{ cafe.name }}</td>
+                    mapx={{ cafe.mapx }}
+                            mapy={{ cafe.mapy }}
+                    create-url={% url 'meetings:coffee-meeting-create' cafe.id %}
+                            detail-url={% url 'cafes:cafes-detail' cafe.id %}>
+                    <td class="cafe-name">{{ cafe.name }}</td>
                     <td> {{ cafe.address }}</td>
                     {% if request.user_agent.is_mobile %}
                         <td>{{ cafe.description | truncatechars:25 }}</td>
@@ -72,7 +76,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row center-block">
+    <div class="row center-block mb-50">
         {% if request.user_agent.is_mobile %}
             <div class="col-sm-6 text-center">
                 <button id="btn-cafe-selected" style="margin: 0;" class="btn btn-primary btn-block" disabled>&nbsp;카페를
@@ -92,6 +96,11 @@
             </div>
         {% endif %}
     </div>
+
+
+    <div id="map" style="width:100%; height:400px;"></div>
+
+
     <div class="row text-center mt-50">
         <div class="col-sm-12" style="margin-bottom: 20px;">
             <h3>이런 카페는 어때요?</h3>
@@ -148,12 +157,51 @@
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript">
+        let map = new naver.maps.Map("map", {
+            // 서울대학교
+            center: new naver.maps.Point(307362, 540205),
+            zoom: 10,
+            mapTypes: new naver.maps.MapTypeRegistry({
+                'normal': naver.maps.NaverMapTypeOption.getNormalMap({
+                    projection: naver.maps.TM128Coord
+                }),
+            }),
+        })
+
         let createURL = null
         let detailURL = null
-        $(document).ready(function ($) {
+        let mapx = null
+        let mapy = null
+        let marker = null
+        $(document).ready(function () {
             $(".clickable-row").click(function () {
+                {# 클릭했을 경우 다른 행의 파란색은 지우고 클릭한 행에 파란 배경을 추가한다. #}
+                $(".clickable-row").each().removeClass('table-primary')
+                $(this).addClass('table-primary')
+                {# 각 행에 데이터로 담긴 어트리뷰트를 가져온다. #}
                 createURL = $(this).attr("create-url")
                 detailURL = $(this).attr("detail-url")
+                mapx = $(this).attr("mapx")
+                mapy = $(this).attr("mapy")
+                {# 카페의 지도를 표시할 네이버지도 Point를 생성한다. #}
+                let cafePoint = new naver.maps.Point(mapx, mapy)
+
+                {# 이미 생성된 지도와 마커를 교체한다. #}
+                map = new naver.maps.Map("map", {
+                    center: cafePoint,
+                    zoom: 10,
+                    mapTypes: new naver.maps.MapTypeRegistry({
+                        'normal': naver.maps.NaverMapTypeOption.getNormalMap({
+                            projection: naver.maps.TM128Coord
+                        }),
+                    }),
+                })
+                marker = new naver.maps.Marker({
+                    position: cafePoint,
+                    map: map
+                });
+
+                {# 표 아래의 버튼드을 적절히 이름을 바꿔준다. #}
                 $("#btn-cafe-selected").prop("disabled", false)
                 $("#btn-cafe-detail").prop("disabled", false)
                 $("#btn-cafe-selected").text("커모 열기!")
