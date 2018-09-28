@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -279,4 +280,7 @@ def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
     if request.user == meeting.author or request.user.is_staff:
         meeting.delete()
-    return redirect("meetings:meetings-list")
+        # FIXME: 미팅이 지워진 후에 어디로 리다이렉트 시킬지? 미팅의 종류에 따라서 다르게 분기하는게 맞을 듯 하다.
+        return redirect(meeting.cast())
+    else:
+        raise PermissionDenied
