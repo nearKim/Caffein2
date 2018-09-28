@@ -1,9 +1,7 @@
 import random
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Case, When
-from django.shortcuts import render
 from django.views.generic import (
     ListView,
     DetailView,
@@ -17,8 +15,8 @@ from cafes.models import Cafe, CafePhoto
 
 class CafeListView(LoginRequiredMixin, ListView):
     context_object_name = 'cafes'
-    # 한번에 3개 혹은 4개씩 나타날 확률이 크다.
-    paginate_by = 12
+    # 한번에 최대 5개씩 들어갈 확률이 크다
+    paginate_by = 10
 
     def get_queryset(self):
         if self.request.GET['sort'] == 'popularity':
@@ -103,7 +101,6 @@ class CafeSearchView(LoginRequiredMixin, ListView):
     입력 키워드를 공백 기준으로 split하여 카페의 이름에 키워드가 포함된 결과들을 or하여 반환한다.
     """
     model = Cafe
-    paginate_by = 20
     template_name = 'cafes/cafe_search.html'
 
     def get_queryset(self):
@@ -119,15 +116,13 @@ class CafeSearchView(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(CafeSearchView, self).get_context_data(*args, **kwargs)
         if Cafe.objects.all().count() > 2:
-            # 현재 카페들중 3개를 랜덤하게 뽑아온다. 카페들은 많아봤자 몇십~몇백개일 것이므로 퍼포먼스 이슈는 없다.
             cafe_id_list = list(Cafe.objects.values_list('id', flat=True))
             cafe_id_list_3 = random.sample(cafe_id_list, 3)
-            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cafe_id_list_3)])
             context['random_cafes'] = Cafe.objects \
                                           .select_related('uploader') \
                                           .select_related('last_modifier') \
                                           .prefetch_related('photos') \
                                           .prefetch_related('coffeemeeting_set') \
                                           .annotate(num_meetings=Count('coffeemeeting')) \
-                                          .order_by(preserved)
+                                          .filter(pk__in=list(cafe_id_list_3))
         return context

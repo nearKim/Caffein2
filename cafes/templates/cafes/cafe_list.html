@@ -23,7 +23,7 @@
             crossorigin="anonymous"></script>
 {% endblock %}
 {% block content %}
-    <div class="container" style="padding-top:150px; background-color: #fafafa;">
+    <div class="container-fluid mt-150 mb-100" style="padding-left:5%; padding-right:5%;">
         <div class="text-center">
             <h2>카페 리스트</h2>
             <p class="lead" style="margin-bottom: 20px;">카페인 회원들이 등록한 카페들이에요!</p>
@@ -40,51 +40,96 @@
                 <a id="btn-random" href="{% url 'cafes:cafes-list' %}?sort=random" class="btn" role="button">랜덤랜덤</a>
             </div>
         </div>
-        <div class="card-columns"
+        <div class="card-deck text-center"
              style="@include media-breakpoint-only(lg) {column-count: 4;}
                 @include media-breakpoint-only(xl) {column-count: 5;}">
             {% for cafe in cafes %}
-                {% if request.user_agent.is_mobile %}
-                    <div class="card mx-auto" style="width: 18rem; max-width: 80%;">
-                {% else %}
-                    <div class="card" style="width: 18rem;">
+
+                <div class="card {% if request.user_agent.is_mobile %} mx-auto {% endif %}"
+                     style="width: 18rem; max-width: 80%;">
+                    <a href="{% url 'cafes:cafes-detail' cafe.pk %}">
+                        {% if cafe.photos.exists %}
+                            <img class="card-img-top" src="{{ cafe.photos.all.0.image_thumb.url }}">
+                        {% else %}
+                            <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
+                        {% endif %}
+                    </a>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
+                    </ul>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ cafe.name }}</h5>
+                        {% if cafe.description %}
+                            <p class="card-text">{{ cafe.description }}</p>
+                        {% else %}
+                            <p class="card-text">아직 카페 설명이 없어요. 채워주세요!</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            {% if cafe.uploader.profile_pic %}
+                                {% thumbnail "30x30" cafe.uploader.profile_pic %}
+                            {% endif %}
+                            {{ cafe.uploader.name }} 님이 등록한 카페입니다.
+                        </small>
+                    </div>
+                </div>
+                {# Responsive card-deck #}
+                {# https://www.codeply.com/go/k2zBsujRhJ#}
+                {% if forloop.counter|divisibleby:2 %}
+                    <div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 2 on sm--></div>
                 {% endif %}
-            <a href="{% url 'cafes:cafes-detail' cafe.pk %}">
-                {% if cafe.photos.exists %}
-                    <img class="card-img-top" src="{{ cafe.photos.all.0.image_thumb.url }}">
-                {% else %}
-                    <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
+                {% if forloop.counter|divisibleby:3 %}
+                    <div class="w-100 d-none d-md-block d-lg-none"><!-- wrap every 3 on md--></div>
                 {% endif %}
-            </a>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-center">이 카페에서 <b>{{ cafe.num_meetings }}번</b> 커모가 열렸습니다.</li>
-            </ul>
-            <div class="card-body">
-                <h5 class="card-title">{{ cafe.name }}</h5>
-                {% if cafe.description %}
-                    <p class="card-text">{{ cafe.description }}</p>
-                {% else %}
-                    <p class="card-text">아직 카페 설명이 없어요. 채워주세요!</p>
+                {% if forloop.counter|divisibleby:4 %}
+                    <div class="w-100 d-none d-lg-block d-xl-none"><!-- wrap every 4 on lg--></div>
                 {% endif %}
-            </div>
-            <div class="card-footer">
-                <small class="text-muted">
-                    {% if cafe.uploader.profile_pic %}
-                        {% thumbnail "30x30" cafe.uploader.profile_pic %}
-                    {% endif %}
-                    {{ cafe.uploader.name }} 님이 등록한 카페입니다.
-                </small>
-            </div>
-            </div>
+                {% if forloop.counter|divisibleby:5 %}
+                    <div class="w-100 d-none d-xl-block"><!-- wrap every 5 on xl--></div>
+                {% endif %}
             {% endfor %}
-            </div>
         </div>
+        {% if is_paginated %}
+            <div class="row " style="padding:20px;">
+                <div class="col-sm-12">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">이전</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">이전</span>
+                            </li>
+                        {% endif %}
+
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span>
+                                </li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?page={{ page_obj.next_page_number }}">다음</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">다음</span></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(function () {
+            {# card크기 첫번째에 맞춘다. #}
+            let minWidth = $(".card").first().width()
+            $('.card').css('max-width', minWidth + 'px')
+            {# querystring에 따른 버튼 스타일 적용 #}
             {% if request.GET.sort == 'popularity' %}
                 $('#btn-pop').removeAttr("href");
                 $('#btn-pop').addClass("btn-info");
