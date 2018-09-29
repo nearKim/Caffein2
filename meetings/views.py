@@ -83,6 +83,7 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     queryset = OfficialMeeting.objects \
         .prefetch_related('participants') \
         .prefetch_related('participants__user') \
+        .prefetch_related('comments__author')\
         .select_related('author')
 
     def get_context_data(self, **kwargs):
@@ -138,6 +139,7 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
     queryset = CoffeeEducation.objects \
         .prefetch_related('participants') \
         .prefetch_related('participants__user') \
+        .prefetch_related('comments__author') \
         .select_related('author')
 
     def get_context_data(self, **kwargs):
@@ -244,6 +246,7 @@ class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
         .prefetch_related('participants') \
         .prefetch_related('participants__user') \
         .select_related('cafe') \
+        .prefetch_related('comments__author') \
         .select_related('author')
 
     def get_context_data(self, **kwargs):

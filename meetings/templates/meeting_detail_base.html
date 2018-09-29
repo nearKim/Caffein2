@@ -59,7 +59,6 @@
                 <div class="col-sm-10" style="margin-bottom: 15px;">
                     {% for participant in object.participants.all %}
                         <span>
-
                         {% if participant.user.profile_pic %}
                             {% thumbnail "25x25" participant.user.profile_pic -- class="img-profile" %}
                         {% else %}
@@ -68,10 +67,8 @@
                         {% endif %}
                             {{ participant.user.name }},
                         </span>
-                        ( {{ object.participants.count }} )명 <br>
-                    {% empty %}
-                        <span>아직 참여자가 없네요</span>
                     {% endfor %}
+                        ( {{ object.participants.count }} )명 <br>
                 </div>
 
                 <div class="message-container row">
