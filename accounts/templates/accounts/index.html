@@ -231,37 +231,39 @@
                     <div class="row">
                         <div class="col-sm-12">
                             {% for meeting in coffee_meetings %}
-                                <div class="div-coffee-meeting row hvr-glow"
-                                     meeting-detail="{% url 'meetings:coffee-meeting-detail' meeting.pk %}"
-                                     style="height:10%; margin-bottom:20px;">
-                                    <div class="col-xs-4 text-right">
-                                        {% if meeting.photos.all %}
-                                            {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
-                                        {% else %}
-                                            {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
-                                            <img src="{% static 'assets/img/default-cafe.jpg' %}"
-                                                 style="width: 80%; max-width: 100px;height: auto;">
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-xs-8" style="position:relative;">
-                                        <div class="row" style="height: 100%;">
-                                            <p class="lead"
-                                               style="font-size: calc(0.7vw + 15px); ">{{ meeting.title }}</p>
+                                {% if not meeting.is_past_due %}
+                                    <div class="div-coffee-meeting row hvr-glow"
+                                         meeting-detail="{% url 'meetings:coffee-meeting-detail' meeting.pk %}"
+                                         style="height:10%; margin-bottom:20px;">
+                                        <div class="col-xs-4 text-right">
+                                            {% if meeting.photos.all %}
+                                                {% thumbnail "100x100" meeting.photos.first.image -- style="width: 100%; max-width: 100px; height: auto;" %}
+                                            {% else %}
+                                                {# FIXME: 사각형 이미지 디폴트가 들어아갸한다 #}
+                                                <img src="{% static 'assets/img/default-cafe.jpg' %}"
+                                                     style="width: 80%; max-width: 100px;height: auto;">
+                                            {% endif %}
                                         </div>
-                                        <div class="row" style="margin-top:8%;">
-                                            <div class="col-xs-6"
-                                                 style="position: absolute; bottom: 0; left: 0;">
-                                                <h5 style="font-size: calc(0.8vw + 5px);">작성자
-                                                    &nbsp; {{ meeting.author.name }}</h5>
+                                        <div class="col-xs-8" style="position:relative;">
+                                            <div class="row" style="height: 100%;">
+                                                <p class="lead"
+                                                   style="font-size: calc(0.7vw + 15px); ">{{ meeting.title }}</p>
                                             </div>
-                                            <div class="col-xs-6 "
-                                                 style="position: absolute; bottom: 0; right: 0;">
-                                                <h5 style="font-size: calc(0.8vw + 5px);">참가자
-                                                    &nbsp; {{ meeting.participants.count }}명 </h5>
+                                            <div class="row" style="margin-top:8%;">
+                                                <div class="col-xs-6"
+                                                     style="position: absolute; bottom: 0; left: 0;">
+                                                    <h5 style="font-size: calc(0.8vw + 5px);">작성자
+                                                        &nbsp; {{ meeting.author.name }}</h5>
+                                                </div>
+                                                <div class="col-xs-6 "
+                                                     style="position: absolute; bottom: 0; right: 0;">
+                                                    <h5 style="font-size: calc(0.8vw + 5px);">참가자
+                                                        &nbsp; {{ meeting.participants.count }}명 </h5>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -275,7 +277,7 @@
                             </a>
                         </div>
                     </div>
-                            <hr style="margin-top:10px;">
+                    <hr style="margin-top:10px;">
                     <div class="row">
                         {% for photo in latest_photos %}
                             <div class="col-xs-4">

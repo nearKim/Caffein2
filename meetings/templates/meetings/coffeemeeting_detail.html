@@ -27,11 +27,6 @@
                         margin-top:20px;
                         margin-bottom:20px;
                         border-bottom: 1px solid #e5e5e5;">
-    {% if user == object.author or user.is_staff %}
-            <a href="{% url 'meetings:education-update' pk=object.pk %}" class="btn btn-info btn-block">
-                수정하기
-            </a>
-            {% endif %}
         <div class="col-sm-4 text-center">
             <a target="_blank" style="font-weight: bold; font-size: calc(0.5vw + 17px);"
                href="{% url 'cafes:cafes-detail' object.cafe.id %}">{{ object.cafe }}</a>
@@ -52,6 +47,12 @@
             <span>{{ object.meeting_date | date:"m월d일 A h시 i분" }}</span>
         </div>
     </div>
+{% endblock %}
+
+{% block fix-button %}
+    <a href="{% url 'meetings:coffee-meeting-update' pk=object.pk %}" role="button" class="btn btn-default btn-block">
+        수정하기
+    </a>
 {% endblock %}
 
 {% block comment-form %}

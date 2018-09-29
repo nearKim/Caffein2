@@ -29,11 +29,6 @@
 
 {% block below-map %}
     <div class="row" style="margin-top: 20px;">
-        {% if user == object.author or user.is_staff %}
-            <a href="{% url 'meetings:education-update' pk=object.pk %}" class="btn btn-info btn-block">
-                수정하기
-            </a>
-        {% endif %}
         <div class="col-sm-12 text-center" style="font-size: calc(0.6vw + 14px); font-weight: bold;">
             {{ object.location }}
         </div>
@@ -63,6 +58,13 @@
         </div>
     </div>
 {% endblock %}
+
+{% block fix-button %}
+    <a href="{% url 'meetings:education-update' pk=object.pk %}" role="button" class="btn btn-default btn-block">
+        수정하기
+    </a>
+{% endblock %}
+
 {% block comment-form %}
     {% with meeting_comment=object.comments %}
         {% include 'comments/comment_view_create.html' with goto='meetings:education-detail' comments=meeting_comment object=object %}
