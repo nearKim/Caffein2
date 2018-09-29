@@ -4,10 +4,11 @@ import facebook
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.db import models
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.utils.translation import ugettext_lazy as _
 
 from Caffein2.settings.dev import DEBUG, FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
+
 
 # Model Mixins
 
@@ -32,6 +33,8 @@ class Postable(TimeStampedMixin):
 
 
 # View Mixins
+
+
 class FaceBookPostMixin:
     def get_success_url(self):
         url = super(FaceBookPostMixin, self).get_success_url()

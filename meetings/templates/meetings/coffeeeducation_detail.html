@@ -65,9 +65,4 @@
     </a>
 {% endblock %}
 
-{% block comment-form %}
-    {% with meeting_comment=object.comments %}
-        {% include 'comments/comment_view_create.html' with goto='meetings:education-detail' comments=meeting_comment object=object %}
-    {% endwith %}
-{% endblock %}
 
