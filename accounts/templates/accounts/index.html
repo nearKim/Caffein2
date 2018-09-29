@@ -20,54 +20,66 @@
                         {# 현재 로그인한 유저가 위짝지일 때  #}
                         <div class="row mb-50">
                             <div class="col-xs-12">
-                                {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
-                                {% if user.profile_pic %}
-                                    {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
-                                {% else %}
-                                    <img src="{% static 'assets/img/default-avatar.png' %}"
-                                         class="img-profile img-default-up">
-                                {% endif %}
-                                <p class="lead">
-                                    {{ user.name }} <span style="margin-left:2px;"
-                                                          class="glyphicon glyphicon-star"></span>
-                                </p>
-                                <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                                <div class="profile-card center-block">
+                                    {# 현재 유저가 위짝지이므로 이름 옆에 별표를 띄워준다 #}
+                                    {% if user.profile_pic %}
+                                        {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                             class="img-profile img-default-up">
+                                    {% endif %}
+                                    <hr>
+                                    <p class="lead">
+                                        {{ user.name }} <span style="margin-left:2px;"
+                                                              class="glyphicon glyphicon-star"></span>
+                                    </p>
+                                    <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             {% for down in down_partners %}
                                 {% if down_num == 3 %}
                                     <div class="col-xs-4">
-                                        {% if down.profile_pic %}
-                                            {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                 class="img-profile img-default">
-                                        {% endif %}
-                                        <p class="lead">{{ down.name }}</p>
-                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        <div class="profile-card center-block">
+
+                                            {% if down.profile_pic %}
+                                                {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                     class="img-profile img-default">
+                                            {% endif %}
+                                            <p class="lead">{{ down.name }}</p>
+                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        </div>
                                     </div>
                                 {% elif down_num == 2 %}
                                     <div class="col-xs-6">
-                                        {% if down.profile_pic %}
-                                            {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                 class="img-profile img-default">
-                                        {% endif %}
-                                        <p class="lead">{{ down.name }}</p>
-                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        <div class="profile-card center-block">
+
+                                            {% if down.profile_pic %}
+                                                {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                     class="img-profile img-default">
+                                            {% endif %}
+                                            <p class="lead">{{ down.name }}</p>
+                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        </div>
                                     </div>
                                 {% elif down_num == 1 %}
                                     <div class="col-xm-12">
-                                        {% if down.profile_pic %}
-                                            {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                 class="img-profile img-default">
-                                        {% endif %}
-                                        <p class="lead">{{ down.name }}</p>
-                                        <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        <div class="profile-card center-block">
+
+                                            {% if down.profile_pic %}
+                                                {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                     class="img-profile img-default">
+                                            {% endif %}
+                                            <p class="lead">{{ down.name }}</p>
+                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                        </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -82,14 +94,17 @@
                         {# 현재 유저가 아래짝지일 때 #}
                         <div class="row mb-50">
                             <div class="col-xs-12">
-                                {% if user.profile_pic %}
-                                    {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
-                                {% else %}
-                                    <img src="{% static 'assets/img/default-avatar.png' %}"
-                                         class="img-profile img-default-up">
-                                {% endif %}
-                                <p class="lead">{{ user.name }}</p>
-                                <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                                <div class="profile-card center-block">
+                                    {% if user.profile_pic %}
+                                        {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                             class="img-profile img-default-up">
+                                    {% endif %}
+                                    <p class="lead">{{ user.name }}</p>
+                                    <hr>
+                                    <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -97,79 +112,97 @@
                             {% if down_num == 3 %}
                                 {# 아래줄에서 첫번째는 무조건 위짝지이므로 별표시를 넣어준다. #}
                                 <div class="col-xs-4">
-                                    {% if up_partner.profile_pic %}
-                                        {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
-                                    {% else %}
-                                        <img src="{% static 'assets/img/default-avatar.png' %}"
-                                             class="img-profile img-default">
-                                    {% endif %}
-                                    <p class="lead">
-                                        {{ up_partner.name }}
-                                        <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
-                                    </p>
-                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    <div class="profile-card center-block">
+                                        {% if up_partner.profile_pic %}
+                                            {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                 class="img-profile img-default">
+                                        {% endif %}
+                                        <p class="lead">
+                                            {{ up_partner.name }}
+                                            <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
+                                        </p>
+                                        <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    <button data-toggle="collapse" data-target="#div-phone" class="btn btn-xs">번호 보기</button>
+                                        <div class="collapse" id="div-phone">
+                                        <h5> {{ up_partner.phone }}</h5>
+                                        </div>
+                                    </div>
                                 </div>
                                 {# 아래짝지중에 사용자가 있으므로 사용자 본인은 빼준다. #}
                                 {% for down in down_partners %}
                                     {% if not down == user %}
                                         <div class="col-xs-4">
-                                            {% if down.profile_pic %}
-                                                {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
-                                            {% else %}
-                                                <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                     class="img-profile img-default">
-                                            {% endif %}
-                                            <p class="lead">
-                                                {{ down.name }}
-                                            </p>
-                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                            <div class="profile-card center-block">
+
+                                                {% if down.profile_pic %}
+                                                    {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                                {% else %}
+                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                         class="img-profile img-default">
+                                                {% endif %}
+                                                <p class="lead">
+                                                    {{ down.name }}
+                                                </p>
+                                                <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                            </div>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
                             {% elif down_num == 2 %}
                                 <div class="col-xs-6">
-                                    {% if up_partner.profile_pic %}
-                                        {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
-                                    {% else %}
-                                        <img src="{% static 'assets/img/default-avatar.png' %}"
-                                             class="img-profile img-default">
-                                    {% endif %}
-                                    <p class="lead">
-                                        {{ up_partner.name }}
-                                        <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
-                                    </p>
-                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    <div class="profile-card center-block">
+
+                                        {% if up_partner.profile_pic %}
+                                            {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                 class="img-profile img-default">
+                                        {% endif %}
+                                        <p class="lead">
+                                            {{ up_partner.name }}
+                                            <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
+                                        </p>
+                                        <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    </div>
                                 </div>
                                 {% for down in down_partners %}
                                     {% if not down == user %}
                                         <div class="col-xs-6">
-                                            {% if down.profile_pic %}
-                                                {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
-                                            {% else %}
-                                                <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                     class="img-profile img-default">
-                                            {% endif %}
-                                            <p class="lead">
-                                                {{ down.name }}
-                                            </p>
-                                            <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                            <div class="profile-card center-block">
+
+                                                {% if down.profile_pic %}
+                                                    {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
+                                                {% else %}
+                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                         class="img-profile img-default">
+                                                {% endif %}
+                                                <p class="lead">
+                                                    {{ down.name }}
+                                                </p>
+                                                <h5> {{ down.get_department_display }}&nbsp;{{ down.short_student_no }}학번</h5>
+                                            </div>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
                             {% elif down_num == 1 %}
                                 {# 짝지가 한명일 땐 for문을 돌 필요가 없다. 위짝지만 뿌려준다. #}
                                 <div class="col-xs-12">
-                                    {% if up_partner.profile_pic %}
-                                        {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
-                                    {% else %}
-                                        <img src="{% static 'assets/img/default-avatar.png' %}"
-                                             class="img-profile img-default">
-                                    {% endif %}
-                                    <p class="lead">
-                                        {{ up_partner.name }}
-                                        <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
-                                    </p>
-                                    <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    <div class="profile-card center-block">
+
+                                        {% if up_partner.profile_pic %}
+                                            {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                 class="img-profile img-default">
+                                        {% endif %}
+                                        <p class="lead">
+                                            {{ up_partner.name }}
+                                            <span style="margin-left:2px;" class="glyphicon glyphicon-star"></span>
+                                        </p>
+                                        <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
+                                    </div>
                                 </div>
                             {% endif %}
                         </div>
@@ -179,20 +212,21 @@
                             </div>
                         </div>
                     {% endif %}
-
                 {% else %}
-
                     {#  짝지가 아직 정해지지 않았을 때 #}
                     <div class="row mb-50">
                         <div class="col-xs-12">
-                            {% if user.profile_pic %}
-                                {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
-                            {% else %}
-                                <img src="{% static 'assets/img/default-avatar.png' %}"
-                                     class="img-profile img-default-up">
-                            {% endif %}
-                            <p class="lead">{{ user.name }}</p>
-                            <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                            <div class="profile-card center-block">
+                                {% if user.profile_pic %}
+                                    {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                                {% else %}
+                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                         class="img-profile img-default-up">
+                                {% endif %}
+                                <p class="lead">{{ user.name }}</p>
+                                <hr>
+                                <h5> {{ user.get_department_display }}&nbsp;{{ user.short_student_no }}학번</h5>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -200,8 +234,8 @@
                     </div>
                 {% endif %}
 
-                <div class="row btn-container">
-                    <div class="btn-group-lg mt-50 ">
+                <div class="row btn-container mt-50">
+                    <div class="btn-group-lg mb-50">
                         <a href="{% url 'cafes:cafes-search' %}" class="btn" style="margin-right: 10px;">커모 열기</a>
                         <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
                         {% if partner_set %}
