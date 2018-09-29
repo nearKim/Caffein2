@@ -175,14 +175,21 @@
         let marker = null
         $(document).ready(function () {
             $(".clickable-row").click(function () {
+
                 {# 클릭했을 경우 다른 행의 파란색은 지우고 클릭한 행에 파란 배경을 추가한다. #}
-                $(".clickable-row").each().removeClass('table-primary')
+                $(".clickable-row").each(function (index) {
+                    if ($(this).hasClass('table-primary')) {
+                        $(this).removeClass('table-primary')
+                    }
+                })
                 $(this).addClass('table-primary')
+
                 {# 각 행에 데이터로 담긴 어트리뷰트를 가져온다. #}
                 createURL = $(this).attr("create-url")
                 detailURL = $(this).attr("detail-url")
                 mapx = $(this).attr("mapx")
                 mapy = $(this).attr("mapy")
+
                 {# 카페의 지도를 표시할 네이버지도 Point를 생성한다. #}
                 let cafePoint = new naver.maps.Point(mapx, mapy)
 

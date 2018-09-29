@@ -58,7 +58,7 @@
                         {% elif object.cafe.photos.exists %}
                             <img class="card-img-top" src="{{ object.cafe.photos.all.0.image.url }}">
                         {% else %}
-                            {% static 'assets/img/default-cafe.jpg' %}
+                            <img class="card-img-top" src="{% static 'assets/img/default-cafe.jpg' %}">
                         {% endif %}
                     </a>
 
