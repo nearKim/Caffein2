@@ -2,9 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load imagekit %}
+
 {% block title %}
     <title>짝모~</title>
 {% endblock %}
+
 {% block content %}
     <div class="card-box" style="padding-top:150px; background-color: #fafafa;">
         {% for meeting in object_list %}
@@ -42,8 +44,8 @@
                                 <img src="{{ photo.image.url }}" style="width: 100%; height: auto"/>
                             </div>
                         {% endfor %}
-                        <i class="prev lnr lnr-chevron-left" ></i>
-                    <i class="next lnr lnr-chevron-right" ></i>
+                        <i class="prev lnr lnr-chevron-left"></i>
+                        <i class="next lnr lnr-chevron-right"></i>
 
                     </div>
                     <div class="row" style="padding:16px;">
@@ -54,7 +56,7 @@
                         <section id="section-comment" style="margin-top:16px;">
                             <!--댓글 리스트-->
                             {% with meeting_comment=meeting.comments %}
-                                {% include 'comments/comment_view_create.html' with goto='partners:meeting-list' comments=meeting_comment object=meeting %}
+                                {% include 'comments/comment_view_create.html' with goto='partners' comments=meeting_comment object=meeting %}
                             {% endwith %}
                         </section>
                     </div>
@@ -64,10 +66,16 @@
 
     </div>
 {% endblock %}
-{% block javascript %}
-    <script type="text/javascript">
 
+
+
+{% block javascript %}
+    <script src="{% static 'core/js/ajax-csrf-django.js' %}"></script>
+    <script src="{% static 'comments/js/ajax-comment-create.js' %}"></script>
+    <script type="text/javascript">
         $(document).ready(function () {
+            var csrftoken = getCookie('csrftoken');
+
             {# 사진 슬라이드를 위한 처리 #}
             {# 기본 css로 사진이 디폴트로 hide 처리 되어있는데 각 card의 첫번째 사진은 보여줘야 한다. #}
             $('.card .photo-slide:nth-child(1)').show()
@@ -99,18 +107,10 @@
                 if (index === length - 1) {
                     {# 현재 사진이 마지막 사진일 때 #}
                     {# 첫번째 사진을 보여준다 #}
-                   $(this).siblings('.photo-slide').first().show()
-                } else{
+                    $(this).siblings('.photo-slide').first().show()
+                } else {
                     {# 인덱스+1번째 사진을 보여준다 #}
                     $(this).siblings('.photo-slide').eq(index + 1).show()
-                }
-            })
-
-            {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
-            {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
-            $(':input').on('keypress', function (event) {
-                if (event.which === 13) {
-                    $(this).closest('form').trigger('submit')
                 }
             })
 

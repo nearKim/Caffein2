@@ -124,9 +124,9 @@
                 </section>
                 <section id="section-comment" style="margin-top:16px;">
                     <!--댓글 리스트-->
-                    {% block comment-form %}
-
-                    {% endblock %}
+                    {% with meeting_comment=object.comments %}
+                        {% include 'comments/comment_view_create.html' with goto='meetings' comments=meeting_comment object=object %}
+                    {% endwith %}
                 </section>
             </div>
         </div>
@@ -135,6 +135,8 @@
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'core/js/ajax-csrf-django.js' %}"></script>
+    <script src="{% static 'comments/js/ajax-comment-create.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             {# 사진 슬라이드를 위한 처리 #}
@@ -172,14 +174,6 @@
                 } else {
                     {# 인덱스+1번째 사진을 보여준다 #}
                     $(this).siblings('.photo-slide').eq(index + 1).show()
-                }
-            })
-
-            {# 댓글창에서 엔터를 누르면 바로 입력가능하게 한다. #}
-            {# https://forum.jquery.com/topic/submit-buttons-in-multiple-forms-and-using-the-enter-key #}
-            $(':input').on('keypress', function (event) {
-                if (event.which === 13) {
-                    $(this).closest('form').trigger('submit')
                 }
             })
 
