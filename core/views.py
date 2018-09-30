@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 
 from core.models import FeedPhoto, MeetingPhoto, OperationScheme
-from meetings.models import CoffeeMeeting
+from meetings.models import CoffeeMeeting, OfficialMeeting, CoffeeEducation
 from partners.models import Partner
 from partners.views import PartnerDetailView
 from photo_albums.models import Photo
@@ -13,6 +13,18 @@ def entrypoint(request):
     if request.user.is_authenticated:
         # 사용자가 로그인상태인 경우
         if request.method == 'GET':
+            official_meetings = OfficialMeeting.objects \
+                                    .select_related('author') \
+                                    .prefetch_related('photos') \
+                                    .prefetch_related('participants') \
+                                    .all() \
+                                    .order_by('-created')[:3]
+            coffee_educations = CoffeeEducation.objects \
+                                    .select_related('author') \
+                                    .prefetch_related('photos') \
+                                    .prefetch_related('participants') \
+                                    .all() \
+                                    .order_by('-created')[:3]
             # 커모 중 최신 인스턴스 3개와 Photo 인스턴스 중 최신 9개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects \
                                   .select_related('cafe') \
@@ -20,19 +32,21 @@ def entrypoint(request):
                                   .prefetch_related('photos') \
                                   .prefetch_related('participants') \
                                   .all() \
-                                  .order_by('-meeting_date')[:3]
+                                  .order_by('-meeting_date')[:4]
             latest_feedphotos = FeedPhoto.objects.all().order_by('-created')
             latest_albumphotos = Photo.objects.all().order_by('-created')
 
             # https://stackoverflow.com/a/11635996
             latest_photos = list(latest_albumphotos) + list(latest_feedphotos)
-            latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:9]
+            latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:8]
             current_os = OperationScheme.latest()
 
             # 최근의 짝지 객체를 갖고와서 아래짝지가 몇명인지 반환하고 기본 context를 정의한다.
             latest_partner = Partner.related_partner_user(request.user)
 
             context = {'user': request.user,
+                       'official_meetings': official_meetings,
+                       'coffee_educations': coffee_educations,
                        'coffee_meetings': coffee_meetings,
                        'latest_photos': latest_photos_sorted
                        }

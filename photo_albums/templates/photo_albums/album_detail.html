@@ -5,17 +5,29 @@
 
 {% block content %}
     <div class="box-intro">
-        <div id="content" style="margin-top: 100px; margin-bottom: 100px;">
-        <a class="btn btn-primary" style="margin: 50px; position: absolute; left: 0px; top: 50px"
-                   href="{% url 'photo_albums:album_list' %}">뒤로</a>
+        <div id="container" style="margin-top: 100px; margin-bottom: 100px;">
+            <div class="row">
+                <div class="col-4">
+                    <a class="btn btn-primary" style="margin-left: 50px; position: absolute; left: 0px;"
+                       href="{% url 'photo_albums:album_list' %}">
+                        홈으로
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a class="btn btn-info" style="margin-right: 50px; position: absolute; right: 0px;"
+                       href="{% url "photo_albums:album_edit" album_id=object.id %}">
+                        편집
+                    </a>
+                </div>
+            </div>
             <h2 style="display: inline">{{ object.name }}</h2>
             &emsp;<b><i>{{ object.description }} </i></b>
             <i> {{ object.created }}</i>&emsp;
             {# if user.is_staff or user == object.uploader #}
-                <a class="btn btn-info" style="margin: 50px; position: absolute; right: 0px; top: 50px" href="{% url "photo_albums:album_edit" album_id=object.id %}">편집</a>
+
             {# endif #}
             <hr>
-
+            <div class="row">
             <div class="album-detail" style="display:inline;margin-left: 5px">
                 {% for photo in object.photo_set.all %}
                     <div class="album-detail-photo" style="display:inline;margin-left: 10px">
@@ -25,6 +37,7 @@
                         </a>
                     </div>
                 {% endfor %}
+            </div>
             </div>
         </div>
     </div>

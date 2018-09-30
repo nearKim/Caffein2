@@ -83,7 +83,7 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     queryset = OfficialMeeting.objects \
         .prefetch_related('participants') \
         .prefetch_related('participants__user') \
-        .prefetch_related('comments__author')\
+        .prefetch_related('comments__author') \
         .select_related('author')
 
     def get_context_data(self, **kwargs):
@@ -249,6 +249,11 @@ class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
         .prefetch_related('comments__author') \
         .select_related('author')
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().is_past_due:
+            return HttpResponseForbidden()
+        return super(CoffeeMeetingDetailView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(CoffeeMeetingDetailView, self).get_context_data()
         context['user'] = self.request.user
@@ -283,7 +288,11 @@ def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
     if request.user == meeting.author or request.user.is_staff:
         meeting.delete()
-        # FIXME: 미팅이 지워진 후에 어디로 리다이렉트 시킬지? 미팅의 종류에 따라서 다르게 분기하는게 맞을 듯 하다.
-        return redirect(meeting.cast())
+        if isinstance(meeting.cast(), CoffeeMeeting):
+            # 현재 지운 meeting이 커모였다면 커모 리스트로 이동한다.
+            return redirect('meetings:coffee-meeting-list')
+        else:
+            # 아니라면 공식모임 또는 커피교육이므로 해당 리스트로 이동한다.
+            return redirect('meetings:meetings-list')
     else:
         raise PermissionDenied

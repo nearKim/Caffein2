@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="box-intro">
-        <div class="table-cell ">
+        <div class="row">
             <form role="form" class="form" method="{% block form_method %}post{% endblock %}"
                   enctype="multipart/form-data" style="margin: 100px;">
                 {% csrf_token %}
