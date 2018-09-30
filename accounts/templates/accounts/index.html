@@ -239,7 +239,38 @@
                     {% endif %}
                 </div>
                 <div class="col-sm-6">
-                    {# TODO: 여기 하기 #}
+                    <div class="row" style="margin-bottom: 50px;">
+                        <div class="col-sm-12">
+                            <h2 style="margin: 0;">공지사항</h2>
+                        </div>
+                    </div>
+                    <div class="official-container">
+                        {% for official in official_meetings %}
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <div class="row center-block " style="padding:10px;">
+                                        {% if official.author.profile_pic %}
+                                            {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                 class="img-profile img-default-up" style="max-width: 100%;">
+                                        {% endif %}
+                                    </div>
+                                    <div class="row center-block">
+                                        <h4>{{ official.author.name }}</h4>
+                                    </div>
+                                </div>
+                                <div class="col-xs-9">
+                                    <a href="{% url 'meetings:official-detail' official.pk %}">
+                                        <div class="speech-bubble" style="max-width: 90%; padding: 5px">
+                                            <h4>{{ official.title }}</h4>
+                                            <h5>{{ official.get_category_display }}</h5>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="row btn-container mt-50 ">

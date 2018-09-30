@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 
 from core.models import FeedPhoto, MeetingPhoto, OperationScheme
-from meetings.models import CoffeeMeeting
+from meetings.models import CoffeeMeeting, OfficialMeeting, CoffeeEducation
 from partners.models import Partner
 from partners.views import PartnerDetailView
 from photo_albums.models import Photo
@@ -13,6 +13,18 @@ def entrypoint(request):
     if request.user.is_authenticated:
         # 사용자가 로그인상태인 경우
         if request.method == 'GET':
+            official_meetings = OfficialMeeting.objects \
+                                    .select_related('author') \
+                                    .prefetch_related('photos') \
+                                    .prefetch_related('participants') \
+                                    .all() \
+                                    .order_by('-created')[:3]
+            coffee_educations = CoffeeEducation.objects \
+                                    .select_related('author') \
+                                    .prefetch_related('photos') \
+                                    .prefetch_related('participants') \
+                                    .all() \
+                                    .order_by('-created')[:3]
             # 커모 중 최신 인스턴스 3개와 Photo 인스턴스 중 최신 9개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects \
                                   .select_related('cafe') \
@@ -33,6 +45,8 @@ def entrypoint(request):
             latest_partner = Partner.related_partner_user(request.user)
 
             context = {'user': request.user,
+                       'official_meetings': official_meetings,
+                       'coffee_educations': coffee_educations,
                        'coffee_meetings': coffee_meetings,
                        'latest_photos': latest_photos_sorted
                        }
