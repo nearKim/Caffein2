@@ -32,13 +32,13 @@ def entrypoint(request):
                                   .prefetch_related('photos') \
                                   .prefetch_related('participants') \
                                   .all() \
-                                  .order_by('-meeting_date')[:3]
+                                  .order_by('-meeting_date')[:4]
             latest_feedphotos = FeedPhoto.objects.all().order_by('-created')
             latest_albumphotos = Photo.objects.all().order_by('-created')
 
             # https://stackoverflow.com/a/11635996
             latest_photos = list(latest_albumphotos) + list(latest_feedphotos)
-            latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:9]
+            latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:8]
             current_os = OperationScheme.latest()
 
             # 최근의 짝지 객체를 갖고와서 아래짝지가 몇명인지 반환하고 기본 context를 정의한다.
