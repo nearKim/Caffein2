@@ -5,32 +5,34 @@
 
 {% block content %}
     <div class="box-intro">
-
-        <div id="content" style="margin-top: 100px; margin-bottom: 100px">
+        <div class="container" style="margin-top: 100px; margin-bottom: 100px">
             <h1> Photo Album</h1>
-            <div align="right" style="margin-right: 100px;">
-                <a class="btn btn-primary" href="{% url "photo_albums:album_create" %}">새로운 앨범</a>
+            <div class="row">
+                <div class="col" align="right" style="margin-right: 100px;">
+                    <a class="btn btn-primary" href="{% url "photo_albums:album_create" %}">새로운 앨범</a>
+                </div>
             </div>
             {% for item in object_list %}
+                <div class="row">
+                    <div class="clear_float" style="margin-top: 50px;">
+                        <h2 style="display:inline"><a
+                                href="{% url 'photo_albums:album_detail' item.id %}">{{ item.name }}</a>
+                        </h2>
+                        &emsp;<b><i>{{ item.description }}</i></b>
+                    </div>
 
-                <div class="clear_float" style="margin-top: 50px;">
-                    <h2 style="display:inline"><a
-                            href="{% url 'photo_albums:album_detail' item.id %}">{{ item.name }}</a>
-                    </h2>
-                    &emsp;<b><i>{{ item.description }}</i></b>
+                    <hr>
+                    <div class="row album-list" style="display:inline;margin-left: 5px">
+                        {% for photo in item.photo_set.all|slice:":7" %}
+                            <div class="album-list-photo" style="display:inline;margin-left: 10px;">
+                                <a href="{{ photo.get_absolute_url }}">
+                                    <img src="{{ photo.thumbnail.url }}" alt="thumbnail"
+                                         style="border: 1px solid #ccc;">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-
-                <hr>
-                <div class="album-list" style="display:inline;margin-left: 5px">
-                    {% for photo in item.photo_set.all|slice:":7" %}
-                        <div class="album-list-photo" style="display:inline;margin-left: 10px;">
-                            <a href="{{ photo.get_absolute_url }}">
-                                <img src="{{ photo.thumbnail.url }}" alt="thumbnail" style="border: 1px solid #ccc;">
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-
             {% endfor %}
         </div>
     </div>
