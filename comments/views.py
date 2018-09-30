@@ -1,10 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseRedirect
 
-# Create your views here.
 from django.shortcuts import get_object_or_404, render_to_response, render
-from django.template import RequestContext
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from comments.models import Comment
 from core.mixins import ValidAuthorRequiredMixin
@@ -35,6 +33,25 @@ class CommentCreateAjaxView(LoginRequiredMixin, CreateView):
         return render(self.request, 'comments/comments_container.html', context)
 
 
+class CommentUpdateView(ValidAuthorRequiredMixin, UpdateView):
+    model = Comment
+    template_name_suffix = '_update_form'
+    fields = ['content']
+
+    def get_success_url(self):
+        return Comment.objects.get(pk=self.kwargs['pk']).get_absolute_url()
+
+
+class CommentDeleteView(ValidAuthorRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        # 이전 페이지로 이동
+        to = self.request.POST.get('next', '/')
+        return to
+
+
+# Deprecated
 class InstagramCommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
@@ -57,21 +74,3 @@ class MeetingCommentCreateView(LoginRequiredMixin, CreateView):
         form.instance.meeting = Meeting.objects.get(pk=self.kwargs.get('pk'))
         form.save()
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
-
-
-class CommentUpdateView(ValidAuthorRequiredMixin, UpdateView):
-    model = Comment
-    template_name_suffix = '_update_form'
-    fields = ['content']
-
-    def get_success_url(self):
-        return Comment.objects.get(pk=self.kwargs['pk']).get_absolute_url()
-
-
-class CommentDeleteView(ValidAuthorRequiredMixin, DeleteView):
-    model = Comment
-
-    def get_success_url(self):
-        # 이전 페이지로 이동
-        to = self.request.POST.get('next', '/')
-        return to
