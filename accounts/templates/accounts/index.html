@@ -239,9 +239,13 @@
                     {% endif %}
                 </div>
                 <div class="col-sm-6">
-                    <div class="row" style="margin-bottom: 50px;">
+                    <div class="row" style="margin-bottom: 30px;">
                         <div class="col-sm-12">
                             <h2 style="margin: 0;">공지사항</h2>
+                            <h6>최근 3개만 보여집니다</h6>
+                            <a href="{% url 'meetings:meetings-list' %}" class="pull-right" style="margin:0; margin-right: 10%;">
+                                <span class="glyphicon glyphicon-plus"></span> 더보기
+                            </a>
                         </div>
                     </div>
                     <div class="official-container">
@@ -262,9 +266,10 @@
                                 </div>
                                 <div class="col-xs-9">
                                     <a href="{% url 'meetings:official-detail' official.pk %}">
-                                        <div class="speech-bubble" style="max-width: 90%; padding: 5px">
+                                        <div class="speech-bubble" style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
                                             <h4>{{ official.title }}</h4>
-                                            <h5>{{ official.get_category_display }}</h5>
+                                            <h5>{{ official.get_category_display }} </h5>
+                                            <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
                                         </div>
                                     </a>
                                 </div>
