@@ -355,14 +355,22 @@
     <section class="portfolio">
         <div class="container-fluid ">
             <div class="flexslider text-center carousel mt-100 mb-100">
-        {% if request.user_agent.is_mobile %}
-            <h6>슬라이드해서 넘겨보세요!</h6>
-        {% endif %}
+                {% if request.user_agent.is_mobile %}
+                    <h6>슬라이드해서 넘겨보세요!</h6>
+                {% endif %}
                 <ul class="slides">
                     {% for photo in latest_photos %}
                         {% if photo.image %}
                             <li>
-                                <img src="{{ photo.image.url }}" style="height: 250px;">
+                                <a href="{% url 'partners:meeting-list' %}">
+                                    <img src="{{ photo.image.url }}" style="height: 250px;">
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{% url 'photo_albums:photo_detail' photo.pk %}">
+                                    <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
+                                </a>
                             </li>
                         {% endif %}
                     {% endfor %}
