@@ -42,7 +42,7 @@
                                 {% for down in down_partners %}
                                     {% if down_num == 3 %}
                                         <div class="col-xs-4">
-                                            <div class="profile-card center-block">
+                                            <div class="center-block">
 
                                                 {% if down.profile_pic %}
                                                     {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
@@ -56,7 +56,7 @@
                                         </div>
                                     {% elif down_num == 2 %}
                                         <div class="col-xs-6">
-                                            <div class="profile-card center-block">
+                                            <div class="center-block">
 
                                                 {% if down.profile_pic %}
                                                     {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
@@ -70,7 +70,7 @@
                                         </div>
                                     {% elif down_num == 1 %}
                                         <div class="col-xm-12">
-                                            <div class="profile-card center-block">
+                                            <div class="center-block">
 
                                                 {% if down.profile_pic %}
                                                     {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
@@ -113,7 +113,7 @@
                                 {% if down_num == 3 %}
                                     {# 아래줄에서 첫번째는 무조건 위짝지이므로 별표시를 넣어준다. #}
                                     <div class="col-xs-4">
-                                        <div class="profile-card center-block">
+                                        <div class="center-block">
                                             {% if up_partner.profile_pic %}
                                                 {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
                                             {% else %}
@@ -126,7 +126,7 @@
                                             </p>
                                             <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                             <button data-toggle="collapse" data-target="#div-phone" class="btn"
-                                                    style="min-width:inherit; margin: 0; background-color:white;">번호 보기
+                                                    style="min-width:inherit; background-color: transparent; margin: 0;">번호 보기
                                             </button>
                                             <div class="collapse" id="div-phone">
                                                 <h5> {{ up_partner.phone }}</h5>
@@ -137,7 +137,7 @@
                                     {% for down in down_partners %}
                                         {% if not down == user %}
                                             <div class="col-xs-4">
-                                                <div class="profile-card center-block">
+                                                <div class=" center-block">
 
                                                     {% if down.profile_pic %}
                                                         {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
@@ -155,7 +155,7 @@
                                     {% endfor %}
                                 {% elif down_num == 2 %}
                                     <div class="col-xs-6">
-                                        <div class="profile-card center-block">
+                                        <div class="center-block">
 
                                             {% if up_partner.profile_pic %}
                                                 {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
@@ -173,7 +173,7 @@
                                     {% for down in down_partners %}
                                         {% if not down == user %}
                                             <div class="col-xs-6">
-                                                <div class="profile-card center-block">
+                                                <div class=" center-block">
 
                                                     {% if down.profile_pic %}
                                                         {% thumbnail "70x70" down.profile_pic -- class="img-profile" %}
@@ -192,7 +192,7 @@
                                 {% elif down_num == 1 %}
                                     {# 짝지가 한명일 땐 for문을 돌 필요가 없다. 위짝지만 뿌려준다. #}
                                     <div class="col-xs-12">
-                                        <div class="profile-card center-block">
+                                        <div class="center-block">
 
                                             {% if up_partner.profile_pic %}
                                                 {% thumbnail "70x70" up_partner.profile_pic -- class="img-profile" %}
@@ -264,7 +264,9 @@
                                             {% endif %}
                                         </div>
                                         <div class="row center-block">
-                                            <h4>{{ official.author.name }}</h4>
+                                            <h4>{{ official.author.name }}
+                                                <span class="lnr lnr-diamond"></span>
+                                            </h4>
                                         </div>
                                     </div>
                                     <div class="col-xs-9">
