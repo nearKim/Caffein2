@@ -14,9 +14,6 @@ tests/.coverage
 build/
 tests/report/
 
-# Migrations
-# **/migrations
-
 # Imagekit
 CACHE/
 
