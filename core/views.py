@@ -31,6 +31,7 @@ def entrypoint(request):
                                   .select_related('author') \
                                   .prefetch_related('photos') \
                                   .prefetch_related('participants') \
+                                  .prefetch_related('cafe__photos') \
                                   .all() \
                                   .order_by('-meeting_date')[:4]
             latest_feedphotos = FeedPhoto.objects.all().order_by('-created')
