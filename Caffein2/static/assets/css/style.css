@@ -125,6 +125,46 @@ theme.
     border-radius: 5px;
 }
 
+.speech-bubble {
+    position: relative;
+    background: white;
+    border-radius: .4em;
+}
+
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 24px solid transparent;
+    border-right-color: white;
+    border-left: 0;
+    border-top: 0;
+    margin-top: -12px;
+    margin-left: -24px;
+}
+.speech-bubble-inverse {
+	position: relative;
+	background: #F5F5F5;
+	border-radius: .4em;
+}
+
+.speech-bubble-inverse:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 24px solid transparent;
+	border-left-color: #F5F5F5;
+	border-right: 0;
+	border-top: 0;
+	margin-top: -12px;
+	margin-right: -24px;
+}
 .dropdown-option {
     position: relative;
     display: inline-block;
@@ -247,7 +287,7 @@ theme.
 }
 
 body {
-    background: white;
+    background: #FFFFFF;
     color: black;
     font: 400 14px/1.8 'Cantarell', sans-serif;
     -webkit-font-smoothing: antialiased;

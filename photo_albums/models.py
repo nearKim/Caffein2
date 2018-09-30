@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+from pilkit.processors import ResizeToFill
+
 from core.mixins import TimeStampedMixin
 from django.conf import settings
 
@@ -47,7 +49,7 @@ class Photo(TimeStampedMixin):
 
     thumbnail = ImageSpecField(
         source='file',
-        processors=[Thumbnail(128, 128)],
+        processors=[ResizeToFill(300, 300)],
         format='JPEG',
         options={'quality': 60}
     )
