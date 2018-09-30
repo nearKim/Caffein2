@@ -247,7 +247,7 @@ theme.
 }
 
 body {
-    background: #F5F5F5;
+    background: white;
     color: black;
     font: 400 14px/1.8 'Cantarell', sans-serif;
     -webkit-font-smoothing: antialiased;
