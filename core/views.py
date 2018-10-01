@@ -41,7 +41,12 @@ def entrypoint(request):
                                   .order_by('-meeting_date')[:4]
 
             # 짝모 역시 최신 인스턴스 4개를 가져온다
-            latest_partnermeetings = PartnerMeeting.objects.all().order_by('-created')[:4]
+            latest_partnermeetings = PartnerMeeting.objects \
+                                         .select_related('author') \
+                                         .select_related('partner') \
+                                         .select_related('partner__up_partner__user') \
+                                         .prefetch_related('photos') \
+                                         .all().order_by('-created')[:4]
 
             # 사진첩 carousel은 photo_album의 사진들만 8개까지 보여준다.
             latest_albumphotos = Photo.objects.all().order_by('-created')[:8]

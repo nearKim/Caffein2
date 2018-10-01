@@ -335,11 +335,11 @@
         </div>
     </section>
     <!-- 커모 섹션 -->
-    <section class="portfolio " style="padding-top: 50px;">
+    <section class="portfolio " style="padding-top: 75px;">
         <div class="container text-center">
             <div class="row">
                 <div class="col-sm-12">
-                    <h2 style="margin: 0;">커모</h2>
+                    <h2 style="margin: 0;">커모해요!</h2>
                     <p style="margin-top:20px;">가장 최근 4개의 커모만 보여집니다.</p>
                     <a href="{% url 'meetings:coffee-meeting-list' %}" class="pull-right"
                        style="margin:0;">
@@ -379,6 +379,57 @@
                                     <hr>
                                     <h5 style="font-size:calc(0.3vw + 14px); ">현재 {{ coffeemeeting.participants.count }}
                                         / {{ coffeemeeting.max_participants }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- 최근짝모 -->
+    <section class="portfolio mb-50" style="padding-top: 75px;">
+        <div class="container text-center">
+            <div class="row ">
+                <div class="col-sm-12">
+                    <h2 style="margin: 0;">짝모했어요!</h2>
+                    <p style="margin-top:20px;">가장 최근 4개의 짝모만 보여집니다.</p>
+                    <a href="{% url 'partners:meeting-list' %}" class="pull-right"
+                       style="margin:0;">
+                        <span class="glyphicon glyphicon-plus"></span> 더보기
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                {% for meeting in partner_meetings %}
+                    <a href="{% url 'partners:meeting-list' %}">
+                        <div class="col-sm-3">
+                            <div class="card" style="margin: 20px; max-height: 100%;">
+                                <div class="row">
+                                    <div class="col-sm-12"
+                                         style="margin: 10px; font-size: calc(0.3vw + 14px); ">
+                                        {% if meeting.author.profile_pic %}
+                                            {% thumbnail "30x30" meeting.author.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                 height="30"
+                                                 class="img-profile">
+                                        {% endif %}
+                                        {{ meeting.author.name }}
+                                    </div>
+                                </div>
+                                {% if meeting.photos.exists %}
+                                    <img src="{{ meeting.photos.all.0.image.url }}"
+                                         style="width: 100%; max-height: 200px;">
+                                {% else %}
+                                    {# 무조건 짝모는 사진이 있다. #}
+                                    <h5>데이터가 이상합니다. 운영진에게 문의하세요.</h5>
+                                {% endif %}
+                                <div class="row" style="padding:10px;">
+                                    <p style="font-size:calc(0.3vw + 14px); ">위짝지
+                                        <b>{{ meeting.partner.up_partner.user.name }}</b></p>
+                                    <hr>
+                                    <h5 style="font-size:calc(0.3vw + 14px); ">{{ meeting.num_eat }}밥 {{ meeting.num_coffee }}커 </h5>
                                 </div>
                             </div>
                         </div>
