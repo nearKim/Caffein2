@@ -98,37 +98,4 @@
         </div>
     </section>
 
-
-    {#    <div class="box-intro">#}
-    {#        <div class="table-cell ">#}
-    {#            <h1> 공식 모임</h1>#}
-    {#            <div class="container-fluid col-sm-6">#}
-    {#                <h2>공식모임 리스트</h2>#}
-    {#                {% for meeting in officialmeeting_list %}#}
-    {#                    <h4>{{ forloop.counter }}.#}
-    {#                        <a href="{{ meeting.get_absolute_url }}">{{ meeting.title }}</a>#}
-    {#                        ({{ meeting.get_category_display }})#}
-    {#                    </h4>#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#            <div class="container-fluid col-sm-6">#}
-    {#                <h2>커피교육 리스트</h2>#}
-    {#                {% for education in coffee_education_list %}#}
-    {#                    <h4>{{ forloop.counter }}.#}
-    {#                        <a href="{{ education.get_absolute_url }}"> {{ education.title }} </a>#}
-    {#                        ({{ education.get_category_display }}, {{ education.get_difficulty_display }})#}
-    {#                    </h4>#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#            <h2>커피모임 리스트</h2>#}
-    {#            <div class="container-fluid col-sm-6">#}
-    {#                {% for meeting in coffee_meeting_list %}#}
-    {#                    <h4>{{ forloop.counter }}.#}
-    {#                        <a href="{{ meeting.get_absolute_url }}"> {{ meeting.title }}({{ meeting.cafe.name }}#}
-    {#                            / {{ meeting.meeting_date | date:"m월 d일 A h시 i분" }} )</a>#}
-    {#                    </h4>#}
-    {#                {% endfor %}#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
 {% endblock content %}}
