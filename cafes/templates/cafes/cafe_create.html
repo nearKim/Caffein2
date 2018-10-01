@@ -81,17 +81,24 @@
         })
         {# 모든 날짜시간선택 위젯은 id를 inline_datetimepicker로 통일한다#}
         $(document).ready(function () {
-            {# inline_datetimepicker는 이 템플릿을 소속받는 템플릿에서 사용된다. #}
-            $("#inline_datetimepicker").datetimepicker({
-                inline: true,
-                sideBySide: true,
-                format: 'YYYY-MM-DD hh:mm a',
-            });
+            {# inline_datetimepicker는 이 템플릿을 상속받는 템플릿에서 사용된다. #}
+            {# Relative Positioned Error QuickFix #}
+            $("#div_id_meeting_date").first().addClass("col-xs-12").css({padding:0})
+            if ($("#inline_datetimepicker")) {
+                $("#inline_datetimepicker").datetimepicker({
+                    inline: true,
+                    sideBySide: true,
+                    format: 'YYYY-MM-DD hh:mm a',
+                });
+            }
             {# 개점/폐점시간을 컨트롤하는 timepicker를 보여준다. #}
-            $("#inline_timepicker_1, #inline_timepicker_2").timepicker({
-                'interval': 30,
-                'timeFormat': 'hh:mm p',
-            })
+            if ($("#inline_timepicker_1")) {
+                $("#inline_timepicker_1, #inline_timepicker_2").timepicker({
+                    'interval': 30,
+                    'timeFormat': 'hh:mm p',
+                })
+
+            }
         });
     </script>
 {% endblock %}
