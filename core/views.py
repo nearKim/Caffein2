@@ -28,7 +28,7 @@ def entrypoint(request):
                                     .all() \
                                     .order_by('-created')[:3]
             latest_meetings = list(official_meetings) + list(coffee_educations)
-            latest_sorted = sorted(latest_meetings, key=lambda x: x.created, reverse=True)
+            latest_sorted = sorted(latest_meetings, key=lambda x: x.created, reverse=True)[:3]
 
             # 커모 중 최신 인스턴스 4개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects \
@@ -52,7 +52,7 @@ def entrypoint(request):
             latest_partner = Partner.related_partner_user(request.user)
 
             context = {'user': request.user,
-                       'official_meetings': latest_meetings,
+                       'official_meetings': latest_sorted,
                        'coffee_meetings': coffee_meetings,
                        'partner_meetings': latest_partnermeetings,
                        'latest_photos': latest_albumphotos
