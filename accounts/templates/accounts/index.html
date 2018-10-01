@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 {% load imagekit %}
 {% load static %}
+{% load classtype %}
 {# 로그인에 성공하면 보게 되는 메인 인덱스 페이지이다. 짝지정모, 현재 진행중인 커모정보와 함께 최근 사진들이 있는 사진첩을 함께 보여준다. #}
 {# 3회에 걸쳐 분기한다. 1차로 짝지의 배정여부에 따라 분기하고 2차로 위짝지인지 아래짝지인지에 따라 분기하며 3차로 아래짝지의 수에 따라 분기한다.#}
 
@@ -126,7 +127,8 @@
                                             </p>
                                             <h5> {{ up_partner.get_department_display }}&nbsp;{{ up_partner.short_student_no }}학번</h5>
                                             <button data-toggle="collapse" data-target="#div-phone" class="btn"
-                                                    style="min-width:inherit; background-color: transparent; margin: 0;">번호 보기
+                                                    style="min-width:inherit; background-color: transparent; margin: 0;">
+                                                번호 보기
                                             </button>
                                             <div class="collapse" id="div-phone">
                                                 <h5> {{ up_partner.phone }}</h5>
@@ -243,7 +245,7 @@
                     <div class="row" style="margin-bottom: 30px;">
                         <div class="col-sm-12">
                             <h2 style="margin: 0;">공지사항</h2>
-                            <h6>가장 최근 3개의 공지만 보여집니다.</h6>
+                            <h6>가장 최근 3개의 공식모임 및 커피교육이 보여집니다.</h6>
                             <a href="{% url 'meetings:meetings-list' %}" class="pull-right"
                                style="margin:0; margin-right: 10%;">
                                 <span class="glyphicon glyphicon-plus"></span> 더보기
@@ -253,33 +255,65 @@
                     <div class="official-container">
                         {% for official in official_meetings %}
                             {% if not official.is_past_due %}
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <div class="row center-block " style="padding:10px;">
-                                            {% if official.author.profile_pic %}
-                                                {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' %}
-                                            {% else %}
-                                                <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                     class="img-profile img-default-up" style="max-width: 100%;">
-                                            {% endif %}
-                                        </div>
-                                        <div class="row center-block">
-                                            <h4>{{ official.author.name }}
-                                                <span class="lnr lnr-diamond"></span>
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        <a href="{% url 'meetings:official-detail' official.pk %}">
-                                            <div class="speech-bubble"
-                                                 style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
-                                                <h4>{{ official.title }}</h4>
-                                                <h5>{{ official.get_category_display }} </h5>
-                                                <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                {% if official|to_class_name == 'OfficialMeeting' %}
+                                    {# 공식모임은 프로필사진을 왼쪽에 넣어준다  #}
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <div class="row center-block " style="padding:10px;">
+                                                {% if official.author.profile_pic %}
+                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' %}
+                                                {% else %}
+                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                         class="img-profile img-default-up" style="max-width: 100%;">
+                                                {% endif %}
                                             </div>
-                                        </a>
+                                            <div class="row center-block">
+                                                <h4>{{ official.author.name }}
+                                                    <span class="lnr lnr-diamond"></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <a href="{% url 'meetings:official-detail' official.pk %}">
+                                                <div class="speech-bubble"
+                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                    <h4>{{ official.title }}</h4>
+                                                    <h5>{{ official.get_category_display }} </h5>
+                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                {% elif official|to_class_name == 'CoffeeEducation' %}
+                                    {# 커피교육은 프로필사진을 오른쪽에 넣어준다. #}
+                                    <div class="row">
+                                        <div class="col-xs-6 col-xs-offset-3">
+                                            <a href="{% url 'meetings:education-detail' official.pk %}">
+                                                <div class="speech-bubble-inverse"
+                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                    <h4>{{ official.title }}</h4>
+                                                    <h5>{{ official.get_category_display }} </h5>
+                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <div class="row center-block " style="padding:10px;">
+                                                {% if official.author.profile_pic %}
+                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' %}
+                                                {% else %}
+                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                         class="img-profile img-default-up" style="max-width: 100%;">
+                                                {% endif %}
+                                            </div>
+                                            <div class="row center-block">
+                                                <h4>{{ official.author.name }}
+                                                    <span class="lnr lnr-diamond"></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -362,19 +396,11 @@
                 {% endif %}
                 <ul class="slides">
                     {% for photo in latest_photos %}
-                        {% if photo.image %}
-                            <li>
-                                <a href="{% url 'partners:meeting-list' %}">
-                                    <img src="{{ photo.image.url }}" style="height: 250px;">
-                                </a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a href="{% url 'photo_albums:photo_detail' photo.pk %}">
-                                    <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
-                                </a>
-                            </li>
-                        {% endif %}
+                        <li>
+                            <a href="{% url 'photo_albums:photo_detail' photo.pk %}">
+                                <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
+                            </a>
+                        </li>
                     {% endfor %}
                 </ul>
             </div>

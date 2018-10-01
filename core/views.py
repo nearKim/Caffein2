@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 
 from core.models import FeedPhoto, MeetingPhoto, OperationScheme
 from meetings.models import CoffeeMeeting, OfficialMeeting, CoffeeEducation
-from partners.models import Partner
+from partners.models import Partner, PartnerMeeting
 from partners.views import PartnerDetailView
 from photo_albums.models import Photo
 
@@ -13,6 +13,8 @@ def entrypoint(request):
     if request.user.is_authenticated:
         # 사용자가 로그인상태인 경우
         if request.method == 'GET':
+            # 공식모임과 커피교육 객체를 3개씩 가지고 와서 하나로 합친다
+            # https://stackoverflow.com/a/11635996
             official_meetings = OfficialMeeting.objects \
                                     .select_related('author') \
                                     .prefetch_related('photos') \
@@ -25,7 +27,10 @@ def entrypoint(request):
                                     .prefetch_related('participants') \
                                     .all() \
                                     .order_by('-created')[:3]
-            # 커모 중 최신 인스턴스 3개와 Photo 인스턴스 중 최신 9개를 가져온다.
+            latest_meetings = list(official_meetings) + list(coffee_educations)
+            latest_sorted = sorted(latest_meetings, key=lambda x: x.created, reverse=True)
+
+            # 커모 중 최신 인스턴스 4개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects \
                                   .select_related('cafe') \
                                   .select_related('author') \
@@ -34,22 +39,23 @@ def entrypoint(request):
                                   .prefetch_related('cafe__photos') \
                                   .all() \
                                   .order_by('-meeting_date')[:4]
-            latest_feedphotos = FeedPhoto.objects.all().order_by('-created')
-            latest_albumphotos = Photo.objects.all().order_by('-created')
 
-            # https://stackoverflow.com/a/11635996
-            latest_photos = list(latest_albumphotos) + list(latest_feedphotos)
-            latest_photos_sorted = sorted(latest_photos, key=lambda x: x.created, reverse=True)[:8]
+            # 짝모 역시 최신 인스턴스 4개를 가져온다
+            latest_partnermeetings = PartnerMeeting.objects.all().order_by('-created')[:4]
+
+            # 사진첩 carousel은 photo_album의 사진들만 8개까지 보여준다.
+            latest_albumphotos = Photo.objects.all().order_by('-created')[:8]
+
             current_os = OperationScheme.latest()
 
             # 최근의 짝지 객체를 갖고와서 아래짝지가 몇명인지 반환하고 기본 context를 정의한다.
             latest_partner = Partner.related_partner_user(request.user)
 
             context = {'user': request.user,
-                       'official_meetings': official_meetings,
-                       'coffee_educations': coffee_educations,
+                       'official_meetings': latest_meetings,
                        'coffee_meetings': coffee_meetings,
-                       'latest_photos': latest_photos_sorted
+                       'partner_meetings': latest_partnermeetings,
+                       'latest_photos': latest_albumphotos
                        }
 
             # latest_partner가 존재하고 이번 학기/년도와 짝지 학기/년도가 일치하면 최신의 짝지가 존재하는 것이다.
@@ -79,10 +85,8 @@ def entrypoint(request):
                 return render(request, 'accounts/index.html', context)
             else:
                 # 짝지 객체가 아예 없거나 현재 학기, 년도에 해당하는 짝지가 없다면 명시적으로 아직이라고 템플릿에 전달한다.
-                return render(request, 'accounts/index.html', {'user': request.user,
-                                                               'partner_set': False,
-                                                               'coffee_meetings': coffee_meetings,
-                                                               'latest_photos': latest_photos_sorted})
+                context['partner_set'] = False
+                return render(request, 'accounts/index.html', context)
 
     else:
         # 사용자가 인증되지 않았으면 index로 보낸다
