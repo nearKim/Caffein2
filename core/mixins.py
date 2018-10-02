@@ -4,7 +4,7 @@ import facebook
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.db import models
-from django.http import HttpResponseForbidden, JsonResponse
+from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 
 from Caffein2.settings.dev import DEBUG, FACEBOOK_TOKEN, FACEBOOK_GROUP_ID
@@ -62,7 +62,7 @@ class StaffRequiredMixin(AccessMixin):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         elif not request.user.is_staff:
-            return HttpResponseForbidden()
+            raise PermissionDenied
         else:
             return super(StaffRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -74,7 +74,7 @@ class StaffOrMeRequiredMixin(AccessMixin):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         elif self.get_object() != request.user and not request.user.is_staff:
-            return HttpResponseForbidden()
+            raise PermissionDenied
         else:
             return super(StaffOrMeRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -86,7 +86,7 @@ class ValidAuthorRequiredMixin(AccessMixin):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         elif self.get_object().author != request.user and not request.user.is_staff:
-            return HttpResponseForbidden()
+            raise PermissionDenied
         else:
             return super(ValidAuthorRequiredMixin, self).dispatch(request, *args, **kwargs)
 
