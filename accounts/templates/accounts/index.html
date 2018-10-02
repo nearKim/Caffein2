@@ -14,7 +14,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="container-fluid" style="padding-top: 150px;">
+        <div class="container-fluid" style="{% if not request.user_agent.is_mobile %}padding-top: 150px;{% endif %}">
             <div class="row mb-100">
                 <div class="col-sm-6" style="margin:0; padding-left:30px;">
                     {% if partner_set %}
@@ -256,36 +256,69 @@
                         {% for official in official_meetings %}
                             {% if not official.is_past_due %}
                                 {% if official|to_class_name == 'OfficialMeeting' %}
-                                    {# 공식모임은 프로필사진을 왼쪽에 넣어준다  #}
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <div class="row center-block " style="padding:10px;">
-                                                {% if official.author.profile_pic %}
-                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' class="img-profile" %}
-                                                {% else %}
-                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                         class="img-profile img-default-up" style="max-width: 100%;">
-                                                {% endif %}
-                                            </div>
-                                            <div class="row center-block">
-                                                <h4>{{ official.author.name }}
-                                                    <span class="lnr lnr-diamond"></span>
-                                                </h4>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <a href="{% url 'meetings:official-detail' official.pk %}">
-                                                <div class="speech-bubble"
-                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
-                                                    <h4>{{ official.title }}</h4>
-                                                    <h5>{{ official.get_category_display }} </h5>
-                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                    {% if not request.user_agent.is_mobile %}
+                                        {# 공식모임은 프로필사진을 왼쪽에 넣어준다  #}
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <div class="row center-block " style="padding:10px;">
+                                                    {% if official.author.profile_pic %}
+                                                        {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' class="img-profile" %}
+                                                    {% else %}
+                                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                             class="img-profile img-default-up"
+                                                             style="max-width: 100%;">
+                                                    {% endif %}
                                                 </div>
-                                            </a>
+                                                <div class="row center-block">
+                                                    <h4>{{ official.author.name }}
+                                                        <span class="lnr lnr-diamond"></span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <a href="{% url 'meetings:official-detail' official.pk %}">
+                                                    <div class="speech-bubble"
+                                                         style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                        <h4>{{ official.title }}</h4>
+                                                        <h5>{{ official.get_category_display }} </h5>
+                                                        <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                    </div>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% else %}
+                                        <div class="row" style="margin-bottom: 10px;">
+                                            <div class="col-xs-4">
+                                                <div class="row center-block">
+                                                    {% if official.author.profile_pic %}
+                                                        {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' class="img-profile" %}
+                                                    {% else %}
+                                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                             class="img-profile img-default-up"
+                                                             style="max-width: 100%;">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="row center-block">
+                                                    <h4>{{ official.author.name }}
+                                                        <span class="lnr lnr-diamond"></span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <a href="{% url 'meetings:official-detail' official.pk %}">
+                                                    <div class="speech-bubble"
+                                                         style="max-width: 90%; padding: 2px; margin-bottom: 5px;">
+                                                        <h4>{{ official.title }}</h4>
+                                                        <h5>{{ official.get_category_display }} </h5>
+                                                        <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 {% elif official|to_class_name == 'CoffeeEducation' %}
                                     {# 커피교육은 프로필사진을 오른쪽에 넣어준다. #}
+                                    {% if not request.user_agent.is_mobile %}
                                     <div class="row">
                                         <div class="col-xs-6 col-xs-offset-3">
                                             <a href="{% url 'meetings:education-detail' official.pk %}">
@@ -313,7 +346,36 @@
                                             </div>
                                         </div>
                                     </div>
-                                {% endif %}
+                                {% else %}
+                                        <div class="row" style="margin-bottom: 10px;">
+                                        <div class="col-xs-8">
+                                            <a href="{% url 'meetings:education-detail' official.pk %}">
+                                                <div class="speech-bubble-inverse"
+                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                    <h4>{{ official.title }}</h4>
+                                                    <h5>{{ official.get_category_display }} </h5>
+                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <div class="row center-block">
+                                                {% if official.author.profile_pic %}
+                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%; height="50px"' class='img-profile' %}
+                                                {% else %}
+                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                         class="img-profile img-default-up" style="max-width: 100%;">
+                                                {% endif %}
+                                            </div>
+                                            <div class="row center-block">
+                                                <h4>{{ official.author.name }}
+                                                    <span class="lnr lnr-diamond"></span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        {% endif %}
+                                    {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -375,7 +437,8 @@
                                     <img src="{% static 'assets/img/default-cafe.jpg' %}" style="width: 100%;">
                                 {% endif %}
                                 <div class="row" style="padding:10px;">
-                                    <h5 class="cafe-name" style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.cafe.name }}</h5>
+                                    <h5 class="cafe-name"
+                                        style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.cafe.name }}</h5>
                                     <hr>
                                     <p style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.meeting_date | date:"m월 d일 A h시 i분" }}</p>
                                     <hr>
