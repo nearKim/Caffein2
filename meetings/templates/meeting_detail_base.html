@@ -90,11 +90,11 @@
                 <div class="col-sm-12">
                     <form action="{% url 'meetings:participate' pk=object.pk %}" method="post">{% csrf_token %}
                         {% if participated %}
-                            <button id="btn-participate" onclick="return alert('정말 취소하시겠습니까?');"
+                            <button id="btn-participate" onclick="return confirm('정말 취소하시겠습니까?');"
                                     class="btn btn-default btn-block">참여 취소
                             </button>
                         {% else %}
-                            <button id="btn-participate" onclick="return alert('참여하시겠습니까?');"
+                            <button id="btn-participate" onclick="return confirm('참여하시겠습니까?');"
                                     class="btn btn-info btn-block">참여 하기!
                             </button>
                         {% endif %}
