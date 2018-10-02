@@ -1,0 +1,13 @@
+{% load imagekit %}
+{% load static %}
+
+<div class="container">
+<h1>Albums!</h1>
+    {% for album in album_list %}
+        <div class="col-sm-3">
+            <img src="{{ album.photos.all.0.url }}" class="img-responsive">
+            <p>{{ album.name }}</p>
+            <p>{{ album.description }}</p>
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,10 @@
+{% load imagekit %}
+{% load static %}
+<div class="container">
+    <h1>Photos!</h1>
+    {% for photo in photo_list %}
+        <div class="col-sm-3">
+            <img src="{{ photo.thumbnail.url }}" class="img-responsive">
+        </div>
+    {% endfor %}
+</div>

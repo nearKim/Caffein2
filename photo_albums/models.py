@@ -49,7 +49,7 @@ class Photo(TimeStampedMixin):
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     photo = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
     thumbnail = ImageSpecField(
-        source='file',
+        source='photo',
         processors=[ResizeToFill(300, 300)],
         format='JPEG',
         options={'quality': 60}
