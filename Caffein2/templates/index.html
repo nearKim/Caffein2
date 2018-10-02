@@ -48,10 +48,10 @@
 
 <!-- Border -->
 {% if not request.user_agent.is_mobile %}
-<span class="frame-line top-frame visible-lg"></span>
-<span class="frame-line right-frame visible-lg"></span>
-<span class="frame-line bottom-frame visible-lg"></span>
-<span class="frame-line left-frame visible-lg"></span>
+    <span class="frame-line top-frame visible-lg"></span>
+    <span class="frame-line right-frame visible-lg"></span>
+    <span class="frame-line bottom-frame visible-lg"></span>
+    <span class="frame-line left-frame visible-lg"></span>
 {% endif %}
 <!-- HEADER  -->
 <header class="main-header">
@@ -90,22 +90,28 @@
         <nav>
             <ul class="box-primary-nav">
                 <li class="box-label">Caffe人</li>
-                <li><a href="{% url 'core:entrypoint' %}">메인으로</a> <i class="lnr lnr-home" style="color:white;"></i></li>
+                <li><a href="{% url 'core:entrypoint' %}">메인으로</a> <i class="lnr lnr-home" style="color:white;"></i>
+                </li>
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a><i class="lnr lnr-user" style="color:white;"></i></li>
-                    <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a><i class="lnr lnr-bubble" style="color:white;"></i></li>
-                    <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup" style="color:white;"></i></li>
-                    <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier" style="color:white;"></i></li>
-                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a><i class="lnr lnr-camera" style="color:white;"></i></li>
+                    <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a><i class="lnr lnr-user"
+                                                                                   style="color:white;"></i></li>
+                    <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a><i class="lnr lnr-bubble"
+                                                                                style="color:white;"></i></li>
+                    <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup"
+                                                                                       style="color:white;"></i></li>
+                    <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier"
+                                                                                 style="color:white;"></i></li>
+                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a><i class="lnr lnr-camera"
+                                                                                style="color:white;"></i></li>
                 {% endif %}
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:old-register' user.id %}">기존회원 재가입</a></li>
                 {% else %}
                     <li><a href="{% url 'accounts:register' %}">신규회원가입</a></li>
                 {% endif %}
-            {% if request.user.is_staff %}
+                {% if request.user.is_staff %}
                     <li><a href="{% url 'admin:index' %}">운영진 페이지</a></li>
-            {% endif %}
+                {% endif %}
                 <li class="box-social"><a href="https://www.facebook.com/groups/snucaffein/"><i class="fa fa-facebook"
                                                                                                 aria-hidden="true"></i></a>
                 </li>
@@ -807,9 +813,6 @@
 </footer>
 
 <!-- SCRIPTS -->
-{% block javascript %}
-{% endblock %}
-
 <script type="text/javascript">
     {# NavBar 옆에 로그인 텍스트 버튼을 위치시킨다.#}
     $(document).ready(function () {
@@ -825,6 +828,11 @@
         }
     })
 </script>
+
+{# 이 자바스크립트는 절대 블록되어선 안된다 #}
+{% block javascript %}
+{% endblock %}
+
 {% block custom-javascript %}
     <script type="text/javascript" src="{% static "assets/js/animated-headline.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/menu.js" %}"></script>
@@ -832,13 +840,13 @@
     <script type="text/javascript" src="{% static "assets/js/isotope.pkgd.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/jquery.flexslider-min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/jquery.animsition.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "assets/js/init.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/main.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/smooth-scroll.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/numscroller.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/wow.min.js" %}"></script>
     <script type="text/javascript" src="{% static "assets/js/owl.carousel.min.js" %}"></script>
 {% endblock %}
+
 <script type="text/javascript">
     $(window).on('load', function () {
         new WOW().init();
@@ -879,5 +887,6 @@
         });
     });
 </script>
+
 </body>
 </html>

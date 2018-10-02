@@ -42,7 +42,9 @@
             <!-- Card -->
             <!-- 만일 모바일로 들어왔다면 중앙 정렬을 위해서 마진을 조절한다 -->
             {% for object in object_list %}
-                <div class="card {% if request.user_agent.is_mobile %}mx-auto{% endif %} {% if object.is_past_due %} should-overlay {% endif %} mb-4">
+                <div class="card mb-4
+                                {% if request.user_agent.is_mobile %}mx-auto{% endif %}
+                                {% if object.is_past_due %} should-overlay {% endif %}">
                     <div class="card-header">
                         {% if object.author.profile_pic %}
                             {% thumbnail "30x30" object.author.profile_pic -- class="img-profile" %}
