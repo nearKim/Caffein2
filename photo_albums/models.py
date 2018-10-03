@@ -46,6 +46,7 @@ class CoffeeMeetingAlbum(Album):
 
 class Photo(TimeStampedMixin):
     album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True, related_name='photos')
+    description = models.CharField(max_length=100, blank=True)
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     photo = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
     thumbnail = ImageSpecField(

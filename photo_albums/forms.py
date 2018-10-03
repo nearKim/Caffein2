@@ -1,8 +1,18 @@
 from PIL import Image
 from django import forms
+from django.forms import ClearableFileInput
+
 from .models import Album, Photo
 from django.core.files.storage import default_storage as storage
 
+
+class PhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ('photo',)
+
+    # photo = forms.FileField(widget=ClearableFileInput(
+    #     attrs={'multiple': True, 'style': 'display:none;', 'id': 'input-photo-upload', 'name': 'file'}), label='')
 
 # class AlbumForm(forms.ModelForm):
 #     class Meta:
@@ -46,4 +56,3 @@ from django.core.files.storage import default_storage as storage
 #         fh.close()
 #
 #         return photo
-

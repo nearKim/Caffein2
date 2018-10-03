@@ -1,0 +1,7 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% if is_valid %}
+    <img src="{{ thumb_url }}" class="img-responsive" style="max-width: 280px;">
+{% else %}
+    <span>업로드 과정에서 오류가 발생하였습니다.</span>
+{% endif %}
