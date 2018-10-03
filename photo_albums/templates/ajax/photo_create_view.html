@@ -3,10 +3,12 @@
 {% if is_valid %}
     <div class="photo-create-img-container"
          style="display: inline-block;
+                margin:8px;
                 border-width: 1px;
                 border-style: solid;
                 border-color: rgb(221, 223, 226);">
         <img src="{{ thumb_url }}" class="img-responsive" style="max-width: 280px;">
+    <input id="{{ pk }}" name="photo-desc" style="position:relative; display: block; padding:5px; max-width: 280px; width: 100%;" placeholder="이 사진에 대해 이야기해주세요...">
     </div>
 {% else %}
     <span>업로드 과정에서 오류가 발생하였습니다.</span>

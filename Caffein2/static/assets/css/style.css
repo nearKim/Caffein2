@@ -289,11 +289,12 @@ theme.
 .js-upload-photos {
     /* facebook style */
     color: rgb(103, 159, 232);
+    margin:8px;
     display: inline-block;
     font-size: 18px;
-    height: 354px;
+    height: 280px;
     text-align: center;
-    width: 289px;
+    width: 280px;
     border-width: 1px;
     border-style: dashed;
 }
