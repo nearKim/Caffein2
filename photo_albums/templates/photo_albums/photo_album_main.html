@@ -198,9 +198,12 @@
                     success:(data) => {
                         console.log(data)
                         // 모달을 닫고 사진첩 탭을 눌러야겠지.
+                        $('#modal-create-album').modal('hide')
+                        $('#a-albums').click()
                     },
                     error:(data) => {
                         console.log(data)
+                        alert('업로드에 실패하였습니다. 나중에 다시 시도해주세요.')
                     }
 
                 })
