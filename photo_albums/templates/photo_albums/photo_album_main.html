@@ -64,7 +64,11 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    {# TODO: 앨범 제목,상세 입력창 #}
+                                    <form id="form-create-album" action="{% url 'photo_albums:album-create' %}" method="post">{% csrf_token %}
+                                        <input id="input-album-name" type="text" name="album-name" placeholder="앨범 제목">
+                                        <input id="input-album-description" type="text" name="album-description"
+                                               placeholder="설명">
+                                    </form>
                                 </div>
                                 <div class="col-sm-9 text-center">
                                     {# 1. BUTTON TO TRIGGER THE ACTION #}
@@ -93,7 +97,7 @@
 
                     </div>
                     <div class="modal-footer float-right">
-                        <button class="btn btn-xs">게시</button>
+                        <button id="btn-create-album" class="btn btn-xs">게시</button>
                     </div>
                 </div>
             </div>
@@ -106,10 +110,11 @@
     <script src="{% static 'core/js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
     <script src="{% static 'core/js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
     <script src="{% static 'core/js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+    <script src="{% static 'core/js/ajax-csrf-django.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
-            // 처음 윈도우가 준비되면 사진 리스트를 보여준다.
+            // 처음 윈도우가 준비되면 사진 리스트를 보여주고 모달에 .
             $.ajax({
                 url: '{% url 'photo_albums:photos-list' %}',
                 method: 'get',
@@ -124,7 +129,6 @@
             });
 
             // 파일이 선택되면 AJAX를 사용하여 순차적으로 업로드한다. 아직 앨범은 생성되지 않은 상태다.
-            // 업로드된 파일들은
             $("#input-photo-upload").fileupload({
                 dataType: 'html',
                 sequentialUploads: true,
@@ -135,6 +139,7 @@
                     $('#loader').hide()
                 },
                 done: function (e, data) {
+            // 업로드된 파일들은 각각 html 컨테이너안에 담겨 전달된다. 모달 내부에 각 html을 append한다.
                     $('#modal-photo-create-container').append(data.result)
                 }
             });
@@ -168,6 +173,36 @@
                     fail: function (data) {
                         alert('오류가 발생했습니다. 잠시후에 시도해주세요.')
                     }
+                })
+            })
+
+            // 게시 버튼을 클릭하면 앨범 create form으로 모든 데이터를 함께 보낸다.
+            $('#btn-create-album').on('click', function(){
+                let photo_descriptions = {}
+                {#let description = []#}
+                {#let id = []#}
+                $('input[name*="photo-desc"]').each(function () {
+                    photo_descriptions[$(this).attr('id')] = $(this).val()
+                    {#description.push($(this).val())#}
+                    {#id.push($(this).attr('id'))#}
+                })
+                $.ajax({
+                    url: $('#form-create-album').attr('action'),
+                    method:'post',
+                    data:{
+                        'album-name':$('#input-album-name').val(),
+                        'album-description':$('#input-album-description').val(),
+                        {# https://stackoverflow.com/a/37701514 #}
+                        'photo-descriptions':JSON.stringify(photo_descriptions)
+                    },
+                    success:(data) => {
+                        console.log(data)
+                        // 모달을 닫고 사진첩 탭을 눌러야겠지.
+                    },
+                    error:(data) => {
+                        console.log(data)
+                    }
+
                 })
             })
         })

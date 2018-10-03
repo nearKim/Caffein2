@@ -7,5 +7,6 @@ urlpatterns = [
     path('', PhotoAlbumMainView.as_view(), name='photo-album-main'),
     path('ajax/albums/', AlbumListAjaxView.as_view(), name='albums-list'),
     path('ajax/photos/', PhotoListAjaxView.as_view(), name='photos-list'),
-    path('ajax/photo/create/', photo_create_ajax_view, name='photo-create')
+    path('ajax/photo/create/', photo_create_ajax_view, name='photo-create'),
+    path('ajax/album/create/', album_create_ajax_view, name='album-create')
 ]

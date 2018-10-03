@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView, TemplateView, FormView
-from .forms import *
-from django.http import JsonResponse, HttpResponse
-from django.views import View
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+import json
+
+from django.db import transaction
+from django.shortcuts import render
+from django.views.generic import ListView, CreateView, TemplateView
+from django.http import JsonResponse
+
+from photo_albums.forms import PhotoUploadForm
+from photo_albums.models import Album, Photo
 
 
 class PhotoAlbumMainView(TemplateView):
@@ -39,11 +40,25 @@ class PhotoListAjaxView(ListView):
         return queryset
 
 
-class AlbumCreateAjaxView(CreateView):
-    model = Album
+def album_create_ajax_view(request):
+    if request.method == 'POST':
+        # 모달에서 앨범명, 앨범 설명, 각 사진에 대한 PK와 설명이 넘어온다.
+        album_name = request.POST.get('album-name')
+        album_desc = request.POST.get('album-description')
+        photo_descs = json.loads(request.POST.get('photo-descriptions'))
 
-    def get_context_data(self, **kwargs):
-        context = super(AlbumCreateAjaxView, self).get_context_data(**kwargs)
+        try:
+            # 앨범을 제일 먼저 생성한다.
+            album = Album.objects.create(name=album_name, description=album_desc, uploader=request.user)
+            # 각 사진객체의 앨범을 위에서 생성한 앨범과 연결하고 설명을 업데이트 한다.
+            with transaction.atomic():
+                for pk, desc in photo_descs.items():
+                    Photo.objects.filter(pk=pk).update(description=desc, album=album)
+        except:
+            response = JsonResponse({'success': False})
+            response.status_code = 500
+            return response
+        return JsonResponse({'success': True})
 
 
 def photo_create_ajax_view(request):
@@ -59,7 +74,7 @@ def photo_create_ajax_view(request):
             context = {'is_valid': True, 'thumb_url': photo.thumbnail.url, 'pk': photo.pk}
         else:
             context = {'is_valid': False}
-        return render(request,'ajax/photo_create_view.html', context)
+        return render(request, 'ajax/photo_create_view.html', context)
 
 
 class PhotoCreateAjaxView(CreateView):
