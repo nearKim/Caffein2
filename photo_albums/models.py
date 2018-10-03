@@ -30,7 +30,7 @@ class Album(TimeStampedMixin):
         verbose_name_plural = '사진첩'
 
     def __str__(self):
-        return self.created
+        return self.name
 
     def get_absolute_url(self):
         return reverse('photo_albums:album_detail', args=(self.id,))
