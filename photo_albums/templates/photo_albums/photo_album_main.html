@@ -25,6 +25,7 @@
 {% endblock %}
 {% block content %}
     <div class="container mt-150">
+        <!-- Navbar and pills -->
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a id="a-photos" class="nav-link active" href="#">사진</a>
@@ -36,57 +37,69 @@
                 <a class="nav-link disabled" href="#">동영상(Coming soon)</a>
             </li>
 
-            <li class="nav-pills">
+            <li class="nav-pills pull-right">
                 <a class="nav-link" data-toggle="modal" data-target="#modal-create-album" href="#"> <span
                         class="lnr lnr-plus-circle"></span> 사진첩 만들기</a>
             </li>
-            <li class="nav-pills">
-                <a class="nav-link" href="#"> <span class="lnr lnr-plus-circle"></span> 사진 추가</a>
-            </li>
         </ul>
-    </div>
-    <div id="modal-create-album" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="max-width: 90%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">사진첩 만들기</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div id="loader"><img src="{% static 'assets/css/AjaxLoader.gif' %}"></div>
-                            <div class="col-sm-3">
-                            </div>
-                            <div class="col-sm-9 text-center">
-                                <div id="modal-photo-create-container" style="width: 100%;">
 
+        <!-- Container containing album list or photo list -->
+        <div id="div-media-container" class="container">
+        </div>
+
+        <!-- Album add modal -->
+        <div id="modal-create-album" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="max-width: 95%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">사진첩 만들기</h4>
+                        <img id="loader" src="{% static 'assets/css/AjaxLoader.gif' %}"
+                             style="display:none;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    {# TODO: 앨범 제목,상세 입력창 #}
                                 </div>
-                                {# 1. BUTTON TO TRIGGER THE ACTION #}
-                                <button type="button" class="btn btn-primary js-upload-photos">
-                                    <span class="glyphicon glyphicon-cloud-upload"></span> Upload photos
-                                </button>
-                                {# 2. FILE INPUT TO BE USED BY THE PLUG-IN #}
-                                <input id="input-photo-upload" type="file" name="photo" multiple
-                                       style="display: none;"
-                                       data-url="{% url 'photo_albums:photo-create' %}"
-                                       data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
-                                <div id="div-photo-container">
+                                <div class="col-sm-9 text-center">
+                                    {# 1. BUTTON TO TRIGGER THE ACTION #}
+                                    <a href="#" class="js-upload-photos float-left">
+                                        <div style="position: absolute; top: 120px; width: 291px;">
+                                            <img class="img"
+                                                 src="https://static.xx.fbcdn.net/rsrc.php/v3/yw/r/NXikOlntVtO.png"
+                                                 alt=""
+                                                 width="48" height="48">
+                                            <div class="text-center">사진 추가</div>
+                                        </div>
+                                    </a>
+                                    {# 2. FILE INPUT TO BE USED BY THE PLUG-IN #}
+                                    <input id="input-photo-upload" type="file" name="photo" multiple
+                                           style="display: none;"
+                                           data-url="{% url 'photo_albums:photo-create' %}"
+                                           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+
+                                    {# AJAX로 업로드된 사진들은 이 컨테이너에 append 된다. #}
+                                    <div id="modal-photo-create-container" style="width: 100%;">
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
 
                     </div>
-
+                    <div class="modal-footer float-right">
+                        <button class="btn btn-xs">게시</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
-
-
 {% endblock %}
 
 {% block javascript %}
@@ -95,7 +108,7 @@
     <script src="{% static 'core/js/jquery-file-upload/jquery.fileupload.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#loader').hide()
+
             // 처음 윈도우가 준비되면 사진 리스트를 보여준다.
             $.ajax({
                 url: '{% url 'photo_albums:photos-list' %}',
@@ -105,12 +118,13 @@
                 }
             })
 
-            // 초기 AJAX call이 모두 완료된 후에 리스너들을 부착한다.
+            // 모달의 버튼을 누르면 파일선택창을 열어준다
             $(".js-upload-photos").click(function () {
                 $("#input-photo-upload").click();
             });
 
-
+            // 파일이 선택되면 AJAX를 사용하여 순차적으로 업로드한다. 아직 앨범은 생성되지 않은 상태다.
+            // 업로드된 파일들은
             $("#input-photo-upload").fileupload({
                 dataType: 'html',
                 sequentialUploads: true,

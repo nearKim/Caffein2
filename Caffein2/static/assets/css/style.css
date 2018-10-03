@@ -277,6 +277,26 @@ theme.
     }
 }
 
+/* Photo album */
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border: 0;
+    z-index: 99999;
+}
+.js-upload-photos {
+    /* facebook style */
+    color: rgb(103, 159, 232);
+    display: inline-block;
+    font-size: 18px;
+    height: 354px;
+    text-align: center;
+    width: 289px;
+    border-width: 1px;
+    border-style: dashed;
+}
 /* KARMO template*/
 * {
     outline: 0;
