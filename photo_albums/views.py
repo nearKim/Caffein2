@@ -2,7 +2,7 @@ import json
 
 from django.db import transaction
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView, TemplateView
+from django.views.generic import ListView, CreateView, TemplateView, DetailView
 from django.http import JsonResponse
 
 from photo_albums.forms import PhotoUploadForm
@@ -11,6 +11,28 @@ from photo_albums.models import Album, Photo
 
 class PhotoAlbumMainView(TemplateView):
     template_name = 'photo_albums/photo_album_main.html'
+
+
+class AlbumDetailView(DetailView):
+    model = Album
+
+    def get_queryset(self):
+        queryset = self.model.objects \
+            .prefetch_related('photos') \
+            .select_related('uploader') \
+            .filter(pk=self.kwargs['pk'])
+        return queryset
+
+
+class PhotoDetailView(DetailView):
+    model = Photo
+
+    def get_queryset(self):
+        queryset = self.model.objects \
+            .select_related('uploader') \
+            .select_related('album') \
+            .filter(pk=self.kwargs['pk'])
+        return queryset
 
 
 class AlbumListAjaxView(ListView):
@@ -28,7 +50,7 @@ class AlbumListAjaxView(ListView):
 
 class PhotoListAjaxView(ListView):
     template_name = 'ajax/photo_list.html'
-    context_object_name = 'photos'
+    context_object_name = 'photo_list'
     paginate_by = 20
 
     def get_queryset(self):

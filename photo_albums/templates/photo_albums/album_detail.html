@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+{% block title %}
+    <title>사진첩</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-150">
+        <div id="div-album-header" class="row">
+            <div class="col-sm-6 pull-left">
+                <h5>돌아가기</h5>
+            </div>
+            <div class="col-sm-6  text-right">
+                <h5>사진 추가</h5>
+            </div>
+        </div>
+        <div class="row text-center">
+            <h4 class="lead">{{ album.name }}</h4>
+            <p>{{ album.description }}</p>
+        </div>
+        <div class="row mt-50">
+            {% for photo in album.photos.all %}
+                <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
+                    <div class="col-sm-3" style="padding: 0; margin: 5px;">
+                        <img src="{{ photo.photo.url }}" style="max-width: 200px;" class="img-responsive">
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

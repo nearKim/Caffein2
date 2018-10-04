@@ -1,0 +1,38 @@
+{% extends 'index.html' %}
+{% load imagekit %}
+{% load static %}
+
+{% block title %}
+    <title>사진첩</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-150">
+        <div class="row">
+            <div class="col-sm-8">
+                <img src="{{ photo.photo.url }}" style="width: 100%;">
+            </div>
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-xs-12">
+                        {% if photo.uploader.profile_pic %}
+                            {% thumbnail "50x50" photo.uploader.profile_pic -- class="img-profile" %}
+                        {% else %}
+                            <img src="{% static 'assets/img/default-avatar.png' %}" width="50" height="50"
+                                 class="img-profile">
+                        {% endif %}
+                        <span style="font-size:calc(0.5vw + 15px);">{{ photo.uploader.name }}</span>
+                        &#187;
+                        <a href="{% url 'photo_albums:album-detail' photo.album.pk %}">
+                            <span style="font-size: calc(0.5vw + 15px);"> {{ photo.album.name }}</span>
+                        </a>
+                        <p>{{ photo.created |date:"Y년 m월 d일" }}</p>
+                    </div>
+                    <div class="col-xs-12">
+                        <p>{{ photo.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
