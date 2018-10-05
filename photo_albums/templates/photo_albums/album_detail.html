@@ -91,7 +91,7 @@
                         <h4 class="modal-title">사진 추가하기</h4>
                         <img id="loader" src="{% static 'assets/css/AjaxLoader.gif' %}"
                              style="display:none;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" delete-url="{% url 'photo_albums:photo-delete-batch' %}" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -138,55 +138,9 @@
     <script src="{% static 'core/js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
     <script src="{% static 'core/js/jquery-file-upload/jquery.fileupload.js' %}"></script>
     <script src="{% static 'core/js/ajax-csrf-django.js' %}"></script>
+    <script src="{% static 'photo_albums/js/init.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            // 모달의 버튼을 누르면 파일선택창을 열어준다
-            $(".js-upload-photos").click(function () {
-                $("#input-photo-upload").click();
-            });
-
-            // 파일이 선택되면 AJAX를 사용하여 순차적으로 업로드한다.
-            $("#input-photo-upload").fileupload({
-                dataType: 'html',
-                sequentialUploads: true,
-                start: function (e) {
-                    $('#loader').show()
-                },
-                stop: function (e) {
-                    $('#loader').hide()
-                },
-                done: function (e, data) {
-                    // 업로드된 파일들은 각각 html 컨테이너안에 담겨 전달된다. 모달 내부에 각 html을 append한다.
-                    $('#modal-photo-create-container').append(data.result)
-                }
-            });
-
-            // 모달에서 저장하지 않고 닫았을 경우 업로드된 사진들을 모두 삭제한다.
-            $(".close").click(function () {
-                // 일단 묻는 레비.
-                confirm('정말 닫으시겠습니까? 데이터가 모두 손실됩니다.')
-
-                let pks = []
-                // 업로드된 사진의 PK를 모두 얻는다. 사진들의 pk는 input의 id에 담겨있다.
-                $("input[name*='photo-desc']").each(function () {
-                    pks.push($(this).attr('id'))
-                })
-                // batch delete로 넘겨준다. 하나씩 deleteview를 호출하는 것 보다 효율적이겠지.
-                $.ajax({
-                    url: '{% url 'photo_albums:photo-delete-batch' %}',
-                    method: 'post',
-                    data: {
-                        'dangling-photos-pks': pks
-                    },
-                    success: (data) => {
-                        console.log("success!")
-                        console.log(data)
-                    },
-                    fail: (data) => {
-                        console.log("fail")
-                    }
-                })
-            })
             // 게시 버튼을 누르면 description을 업데이트 해준다.
             $('#btn-update-album').on('click', function () {
                 let photoDescriptions = {}
@@ -212,8 +166,6 @@
                         location.reload()
                     }
                 })
-
-
             })
         })
     </script>
