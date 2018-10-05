@@ -4,7 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, DetailView, DeleteView, UpdateView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 from photo_albums.forms import PhotoUploadForm
 from photo_albums.models import Album, Photo
@@ -29,10 +29,12 @@ class PhotoDetailView(DetailView):
     model = Photo
 
     def get_queryset(self):
+        # 사진의 경우 앨범이 존재할 수도 없을수도 있다.
         queryset = self.model.objects \
-            .select_related('uploader') \
-            .select_related('album') \
-            .filter(pk=self.kwargs['pk'])
+                .select_related('uploader') \
+                .select_related('album') \
+                .select_related('album__uploader') \
+                .filter(pk=self.kwargs['pk'])
         return queryset
 
 
@@ -132,9 +134,14 @@ class AlbumDeleteView(DeleteView):
 class PhotoDeleteView(DeleteView):
     model = Photo
 
-    def get_success_url(self):
-        album = self.object.album
-        return redirect(album.get_absolute_url())
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.album:
+            success_url = self.object.album.get_absolute_url()
+        else:
+            success_url = reverse_lazy('photo_albums:photo-album-main')
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 # Update View
@@ -146,4 +153,8 @@ class AlbumUpdateView(UpdateView):
 
 class PhotoUpdateView(UpdateView):
     model = Photo
-    fields = ('album', 'description', 'photo')
+    fields = ('description', 'photo')
+
+    def get_success_url(self):
+        album = self.get_object().album
+        return reverse_lazy('photo_albums:album-detail', args=(album.pk,))

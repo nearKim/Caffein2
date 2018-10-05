@@ -27,40 +27,47 @@
 
 {% block content %}
     <div class="container mt-150">
-        <div id="div-album-header" class="row">
+        <div id="div-album-header" class="row" style="border-bottom: 1px solid;">
             <div class="col-sm-6 pull-left">
                 <a href="{% url 'photo_albums:photo-album-main' %}">
-                    <h6>돌아가기</h6>
+                    <span class="lnr lnr-chevron-left-circle"></span>
+                    돌아가기
                 </a>
             </div>
             <div class="col-sm-6  text-right">
-                <h6>
-                    {% if request.user == album.uploader or request.user.is_staff %}
-                        <a href="{% url 'photo_albums:album-update' album.pk %}">
-                            앨범 수정 /
-                        </a>
-                        <form method="post" style="display: inline;"
-                              action="{% url 'photo_albums:album-delete' album.pk %}">{% csrf_token %}
-                            {# 더럽지만 시간이 없다... #}
-                            <input type="submit"
-                                   style="border: none;
-                                          display: inline;
-                                          font-family: inherit;
-                                          font-size: inherit;
-                                          padding: 0;
-                                          width: auto;"
-                                   value="앨범 삭제 /">
-                        </form>
-                    {% endif %}
-                    <a id="a-album-photo-add" data-toggle="modal" data-target="#modal-add-album-photo" href="#">
-                        사진 추가
+
+                {% if request.user == album.uploader or request.user.is_staff %}
+                    <a href="{% url 'photo_albums:album-update' album.pk %}">
+                        앨범 수정 /
                     </a>
-                </h6>
+                    <form method="post" style="display: inline;"
+                          action="{% url 'photo_albums:album-delete' album.pk %}">{% csrf_token %}
+                        {# 더럽지만 시간이 없다... #}
+                        <input type="submit"
+                               onclick="return confirm('정말 삭제하시겠습니까?');"
+                               style="border: none;
+                                      color:#777;
+                                      display: inline;
+                                      font-family: inherit;
+                                      font-size: inherit;
+                                      padding: 0;
+                                      cursor:pointer;
+                                      font-weight:400;
+                                      width: auto;"
+                               value="앨범 삭제 /">
+                    </form>
+                {% endif %}
+                <a id="a-album-photo-add" data-toggle="modal" data-target="#modal-add-album-photo" href="#">
+                    <span class="lnr lnr-plus-circle"></span>
+                    사진 추가
+                </a>
             </div>
         </div>
-        <div class="row text-center">
-            <h4 class="lead">{{ album.name }}</h4>
-            <p>{{ album.description }}</p>
+        <div class="row text-center mt-50">
+            <div class="col-sm-12">
+                <h3>{{ album.name }}</h3>
+                <p>{{ album.description }}</p>
+            </div>
         </div>
         <div class="row mt-50">
             {% for photo in album.photos.all %}
@@ -165,8 +172,8 @@
                     data: {
                         'photo-descriptions': JSON.stringify(photoDescriptions)
                     },
-                    {# https://stackoverflow.com/a/21072993 #}
                     {# core/js/ajax-csrf-django.js의 beforesend 에서 csrf token을 처리하므로 해당 메소드를 불러온다. #}
+                    {# https://stackoverflow.com/a/21072993 #}
                     beforeSend: (xhr, settings) => {
                         $.ajaxSettings.beforeSend(xhr, settings);
                         $('#loader').show()

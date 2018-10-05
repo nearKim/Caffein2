@@ -4,7 +4,10 @@
     <div class="row">
         {% for photo in photo_list %}
             <div class="col-sm-3">
-                <img src="{{ photo.thumbnail.url }}" class="img-responsive" style="max-width: 200px;">
+                <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
+                    <img id="{{ photo.pk }}" src="{{ photo.thumbnail.url }}" class="img-responsive"
+                         style="max-width: 200px;">
+                </a>
             </div>
         {% endfor %}
     </div>
