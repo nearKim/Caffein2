@@ -1,8 +1,9 @@
 import json
 
 from django.db import transaction
-from django.shortcuts import render
-from django.views.generic import ListView, CreateView, TemplateView, DetailView, DeleteView
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, TemplateView, DetailView, DeleteView, UpdateView
 from django.http import JsonResponse
 
 from photo_albums.forms import PhotoUploadForm
@@ -125,7 +126,24 @@ def photo_create_ajax_view(request):
 # Delete View
 class AlbumDeleteView(DeleteView):
     model = Album
+    success_url = reverse_lazy('photo_albums:photo-album-main')
 
 
 class PhotoDeleteView(DeleteView):
     model = Photo
+
+    def get_success_url(self):
+        album = self.object.album
+        return redirect(album.get_absolute_url())
+
+
+# Update View
+
+class AlbumUpdateView(UpdateView):
+    model = Album
+    fields = ('name', 'description')
+
+
+class PhotoUpdateView(UpdateView):
+    model = Photo
+    fields = ('album', 'description', 'photo')

@@ -30,13 +30,32 @@
         <div id="div-album-header" class="row">
             <div class="col-sm-6 pull-left">
                 <a href="{% url 'photo_albums:photo-album-main' %}">
-                    <h5>돌아가기</h5>
+                    <h6>돌아가기</h6>
                 </a>
             </div>
             <div class="col-sm-6  text-right">
-                <a id="a-album-photo-add" data-toggle="modal" data-target="#modal-add-album-photo" href="#">
-                    <h5>사진 추가</h5>
-                </a>
+                <h6>
+                    {% if request.user == album.uploader or request.user.is_staff %}
+                        <a href="{% url 'photo_albums:album-update' album.pk %}">
+                            앨범 수정 /
+                        </a>
+                        <form method="post" style="display: inline;"
+                              action="{% url 'photo_albums:album-delete' album.pk %}">{% csrf_token %}
+                            {# 더럽지만 시간이 없다... #}
+                            <input type="submit"
+                                   style="border: none;
+                                          display: inline;
+                                          font-family: inherit;
+                                          font-size: inherit;
+                                          padding: 0;
+                                          width: auto;"
+                                   value="앨범 삭제 /">
+                        </form>
+                    {% endif %}
+                    <a id="a-album-photo-add" data-toggle="modal" data-target="#modal-add-album-photo" href="#">
+                        사진 추가
+                    </a>
+                </h6>
             </div>
         </div>
         <div class="row text-center">

@@ -33,7 +33,7 @@ class Album(TimeStampedMixin):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photo_albums:album_detail', args=(self.id,))
+        return reverse('photo_albums:album-detail', args=(self.id,))
 
 
 class CoffeeMeetingAlbum(Album):
