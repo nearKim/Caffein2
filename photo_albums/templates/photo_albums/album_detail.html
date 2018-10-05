@@ -66,6 +66,7 @@
             {% for photo in album.photos.all %}
                 <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
                     <div class="col-sm-3" style="padding: 0; margin: 5px;">
+                        {# 거의 모든 환경에서 이미지는 200px 초과일 것이다. 더 작은 이미지는 처리하지 않는다. #}
                         <img src="{{ photo.photo.url }}" style="max-width: 200px;" class="img-responsive">
                     </div>
                 </a>
@@ -164,7 +165,10 @@
                     data: {
                         'photo-descriptions': JSON.stringify(photoDescriptions)
                     },
-                    beforeSend: () => {
+                    {# https://stackoverflow.com/a/21072993 #}
+                    {# core/js/ajax-csrf-django.js의 beforesend 에서 csrf token을 처리하므로 해당 메소드를 불러온다. #}
+                    beforeSend: (xhr, settings) => {
+                        $.ajaxSettings.beforeSend(xhr, settings);
                         $('#loader').show()
                     },
                     success: (data) => {
