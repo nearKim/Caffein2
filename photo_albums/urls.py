@@ -12,8 +12,8 @@ from photo_albums.views import (
     PhotoListAjaxView,
     photo_create_ajax_view,
     photo_description_update_ajax_view,
-    album_create_ajax_view
-)
+    album_create_ajax_view,
+    PhotoBatchDeleteView)
 
 app_name = 'photo_albums'
 
@@ -23,6 +23,9 @@ urlpatterns = [
     path('photo/<int:pk>/', PhotoDetailView.as_view(), name='photo-detail'),
     path('album/delete/<int:pk>/', AlbumDeleteView.as_view(), name='album-delete'),
     path('photo/delete/<int:pk>/', PhotoDeleteView.as_view(), name='photo-delete'),
+
+    path('photo/delete/batch/', PhotoBatchDeleteView.as_view(), name='photo-delete-batch'),
+
     path('album/update/<int:pk>/', AlbumUpdateView.as_view(), name='album-update'),
     path('photo/update/<int:pk>/', PhotoUpdateView.as_view(), name='photo-update'),
 

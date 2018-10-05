@@ -31,10 +31,10 @@ class PhotoDetailView(DetailView):
     def get_queryset(self):
         # 사진의 경우 앨범이 존재할 수도 없을수도 있다.
         queryset = self.model.objects \
-                .select_related('uploader') \
-                .select_related('album') \
-                .select_related('album__uploader') \
-                .filter(pk=self.kwargs['pk'])
+            .select_related('uploader') \
+            .select_related('album') \
+            .select_related('album__uploader') \
+            .filter(pk=self.kwargs['pk'])
         return queryset
 
 
@@ -132,16 +132,29 @@ class AlbumDeleteView(DeleteView):
 
 
 class PhotoDeleteView(DeleteView):
+    # 단일 사진 객체를 삭제하는 view
     model = Photo
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.album:
-            success_url = self.object.album.get_absolute_url()
-        else:
-            success_url = reverse_lazy('photo_albums:photo-album-main')
+        success_url = self.object.album.get_absolute_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
+
+class PhotoBatchDeleteView(DeleteView):
+    # 사진업로드 모달을 저장없이 닫았을 때 호출되어 앨범이 지정되지 않은 모든 사진 객체를 삭제한다.
+    model = Photo
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            delete_targets_pks = request.POST.getlist('dangling-photos-pks[]')
+            Photo.objects.filter(id__in=delete_targets_pks).all().delete()
+            return JsonResponse({'success': True})
+        except:
+            response = JsonResponse({'success': False})
+            response.status_code = 500
+            return response
 
 
 # Update View
