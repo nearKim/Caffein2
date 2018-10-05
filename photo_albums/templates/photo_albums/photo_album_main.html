@@ -179,12 +179,8 @@
             // 게시 버튼을 클릭하면 앨범 create form으로 모든 데이터를 함께 보낸다.
             $('#btn-create-album').on('click', function(){
                 let photo_descriptions = {}
-                {#let description = []#}
-                {#let id = []#}
                 $('input[name*="photo-desc"]').each(function () {
                     photo_descriptions[$(this).attr('id')] = $(this).val()
-                    {#description.push($(this).val())#}
-                    {#id.push($(this).attr('id'))#}
                 })
                 $.ajax({
                     url: $('#form-create-album').attr('action'),

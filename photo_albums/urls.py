@@ -11,5 +11,6 @@ urlpatterns = [
     path('ajax/albums/', AlbumListAjaxView.as_view(), name='albums-list'),
     path('ajax/photos/', PhotoListAjaxView.as_view(), name='photos-list'),
     path('ajax/photo/create/', photo_create_ajax_view, name='photo-create'),
-    path('ajax/album/create/', album_create_ajax_view, name='album-create')
+    path('ajax/photo/desc-update/', photo_description_update_ajax_view, name='photo-desc-update'),
+    path('ajax/album/create/', album_create_ajax_view, name='album-create'),
 ]
