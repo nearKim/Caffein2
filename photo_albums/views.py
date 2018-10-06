@@ -41,7 +41,7 @@ class PhotoDetailView(DetailView):
 class AlbumListAjaxView(ListView):
     template_name = 'ajax/album_list.html'
     context_object_name = 'album_list'
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         queryset = Album.objects \
