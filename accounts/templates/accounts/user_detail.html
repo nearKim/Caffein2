@@ -3,52 +3,51 @@
 {% load imagekit %}
 
 {% block content %}
-<section class="contact text-center">
-    <h1>회원 프로필</h1>
-    <div class="libre-text-lg container">
-        <div class="row col-sm-6">
+    <section class="contact text-center">
+        <h1>회원 프로필</h1>
+        <div class="libre-text-lg container">
+            <div class="row col-sm-6">
 
-            <p class="libre-text-lg mb-50">
-                사진
-                {% if user.profile_pic %}
-                {% thumbnail "300x300" user.profile_pic -- class="img-profile"%}
-                {% else %}
-                <small>이 없네요.</small>
-                {% endif %}
-            </p>
-            <p class="libre-text-lg mb-50">
-                이름: <b>{{ user.name }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                이메일: <b>{{ user.email }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                핸드폰: <b>{{ user.phone }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                학번: <b>{{ user.student_no }}</b>
-            </p>
+                <p class="libre-text-lg mb-50">
+                    {% if user.profile_pic %}
+                        {% thumbnail "300x300" user.profile_pic -- class="img-profile" %}
+                    {% else %}
+                        <small>사진이 없네요.</small>
+                    {% endif %}
+                </p>
+                <p class="libre-text-lg mb-50">
+                    이름: <b>{{ user.name }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    이메일: <b>{{ user.email }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    핸드폰: <b>{{ user.phone }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    학번: <b>{{ user.student_no }}</b>
+                </p>
+            </div>
+            <div class="row col-sm-6">
+                <br>
+                <p class="libre-text-lg mb-50">
+                    단과대: <b>{{ user.get_college_display }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    학과: <b>{{ user.get_department_display }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    분류: <b>{{ user.get_category_display }}</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    가입년도: <b>{{ user.join_year }}년</b>
+                </p>
+                <p class="libre-text-lg mb-50">
+                    가입학기: <b>{{ user.get_join_semester_display|safe }}</b>
+                </p>
+            </div>
         </div>
-        <div class="row col-sm-6">
-            <br>
-            <p class="libre-text-lg mb-50">
-                단과대: <b>{{ user.get_college_display }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                학과: <b>{{ user.get_department_display }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                분류: <b>{{ user.get_category_display }}</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                가입년도: <b>{{ user.join_year}}년</b>
-            </p>
-            <p class="libre-text-lg mb-50">
-                가입학기: <b>{{ user.get_join_semester_display|safe }}</b>
-            </p>
-        </div>
-    </div>
-    <a href="{% url 'accounts:update' user.id %}" class="btn btn-default">정보 수정</a>
-    <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
-</section>
+        <a href="{% url 'accounts:update' user.id %}" class="btn btn-default">정보 수정</a>
+        <a href="{% url 'core:index' %}" class="btn btn-default">홈으로</a>
+    </section>
 {% endblock content %}
