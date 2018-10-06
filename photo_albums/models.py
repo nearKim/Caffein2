@@ -36,14 +36,6 @@ class Album(TimeStampedMixin):
         return reverse('photo_albums:album-detail', args=(self.id,))
 
 
-class CoffeeMeetingAlbum(Album):
-    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, related_name='album')
-
-    class Meta:
-        verbose_name_plural = '커모 앨범'
-        verbose_name = '커모 앨범'
-
-
 class Photo(TimeStampedMixin):
     album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True, related_name='photos')
     description = models.CharField(max_length=100, blank=True)
@@ -60,6 +52,15 @@ class Photo(TimeStampedMixin):
         ordering = ['-created']
         verbose_name = '사진'
         verbose_name_plural = '사진'
+
+
+# TODO: implement these
+class CoffeeMeetingAlbum(Album):
+    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, related_name='album')
+
+    class Meta:
+        verbose_name_plural = '커모 앨범'
+        verbose_name = '커모 앨범'
 
 
 class PhotoComment(Postable):
