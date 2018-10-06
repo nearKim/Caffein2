@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load imagekit %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <title> 사진 수정 </title>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-150">
+        <form method="post" enctype="multipart/form-data" action="{% url 'photo_albums:photo-update' photo.pk %}">{% csrf_token %}
+            {{ form | crispy }}
+            <input type="submit" class="btn btn-info btn-block" value="수정하기">
+        </form>
+    </div>
+{% endblock %}

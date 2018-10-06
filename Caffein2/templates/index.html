@@ -101,7 +101,7 @@
                                                                                        style="color:white;"></i></li>
                     <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier"
                                                                                  style="color:white;"></i></li>
-                    <li><a href="{% url 'photo_albums:album_list' %}">사진첩</a><i class="lnr lnr-camera"
+                    <li><a href="{% url 'photo_albums:photo-album-main' %}">사진첩</a><i class="lnr lnr-camera"
                                                                                 style="color:white;"></i></li>
                 {% endif %}
                 {% if request.user.is_authenticated %}

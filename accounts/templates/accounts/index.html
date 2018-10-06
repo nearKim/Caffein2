@@ -513,9 +513,10 @@
                 <ul class="slides">
                     {% for photo in latest_photos %}
                         <li>
-                            <a href="{% url 'photo_albums:photo_detail' photo.pk %}">
+                        {# FIXME: refactor here #}
+{#                            <a href="{% url 'photo_albums:photo_detail' photo.pk %}">#}
                                 <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
-                            </a>
+{#                            </a>#}
                         </li>
                     {% endfor %}
                 </ul>
