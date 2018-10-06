@@ -512,11 +512,13 @@
                 {% endif %}
                 <ul class="slides">
                     {% for photo in latest_photos %}
+                        {% if photo %}
                         <li>
                             <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
                                 <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
                             </a>
                         </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>
