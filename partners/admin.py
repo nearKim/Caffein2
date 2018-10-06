@@ -5,16 +5,13 @@ from django.urls import path
 
 from accounts.models import ActiveUser
 from comments.models import Comment
+from core.admin import FeedPhotoInline
 from core.mixins import StaffRequiredAdminMixin
 from core.models import FeedPhoto, OperationScheme
 from .models import (
     Partner,
     PartnerMeeting
 )
-
-
-class FeedPhotoInline(StaffRequiredAdminMixin, TabularInline):
-    model = FeedPhoto
 
 
 class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
@@ -26,7 +23,8 @@ class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
 @admin.register(Partner)
 class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('partner_year', 'partner_semester')
-    search_fields = ('up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name', 'down_partner_3__user__name')
+    search_fields = (
+    'up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name', 'down_partner_3__user__name')
     ordering = ('-partner_year', '-partner_semester')
 
 

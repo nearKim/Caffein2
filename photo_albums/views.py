@@ -91,6 +91,7 @@ def album_create_ajax_view(request):
             return response
         return JsonResponse({'success': True})
 
+
 @login_required
 def photo_description_update_ajax_view(request):
     # 앨범 detail에서 사진추가를 했을 때 게시버튼을 누르면 호출되는 뷰.
@@ -107,6 +108,7 @@ def photo_description_update_ajax_view(request):
             response.status_code = 500
             return response
         return JsonResponse({'success': True})
+
 
 @login_required
 def photo_create_ajax_view(request):

@@ -29,17 +29,25 @@ from .models import (
 from core.models import Meeting, MeetingPhoto, OperationScheme
 
 
+# TODO: 정리하기
 # 모든 모임을 한 화면에 보여주는 ListView
 class EveryMeetingListView(LoginRequiredMixin, ListView):
-    model = OfficialMeeting
     template_name = 'meetings/meeting_list.html'
-    ordering = ['-created']
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(EveryMeetingListView, self).get_context_data(**kwargs)
-        context['coffee_education_list'] = CoffeeEducation.objects.order_by('-created')
-        context['coffee_meeting_list'] = CoffeeMeeting.objects.order_by('-created')
+        context['coffee_education_list'] = CoffeeEducation.objects \
+            .select_related('author') \
+            .all() \
+            .order_by('-created')
         return context
+
+    def get_queryset(self):
+        queryset = OfficialMeeting.objects \
+            .select_related('author') \
+            .all() \
+            .order_by('-created')
+        return queryset
 
 
 # CRUD for OfficialMeeting
