@@ -63,7 +63,12 @@ def rotate_and_resize(image):
 
 
 class Instagram(Postable):
-    pass
+    class Meta:
+        verbose_name = _('인스타그램')
+        verbose_name_plural = _('인스타그램')
+
+
+
 
 
 class Meeting(Postable):
