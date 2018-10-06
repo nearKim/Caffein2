@@ -4,11 +4,10 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from pilkit.processors import ResizeToFill
 
-from core.mixins import TimeStampedMixin
+from core.mixins import TimeStampedMixin, Postable
 from django.conf import settings
 
 from imagekit.models import ImageSpecField
-from imagekit.processors import Thumbnail
 
 
 def get_album_photo_path(instance, filename):
@@ -24,31 +23,26 @@ class Album(TimeStampedMixin):
     uploader = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  on_delete=models.CASCADE,
                                  null=True,
-                                 related_name='album_uploader')
+                                 related_name='albums')
 
-    class Mete:
-        ordering = ['name']
+    class Meta:
+        verbose_name = '사진첩'
+        verbose_name_plural = '사진첩'
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photo_albums:album_detail', args=(self.id,))
+        return reverse('photo_albums:album-detail', args=(self.id,))
 
 
 class Photo(TimeStampedMixin):
-    album = models.ForeignKey(Album,
-                              on_delete=models.CASCADE,
-                              null=True)
-    uploader = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.CASCADE,
-                                 null=True,
-                                 related_name='photo_uploader')
-
-    file = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
-
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True, related_name='photos')
+    description = models.CharField(max_length=100, blank=True)
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    photo = models.ImageField(_('이미지'), upload_to=get_album_photo_path)
     thumbnail = ImageSpecField(
-        source='file',
+        source='photo',
         processors=[ResizeToFill(300, 300)],
         format='JPEG',
         options={'quality': 60}
@@ -56,13 +50,22 @@ class Photo(TimeStampedMixin):
 
     class Meta:
         ordering = ['-created']
-        verbose_name = 'photo'
-        verbose_name_plural = 'photos'
-
-    def __str__(self):
-        return self.file.name
-
-    def get_absolute_url(self):
-        return reverse('photo_albums:photo_detail', args=(self.id,))
+        verbose_name = '사진'
+        verbose_name_plural = '사진'
 
 
+# TODO: implement these
+class CoffeeMeetingAlbum(Album):
+    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, related_name='album')
+
+    class Meta:
+        verbose_name_plural = '커모 앨범'
+        verbose_name = '커모 앨범'
+
+
+class PhotoComment(Postable):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
+
+    class Meta:
+        verbose_name = '사진 댓글'
+        verbose_name_plural = '사진 댓글'

@@ -30,7 +30,7 @@ urlpatterns = [
     path('cafes/', include('cafes.urls', namespace='cafes')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('partners/', include('partners.urls', namespace='partners')),
-    path('photo_albums/', include('photo_albums.urls', namespace='photo_albums')),
+    path('photo-albums/', include('photo_albums.urls', namespace='photo_albums')),
     path('surveys/', include('surveys.urls', namespace='surveys')),
     path('meetings/', include('meetings.urls', namespace='meetings')),
 ]
