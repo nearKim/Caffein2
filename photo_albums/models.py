@@ -54,15 +54,7 @@ class Photo(TimeStampedMixin):
         verbose_name_plural = '사진'
 
 
-# TODO: implement these
-class CoffeeMeetingAlbum(Album):
-    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, related_name='album')
-
-    class Meta:
-        verbose_name_plural = '커모 앨범'
-        verbose_name = '커모 앨범'
-
-
+# TODO: implement here
 class PhotoComment(Postable):
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
 
