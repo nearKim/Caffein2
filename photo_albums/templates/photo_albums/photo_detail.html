@@ -44,20 +44,20 @@
             <div class="col-sm-4 px-5">
                 <div class="row">
                     <div class="col-8">
-                        {% if photo.uploader.profile_pic %}
-                            {% thumbnail "50x50" photo.uploader.profile_pic -- class="img-profile" %}
+                        {% if photo.author.profile_pic %}
+                            {% thumbnail "50x50" photo.author.profile_pic -- class="img-profile" %}
                         {% else %}
                             <img src="{% static 'assets/img/default-avatar.png' %}" width="50" height="50"
                                  class="img-profile">
                         {% endif %}
-                        <span style="font-size:calc(0.5vw + 15px);">{{ photo.uploader.name }}</span>
+                        <span style="font-size:calc(0.5vw + 15px);">{{ photo.author.name }}</span>
                         &#187;
                         <a href="{% url 'photo_albums:album-detail' photo.album.pk %}">
                             <span style="font-size: calc(0.5vw + 15px);"> {{ photo.album.name }}</span>
                         </a>
                     </div>
                     <div class="col-4 text-center">
-                        {% if photo.uploader == request.user or request.user.is_staff or album.uploader == request.user %}
+                        {% if photo.author == request.user or request.user.is_staff or album.author == request.user %}
                             <form method="post" action="{% url 'photo_albums:photo-delete' photo.pk %}">{% csrf_token %}
                                 <span class="lnr lnr-cross" style="font-size: 15px;"></span>
                                 {# 역시 더럽지만 시간이 없다.... #}

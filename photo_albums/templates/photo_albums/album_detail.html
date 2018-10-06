@@ -36,7 +36,7 @@
             </div>
             <div class="col-sm-6  text-right">
 
-                {% if request.user == album.uploader or request.user.is_staff %}
+                {% if request.user == album.author or request.user.is_staff %}
                     <a href="{% url 'photo_albums:album-update' album.pk %}">
                         앨범 수정 /
                     </a>
