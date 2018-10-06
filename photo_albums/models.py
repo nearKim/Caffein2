@@ -54,7 +54,7 @@ class Photo(TimeStampedMixin):
         verbose_name_plural = '사진'
 
 
-# TODO: implement here
+# TODO: implement below
 class PhotoComment(Postable):
     photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name='comments')
 
