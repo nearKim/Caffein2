@@ -144,3 +144,14 @@ class PartnerMeeting(Instagram):
             coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
             self.partner.raise_score(coffee_score * self.num_coffee + eat_score * self.num_eat)
         super().save()
+
+
+class CoffeeMeetingFeed(Instagram):
+    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, verbose_name='커모')
+
+    class Meta:
+        verbose_name = '커모 후기'
+        verbose_name_plural = '커모 후기'
+
+    def __str__(self):
+        return self.coffee_meeting.__str__()

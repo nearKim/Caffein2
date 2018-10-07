@@ -206,6 +206,11 @@ theme.
     display: block;
 }
 
+.should-overlay {
+    opacity: 0.5;
+    cursor: pointer;
+    pointer-events: none;
+}
 /* Instagram-like comments */
 #textfield-comment {
     display: flex;
