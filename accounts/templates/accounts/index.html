@@ -319,63 +319,65 @@
                                 {% elif official|to_class_name == 'CoffeeEducation' %}
                                     {# 커피교육은 프로필사진을 오른쪽에 넣어준다. #}
                                     {% if not request.user_agent.is_mobile %}
-                                    <div class="row">
-                                        <div class="col-xs-6 col-xs-offset-3">
-                                            <a href="{% url 'meetings:education-detail' official.pk %}">
-                                                <div class="speech-bubble-inverse"
-                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
-                                                    <h4>{{ official.title }}</h4>
-                                                    <h5>{{ official.get_category_display }} </h5>
-                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-xs-offset-3">
+                                                <a href="{% url 'meetings:education-detail' official.pk %}">
+                                                    <div class="speech-bubble-inverse"
+                                                         style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                        <h4>{{ official.title }}</h4>
+                                                        <h5>{{ official.get_category_display }} </h5>
+                                                        <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row center-block " style="padding:10px;">
+                                                    {% if official.author.profile_pic %}
+                                                        {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' class='img-profile' %}
+                                                    {% else %}
+                                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                             class="img-profile img-default-up"
+                                                             style="max-width: 100%;">
+                                                    {% endif %}
                                                 </div>
-                                            </a>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <div class="row center-block " style="padding:10px;">
-                                                {% if official.author.profile_pic %}
-                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%;' class='img-profile' %}
-                                                {% else %}
-                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                         class="img-profile img-default-up" style="max-width: 100%;">
-                                                {% endif %}
-                                            </div>
-                                            <div class="row center-block">
-                                                <h4>{{ official.author.name }}
-                                                    <span class="lnr lnr-diamond"></span>
-                                                </h4>
+                                                <div class="row center-block">
+                                                    <h4>{{ official.author.name }}
+                                                        <span class="lnr lnr-diamond"></span>
+                                                    </h4>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {% else %}
+                                    {% else %}
                                         <div class="row" style="margin-bottom: 10px;">
-                                        <div class="col-xs-8">
-                                            <a href="{% url 'meetings:education-detail' official.pk %}">
-                                                <div class="speech-bubble-inverse"
-                                                     style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
-                                                    <h4>{{ official.title }}</h4>
-                                                    <h5>{{ official.get_category_display }} </h5>
-                                                    <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                            <div class="col-xs-8">
+                                                <a href="{% url 'meetings:education-detail' official.pk %}">
+                                                    <div class="speech-bubble-inverse"
+                                                         style="max-width: 90%; padding: 5px; margin-bottom: 5px;">
+                                                        <h4>{{ official.title }}</h4>
+                                                        <h5>{{ official.get_category_display }} </h5>
+                                                        <h5> {{ official.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="row center-block">
+                                                    {% if official.author.profile_pic %}
+                                                        {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%; height="50px"' class='img-profile' %}
+                                                    {% else %}
+                                                        <img src="{% static 'assets/img/default-avatar.png' %}"
+                                                             class="img-profile img-default-up"
+                                                             style="max-width: 100%;">
+                                                    {% endif %}
                                                 </div>
-                                            </a>
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <div class="row center-block">
-                                                {% if official.author.profile_pic %}
-                                                    {% thumbnail "100x100" official.author.profile_pic -- style='max-width:100%; height="50px"' class='img-profile' %}
-                                                {% else %}
-                                                    <img src="{% static 'assets/img/default-avatar.png' %}"
-                                                         class="img-profile img-default-up" style="max-width: 100%;">
-                                                {% endif %}
-                                            </div>
-                                            <div class="row center-block">
-                                                <h4>{{ official.author.name }}
-                                                    <span class="lnr lnr-diamond"></span>
-                                                </h4>
+                                                <div class="row center-block">
+                                                    <h4>{{ official.author.name }}
+                                                        <span class="lnr lnr-diamond"></span>
+                                                    </h4>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                        {% endif %}
                                     {% endif %}
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -411,24 +413,24 @@
             </div>
             <div class="row">
                 {% for coffeemeeting in coffee_meetings %}
-                    <a href="{% url 'meetings:coffee-meeting-detail' coffeemeeting.pk %}">
-                        <div class="col-sm-3">
-                            <div class="card
+                    <div class="col-sm-3">
+                        <div class="card
                                         {% if coffeemeeting.is_past_due %} should-overlay {% endif %}"
-                                 style="margin: 20px; max-height: 100%;">
-                                <div class="row">
-                                    <div class="col-sm-12"
-                                         style="margin: 10px; font-size: calc(0.3vw + 14px); ">
-                                        {% if coffeemeeting.author.profile_pic %}
-                                            {% thumbnail "30x30" coffeemeeting.author.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
-                                                 height="30"
-                                                 class="img-profile">
-                                        {% endif %}
-                                        {{ coffeemeeting.author.name }}
-                                    </div>
+                             style="margin: 20px; max-height: 100%;">
+                            <div class="row">
+                                <div class="col-sm-12"
+                                     style="margin: 10px; font-size: calc(0.3vw + 14px); ">
+                                    {% if coffeemeeting.author.profile_pic %}
+                                        {% thumbnail "30x30" coffeemeeting.author.profile_pic -- class="img-profile" %}
+                                    {% else %}
+                                        <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                             height="30"
+                                             class="img-profile">
+                                    {% endif %}
+                                    {{ coffeemeeting.author.name }}
                                 </div>
+                            </div>
+                            <a href="{% url 'meetings:coffee-meeting-detail' coffeemeeting.pk %}">
                                 {% if coffeemeeting.photos.exists %}
                                     <img src="{{ coffeemeeting.photos.all.0.image.url }}" style="width: 100%;">
                                 {% elif coffeemeeting.cafe.photos.exists %}
@@ -436,18 +438,28 @@
                                 {% else %}
                                     <img src="{% static 'assets/img/default-cafe.jpg' %}" style="width: 100%;">
                                 {% endif %}
-                                <div class="row" style="padding:10px;">
-                                    <h5 class="cafe-name"
-                                        style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.cafe.name }}</h5>
-                                    <hr>
-                                    <p style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.meeting_date | date:"m월 d일 A h시 i분" }}</p>
+                            </a>
+                            <div class="row" style="padding:10px;">
+                                <h5 class="cafe-name"
+                                    style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.cafe.name }}</h5>
+                                <hr>
+                                <p style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.meeting_date | date:"m월 d일 A h시 i분" }}</p>
+                                {% if coffeemeeting.is_past_due %}
+                                    <hr style="margin-bottom: 0;">
+                                    <a href="{% url 'partners:coffeemeeting-feed-create' coffeemeeting.pk %}">
+                                        <button class="btn-primary btn-lg"
+                                                style="margin:0; cursor: pointer; pointer-events:auto; opacity: 1;">후기
+                                            남기기!
+                                        </button>
+                                    </a>
+                                {% else %}
                                     <hr>
                                     <h5 style="font-size:calc(0.3vw + 14px); ">현재 {{ coffeemeeting.participants.count }}
                                         / {{ coffeemeeting.max_participants }}</h5>
-                                </div>
+                                {% endif %}
                             </div>
                         </div>
-                    </a>
+                    </div>
                 {% endfor %}
             </div>
         </div>
@@ -513,11 +525,11 @@
                 <ul class="slides">
                     {% for photo in latest_photos %}
                         {% if photo %}
-                        <li>
-                            <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
-                                <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
-                            </a>
-                        </li>
+                            <li>
+                                <a href="{% url 'photo_albums:photo-detail' photo.pk %}">
+                                    <img src="{{ photo.thumbnail.url }}" style="height: 250px;">
+                                </a>
+                            </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -528,17 +540,11 @@
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(() => {
-            {# 종료된 커모의 경우 className에 should-overlay를 삽입한다.#}
-            $(".should-overlay").css({'background-color': 'background-color: rgba(230, 230, 230, 1)', 'opacity': '0.5'})
-            {# a href를 없애고 포인터 이벤트도 없애준다. #}
-            $(".should-overlay").find('a').removeAttr("href").css("cursor", "pointer").css("pointer-events", "none")
+            {# a href를 없앤다. #}
+            $(".should-overlay").find('a').first().removeAttr("href")
             {# Title은 약간 진하게 표시되어 있으므로 title을 변경하여 종료를 나타낸다.  #}
             $(".should-overlay").find('.cafe-name').text('종료된 커모입니다')
 
-            $('.div-coffee-meeting').on('click', function () {
-                let meetingURL = $(this).attr('meeting-detail')
-                location.href = meetingURL
-            })
             $('.photos').on('click', function () {
                 let redirectURL = $(this).attr('redirect-url')
                 location.href = redirectURL

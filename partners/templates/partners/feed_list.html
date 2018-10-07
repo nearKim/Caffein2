@@ -9,6 +9,16 @@
 
 {% block content %}
     <div class="card-box" style="padding-top:150px; background-color: #fafafa;">
+        {% if messages %}
+            <ul class="messages text-center">
+                {% for message in messages %}
+                    <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% for feed in object_list %}
             <div class="card center-block">
                 <div class="container-fluid">
@@ -63,6 +73,7 @@
                                 <p class="lead">{{ feed.coffeemeetingfeed }}</p>
                             </div>
                         </div>
+                        <hr style="margin:0;">
                     {% endif %}
                     <div class="row" style="padding:16px;">
                         <section style="font-size: calc(0.5vw + 10px);">

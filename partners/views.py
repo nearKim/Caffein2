@@ -95,6 +95,15 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
 
 
 class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, CreateView):
+    def dispatch(self, request, *args, **kwargs):
+        coffee_meeting_pk = self.kwargs['pk']
+        print(coffee_meeting_pk)
+        if CoffeeMeeting.objects.filter(pk=coffee_meeting_pk).exists():
+            messages.warning(request, '이미 선택하신 커모의 후기가 작성되어 있습니다. 여기서 확인해주세요!')
+            from django.http import HttpResponseRedirect
+            return HttpResponseRedirect(reverse('partners:meeting-list'))
+        return super().dispatch(request, *args, **kwargs)
+
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs['coffee_meeting'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk'])
