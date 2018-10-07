@@ -11,54 +11,44 @@ from django.views.generic.edit import (
 
 from comments.forms import CommentForm
 from core.mixins import FaceBookPostMixin, ValidAuthorRequiredMixin
-from core.models import FeedPhoto, OperationScheme
-from partners.forms import PartnerMeetingForm
-from partners.models import PartnerMeeting
+from core.models import FeedPhoto, OperationScheme, Instagram
+from meetings.models import CoffeeMeeting
+from partners.forms import PartnerMeetingForm, CoffeeMeetingFeedForm
+from partners.mixins import PartnerMeetingUpdateCreateMixin, CoffeeMeetingFeedUpdateCreateMixin
+from partners.models import PartnerMeeting, CoffeeMeetingFeed
 from .models import (
     PartnerMeeting,
     Partner
 )
 
 
-class PartnerMeetingListView(LoginRequiredMixin, FormMixin, ListView):
+class FeedListView(LoginRequiredMixin, FormMixin, ListView):
     # TODO: Add infinite scroll feature
-    model = PartnerMeeting
     form_class = CommentForm
+    template_name = 'partners/feed_list.html'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(PartnerMeetingListView, self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(FeedListView, self).get_context_data(**kwargs)
         context['comment_form'] = self.get_form()
         return context
 
     def get_queryset(self):
         latest_os = OperationScheme.latest()
-        # 현재학기 이후로 생성된 짝모만 반환한다.
-        return PartnerMeeting.objects \
-            .select_related('author') \
-            .select_related('partner') \
+        # 짝모와 커모 후기를 같이 보여준다.
+        queryset = Instagram.objects \
             .prefetch_related('photos') \
-            .prefetch_related('comments__author')\
+            .select_related('author') \
+            .select_related('partnermeeting__partner') \
+            .select_related('coffeemeetingfeed') \
+            .prefetch_related('comments__author') \
             .filter(created__gte=latest_os.semester_start) \
             .order_by('-created', '-modified')
+        return queryset
 
 
 class PartnerMeetingDeleteView(ValidAuthorRequiredMixin, DeleteView):
     model = PartnerMeeting
     success_url = reverse_lazy('partners:meeting-list')
-
-
-class PartnerMeetingUpdateCreateMixin:
-    model = PartnerMeeting
-    form_class = PartnerMeetingForm
-    success_url = reverse_lazy('partners:meeting-list')
-
-    class Meta:
-        abstract = True
-
-    def get_form_kwargs(self):
-        form_kwargs = super(PartnerMeetingUpdateCreateMixin, self).get_form_kwargs()
-        form_kwargs['request'] = self.request
-        return form_kwargs
 
 
 class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCreateMixin, UpdateView):
@@ -102,6 +92,42 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
                 feed_photo.save()
 
         return super(PartnerMeetingCreateView, self).form_valid(form)
+
+
+class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, CreateView):
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['coffee_meeting'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk'])
+        return form_kwargs
+
+    def form_valid(self, form):
+        instance = form.save()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                feed_photo = FeedPhoto(instagram=instance, image=f)
+                feed_photo.save()
+        return super().form_valid(form)
+
+
+class CoffeeMeetingFeedUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, UpdateView):
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['coffee_meeting'] = self.get_object().coffee_meeting
+        return form_kwargs
+
+    def form_valid(self, form):
+        instance = form.save()
+        FeedPhoto.objects.filter(instagram=instance).delete()
+        if self.request.FILES:
+            for f in self.request.FILES.getlist('images'):
+                feed_photo = FeedPhoto(instagram=instance, image=f)
+                feed_photo.save()
+        return super().form_valid(form)
+
+
+class CoffeeMeetingFeedDeleteView(ValidAuthorRequiredMixin, DeleteView):
+    model = CoffeeMeetingFeed
+    success_url = reverse_lazy('partners:meeting-list')
 
 
 # Deprecated

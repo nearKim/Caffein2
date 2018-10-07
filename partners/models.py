@@ -147,7 +147,7 @@ class PartnerMeeting(Instagram):
 
 
 class CoffeeMeetingFeed(Instagram):
-    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE)
+    coffee_meeting = models.OneToOneField('meetings.CoffeeMeeting', on_delete=models.CASCADE, verbose_name='커모')
 
     class Meta:
         verbose_name = '커모 후기'
