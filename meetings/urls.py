@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    EveryMeetingListView,
+    OfficialAndEducationListView,
     OfficialMeetingCreateView,
     OfficialMeetingUpdateView,
     OfficialMeetingDeleteView,
@@ -27,7 +27,7 @@ from .views import (
 app_name = 'meetings'
 
 urlpatterns = [
-    path('', EveryMeetingListView.as_view(), name='meetings-list'),
+    path('', OfficialAndEducationListView.as_view(), name='meetings-list'),
     path('official/create/', OfficialMeetingCreateView.as_view(), name='official-create'),
     path('official/update/<int:pk>/', OfficialMeetingUpdateView.as_view(), name='official-update'),
     path('official/delete/<int:pk>/', OfficialMeetingDeleteView.as_view(), name='official-delete'),

@@ -30,12 +30,12 @@ from core.models import Meeting, MeetingPhoto, OperationScheme
 
 
 # TODO: 정리하기
-# 모든 모임을 한 화면에 보여주는 ListView
-class EveryMeetingListView(LoginRequiredMixin, ListView):
+# 공식 모임과 커피교육을 한 화면에 보여주는 ListView
+class OfficialAndEducationListView(LoginRequiredMixin, ListView):
     template_name = 'meetings/meeting_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(EveryMeetingListView, self).get_context_data(**kwargs)
+        context = super(OfficialAndEducationListView, self).get_context_data(**kwargs)
         context['coffee_education_list'] = CoffeeEducation.objects \
             .select_related('author') \
             .all() \

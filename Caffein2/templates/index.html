@@ -95,6 +95,8 @@
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'accounts:detail' user.id %}">나의 프로필</a><i class="lnr lnr-user"
                                                                                    style="color:white;"></i></li>
+                    <li><a href="{% url 'meetings:meetings-list' %}">공지사항</a><i class="lnr lnr-pushpin"
+                                                                                   style="color:white;"></i></li>
                     <li><a href="{% url 'partners:meeting-list' %}">짝모 보기</a><i class="lnr lnr-bubble"
                                                                                 style="color:white;"></i></li>
                     <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup"
