@@ -10,7 +10,8 @@ from core.mixins import StaffRequiredAdminMixin
 from core.models import FeedPhoto, OperationScheme
 from .models import (
     Partner,
-    PartnerMeeting
+    PartnerMeeting,
+    CoffeeMeetingFeed
 )
 
 
@@ -24,10 +25,16 @@ class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
 class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('partner_year', 'partner_semester')
     search_fields = (
-    'up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name', 'down_partner_3__user__name')
+        'up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name',
+        'down_partner_3__user__name')
     ordering = ('-partner_year', '-partner_semester')
 
 
 @admin.register(PartnerMeeting)
 class PartnerMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
+    inlines = (FeedPhotoInline, FeedCommentInline)
+
+
+@admin.register(CoffeeMeetingFeed)
+class CoffeeMeetingFeedAdmin(StaffRequiredAdminMixin, ModelAdmin):
     inlines = (FeedPhotoInline, FeedCommentInline)

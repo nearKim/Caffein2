@@ -68,9 +68,6 @@ class Instagram(Postable):
         verbose_name_plural = _('인스타그램')
 
 
-
-
-
 class Meeting(Postable):
     title = models.CharField(_('제목'), max_length=50, blank=True)
     meeting_date = models.DateTimeField(_('날짜 및 시간'), validators=[meeting_date_validator, ])

@@ -78,4 +78,4 @@ class CoffeeMeeting(Meeting):
         return reverse('meetings:coffee-meeting-detail', args=[self.pk])
 
     def __str__(self):
-        return "{}({})".format(self.cafe.name, self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"))
+        return "{} {} 커모".format(self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"), self.cafe.name)
