@@ -255,7 +255,7 @@
                     <div class="official-container">
                         {% for official in official_meetings %}
                             {% if not official.is_past_due %}
-                                {% if official|to_class_name == 'OfficialMeeting' %}
+                                {% if official.officialmeeting %}
                                     {% if not request.user_agent.is_mobile %}
                                         {# 공식모임은 프로필사진을 왼쪽에 넣어준다  #}
                                         <div class="row">
@@ -316,7 +316,7 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                {% elif official|to_class_name == 'CoffeeEducation' %}
+                                {% elif official.coffeeeducation %}
                                     {# 커피교육은 프로필사진을 오른쪽에 넣어준다. #}
                                     {% if not request.user_agent.is_mobile %}
                                         <div class="row">

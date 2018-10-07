@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
 
-from core.models import FeedPhoto, MeetingPhoto, OperationScheme
+from core.models import FeedPhoto, MeetingPhoto, OperationScheme, Meeting
 from meetings.models import CoffeeMeeting, OfficialMeeting, CoffeeEducation
 from partners.models import Partner, PartnerMeeting
 from partners.views import PartnerDetailView
@@ -13,22 +13,14 @@ def entrypoint(request):
     if request.user.is_authenticated:
         # 사용자가 로그인상태인 경우
         if request.method == 'GET':
-            # 공식모임과 커피교육 객체를 3개씩 가지고 와서 하나로 합친다
-            # https://stackoverflow.com/a/11635996
-            official_meetings = OfficialMeeting.objects \
-                                    .select_related('author') \
-                                    .prefetch_related('photos') \
-                                    .prefetch_related('participants') \
-                                    .all() \
-                                    .order_by('-created')[:3]
-            coffee_educations = CoffeeEducation.objects \
-                                    .select_related('author') \
-                                    .prefetch_related('photos') \
-                                    .prefetch_related('participants') \
-                                    .all() \
-                                    .order_by('-created')[:3]
-            latest_meetings = list(official_meetings) + list(coffee_educations)
-            latest_sorted = sorted(latest_meetings, key=lambda x: x.created, reverse=True)[:3]
+            # Meeting 객체들을 모두 불러와서 그 중 커모에 해당하는 객체는 빼준다.
+            every_coffee_meetings = CoffeeMeeting.objects.all().values('meeting_ptr')
+            official_and_educations = Meeting.objects \
+                                          .select_related('author') \
+                                          .select_related('officialmeeting') \
+                                          .select_related('coffeeeducation') \
+                                          .exclude(id__in=every_coffee_meetings) \
+                                          .order_by('-created')[:3]
 
             # 커모 중 최신 인스턴스 4개를 가져온다.
             coffee_meetings = CoffeeMeeting.objects \
@@ -57,7 +49,7 @@ def entrypoint(request):
             latest_partner = Partner.related_partner_user(request.user)
 
             context = {'user': request.user,
-                       'official_meetings': latest_sorted,
+                       'official_meetings': official_and_educations,
                        'coffee_meetings': coffee_meetings,
                        'partner_meetings': latest_partnermeetings,
                        'latest_photos': latest_albumphotos
