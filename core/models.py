@@ -129,20 +129,25 @@ class Meeting(Postable):
             participants_set = {participant for participant in self.participants.all()}
             partner_in_meeting = related_partner.containing_active_users().intersection(participants_set)
             if len(partner_in_meeting) != 0:
-                if increment:
-                    # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다.
-                    related_partner.raise_score(latest_os.coffee_point)
-                else:
-                    # 참여취소일 경우 점수를 하향해야 한다.
-                    related_partner.raise_score(-latest_os.coffee_point)
+                from meetings.models import CoffeeMeeting
+                # 커피모임인 경우만 점수를 올린다. 추후 커피교육, 공식모임에도 점수를 줄수도 있다.
+                if isinstance(self.cast(), CoffeeMeeting):
+                    if increment:
+                        # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다.
+                        related_partner.raise_score(latest_os.coffee_point)
+                    else:
+                        # 참여취소일 경우 점수를 하향해야 한다.
+                        related_partner.raise_score(-latest_os.coffee_point)
 
     def participate_or_not(self, active_user):
+        from meetings.models import CoffeeMeeting
         if active_user in self.participants.all():
             # 참여 취소
             self.update_partner_score(active_user, False)
             self.participants.remove(active_user)
             return False
         else:
+            # 참여
             self.update_partner_score(active_user, True)
             self.participants.add(active_user)
             return True
