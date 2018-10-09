@@ -230,6 +230,21 @@ class OperationScheme(models.Model):
                                      help_text=_('실수형 점수입니다. 모임에 같은 짝지끼리 참석한 경우 이 점수를 추가로 부여받습니다. 예: 2.0'))
     eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))
 
+    extra_2_point = models.FloatField(_('2인 추가점수'), default=1.0,
+                                      help_text=_('윗짝지 1명, 아래짝지 1명인 모임에서, 2명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수 + 추가점수'))
+    extra_3_point = models.FloatField(_('3인 추가점수'), default=0.5,
+                                      help_text=_('윗짝지 1명, 아래짝지 2명인 모임에서, 3명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수. 2명 모이면 커모점수 x 2 + 추가점수'))
+    extra_4_point = models.FloatField(_('4인 추가점수'), default=1.0,
+                                      help_text=_('윗짝지 1명, 아래짝지 3명인 모임에서, 4명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수. 2명 모이면 커모점수 x 2. 3명 모이면 커모점수 x 3 + 추가점수'))
+
+    limit_coffee = models.SmallIntegerField(_('1일 커모 제한 횟수'), default=3,
+                                            help_text=_('정수형 점수입니다. 하루에 커모할 수 있는 횟수를 지정합니다.'))
+    limit_eat = models.SmallIntegerField(_('1일 밥모 제한 횟수'), default=2,
+                                            help_text=_('정수형 점수입니다. 하루에 밥모할 수 있는 횟수를 지정합니다.'))
+
     bank_account = models.CharField(_('입금 계좌'), max_length=30, help_text=_('반드시 회장의 계좌여야 합니다.'))
     bank = models.CharField(_('입금 은행'), choices=BANK_CHOICES, max_length=2)
 

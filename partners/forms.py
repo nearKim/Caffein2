@@ -10,7 +10,7 @@ from .models import (
 class PartnerMeetingForm(ModelForm):
     class Meta:
         model = PartnerMeeting
-        fields = ['content', 'num_coffee', 'num_eat']
+        fields = ['content', 'num_coffee', 'num_eat', 'num_down_partner']
 
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='짝모 사진')
 
