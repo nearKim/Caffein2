@@ -128,7 +128,7 @@ class PartnerMeeting(Instagram):
     num_coffee = models.SmallIntegerField(_('마신 커피 수'), default=0, validators=[meeting_coffee_validator, ])
     num_eat = models.SmallIntegerField(_('먹은 식사 수'), default=0, validators=[meeting_eat_validator, ])
     num_down_partner = models.SmallIntegerField(_('참여한 아래짝지 수'), default=0)
-    point = models.SmallIntegerField(default=0) # 짝모 삭제시 빼줄 점수
+    point = models.FloatField(default=0.0) # 짝모 삭제시 빼줄 점수
 
     class Meta:
         verbose_name = _('짝지 모임')
@@ -140,57 +140,65 @@ class PartnerMeeting(Instagram):
     def get_absoulute_url(self):
         return reverse('partners:meeting-list')
 
-    def save(self):
-        if not self.pk and self.num_down_partner != 0:
-            # https://stackoverflow.com/questions/2307943/django-overriding-the-model-create-method
-            meetings = PartnerMeeting.objects.filter(partner=self.partner)
-            latest_os = OperationScheme.latest()
-            limit_coffee, limit_eat = latest_os.limit_coffee, latest_os.limit_eat
-            coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
+    def check_point(self):
+        meetings = PartnerMeeting.objects.filter(partner=self.partner,
+                                                 created__year=now().year,
+                                                 created__month=now().month,
+                                                 created__day=now().day)
+        latest_os = OperationScheme.latest()
+        limit_coffee, limit_eat = latest_os.limit_coffee, latest_os.limit_eat
+        coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
 
-            # 당일 짝모에서 커모, 밥모 수를 합한다.
-            today_num_coffee = 0
-            today_num_eat = 0
-            for meeting in meetings:
+        # 당일 짝모에서 커모, 밥모 수를 합한다.
+        today_num_coffee = 0
+        today_num_eat = 0
+        for meeting in meetings:
+            # 자기 자신의 인스턴스는 빼고 계산한다
+            if meeting != self:
                 today_num_coffee += meeting.num_coffee
                 today_num_eat += meeting.num_eat
 
-            # 일일 커모 제한 확인
-            if limit_coffee <= today_num_coffee:
-                coffee = 0
+        # 일일 커모 제한 확인
+        if limit_coffee <= today_num_coffee:
+            coffee = 0
+        else:
+            # 오늘 커모 횟수와 해당 커모 횟수의 합이 일일 제한보다 같거나 작으면 그대로 입력한다.
+            if self.num_coffee <= (limit_coffee - today_num_coffee):
+                coffee = self.num_coffee
+            # 아닐시 일일 제한에서 남은 횟수만큼만 더해준다.
             else:
-                # 오늘 커모 횟수와 해당 커모 횟수의 합이 일일 제한보다 같거나 작으면 그대로 입력한다.
-                if self.num_coffee <= (limit_coffee - today_num_coffee):
-                    coffee = self.num_coffee
-                # 아닐시 일일 제한에서 남은 횟수만큼만 더해준다.
-                else:
-                    coffee = limit_coffee - today_num_coffee
+                coffee = limit_coffee - today_num_coffee
 
-            # 일일 밥모 제한 확인
-            if limit_eat <= today_num_eat:
-                eat = 0
+        # 일일 밥모 제한 확인
+        if limit_eat <= today_num_eat:
+            eat = 0
+        else:
+            # 오늘 밥모 횟수와 해당 밥모 횟수의 합이 일일 제한보다 같거나 작으면 그대로 입력한다.
+            if self.num_eat <= (limit_eat - today_num_eat):
+                eat = self.num_eat
+            # 아닐시 일일 제한에서 남은 횟수만큼만 더해준다.
             else:
-                # 오늘 밥모 횟수와 해당 밥모 횟수의 합이 일일 제한보다 같거나 작으면 그대로 입력한다.
-                if self.num_eat <= (limit_eat - today_num_eat):
-                    eat = self.num_eat
-                # 아닐시 일일 제한에서 남은 횟수만큼만 더해준다.
-                else:
-                    eat = limit_eat - today_num_eat
+                eat = limit_eat - today_num_eat
 
-            # 추가 점수 확인
-            extra = 0
-            num_partner = self.partner.down_partner_count() + 1  # 몇 인조인지 확인
-            if num_partner == self.num_down_partner + 1:
-                if num_partner == 2:
-                    extra = latest_os.extra_2_point
-                elif num_partner == 3:
-                    extra = latest_os.extra_3_point
-                elif num_partner == 4:
-                    extra = latest_os.extra_4_point
-                extra = extra * (coffee + eat)
-            point = self.num_down_partner * (coffee_score * coffee + eat_score * eat) + extra
-            self.point = point
-            self.partner.raise_score(point)
+        # 추가 점수 확인
+        extra = 0
+        num_partner = self.partner.down_partner_count() + 1  # 몇 인조인지 확인
+        if num_partner == self.num_down_partner + 1:
+            if num_partner == 2:
+                extra = latest_os.extra_2_point
+            elif num_partner == 3:
+                extra = latest_os.extra_3_point
+            elif num_partner == 4:
+                extra = latest_os.extra_4_point
+            extra = extra * (coffee + eat)
+        point = self.num_down_partner * (coffee_score * coffee + eat_score * eat) + extra
+        self.point = point
+        self.partner.raise_score(point)
+
+    def save(self):
+        if not self.pk and self.num_down_partner != 0:
+            # https://stackoverflow.com/questions/2307943/django-overriding-the-model-create-method
+            self.check_point()
         super().save()
 
 

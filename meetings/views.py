@@ -98,6 +98,8 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(OfficialMeetingDetailView, self).get_context_data()
         context['user'] = self.request.user
+        context['participated'] = True if ActiveUser.objects.filter(
+            user=self.request.user).latest() in self.object.participants.all() else False
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
@@ -154,6 +156,8 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CoffeeEducationDetailView, self).get_context_data()
         context['user'] = self.request.user
+        context['participated'] = True if ActiveUser.objects.filter(
+            user=self.request.user).latest() in self.object.participants.all() else False
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
