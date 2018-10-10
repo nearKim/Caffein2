@@ -27,6 +27,7 @@ from .models import (
     CoffeeEducation,
     CoffeeMeeting)
 from core.models import Meeting, MeetingPhoto, OperationScheme
+from partners.models import Partner
 
 
 # TODO: 정리하기
@@ -181,9 +182,9 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
 
     def form_valid(self, form):
         instance = form.save()
-        # 커모의 작성자는 디폴트로 참여해야 한다.
+        # 커모의 작성자는 디폴트로 참여해야 하고, 작성자에게 참가 점수를 부여한다.
         author_active = ActiveUser.objects.filter(user=instance.author).latest()
-        instance.participants.add(author_active)
+        instance.participate_or_not(author_active)
         self.message = '{}님이 커모를  열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             if not 'save_cafephoto' in self.request.POST:
