@@ -51,10 +51,19 @@ class PartnerMeetingDeleteView(ValidAuthorRequiredMixin, DeleteView):
     model = PartnerMeeting
     success_url = reverse_lazy('partners:meeting-list')
 
+    def delete(self, request, *args, **kwargs):
+        # 삭제하기 전 해당 짝모의 점수를 삭제하고 해당 짝모가 삭제된다.
+        obj = self.get_object()
+        obj.partner.raise_score(-obj.point)
+        return super(PartnerMeetingDeleteView, self).delete(request, *args, **kwargs)
+
 
 class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCreateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
+        # 기존 점수를 제거해주고, 업데이트된 정보로 점수를 부여한다.
+        instance.partner.raise_score(-instance.point)
+        instance.check_point()
         FeedPhoto.objects.filter(instagram=instance).delete()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
