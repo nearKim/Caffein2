@@ -143,7 +143,10 @@ class PartnerMeeting(Instagram):
     def save(self):
         if not self.pk and self.num_down_partner != 0:
             # https://stackoverflow.com/questions/2307943/django-overriding-the-model-create-method
-            meetings = PartnerMeeting.objects.filter(partner=self.partner)
+            meetings = PartnerMeeting.objects.filter(partner=self.partner,
+                                                     created__year=now().year,
+                                                     created__month=now().month,
+                                                     created__day=now().day)
             latest_os = OperationScheme.latest()
             limit_coffee, limit_eat = latest_os.limit_coffee, latest_os.limit_eat
             coffee_score, eat_score = latest_os.coffee_point, latest_os.eat_point
