@@ -2,12 +2,12 @@
 {% block title %}짝지 매칭{% endblock %}
 {% block content %}
     <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">{{ os.current_year }}년 {{ os.current_semester }}학기 짝지 매칭</h1>
-    <p class="lead">짝지 관련 운영정보 요약</p>
-    <p class="lead">기존회원 1명당 신입회원은 최대 3명까지 배정 가능합니다.</p>
-  </div>
-</div>
+        <div class="container">
+            <h1 class="display-4">{{ os.current_year }}년 {{ os.current_semester }}학기 짝지 매칭</h1>
+            <p class="lead">짝지 관련 운영정보 요약</p>
+            <p class="lead">기존회원 1명당 신입회원은 최대 3명까지 배정 가능합니다.</p>
+        </div>
+    </div>
     <div class="container">
         <div class="row text-center">
             <div class="col-sm-6">
@@ -18,35 +18,85 @@
             </div>
         </div>
         <hr>
-    <form action="{% url 'admin:match-partner' %}" method="post">{% csrf_token %}
-    <input type="hidden" name="year" value="{{ os.current_year }}">
-    <input type="hidden" name="semester" value="{{ os.current_semester }}">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="select-multiple-new">여러명을 선택하려면 CTRL(또는 cmd)키를 누르세요</label>
-                    <select name="news" multiple class="form-control" id="select-multiple-new" size="{{ news |length }}">
+        <form action="{% url 'admin:match-partner' %}" method="post">{% csrf_token %}
+            <input type="hidden" name="year" value="{{ os.current_year }}">
+            <input type="hidden" name="semester" value="{{ os.current_semester }}">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="select-multiple-new">여러명을 선택하려면 CTRL(또는 cmd)키를 누르세요</label>
+                        <select name="news" multiple class="form-control" id="select-multiple-new"
+                                size="{{ news |length }}">
 
-                        {% for new in news %}
-                            <option value="{{ new.pk }}">{{ new }}</option>
-                        {% endfor %}
-                    </select>
+                            {% for new in news %}
+                                <option value="{{ new.pk }}">{{ new }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="select-multiple-old">기존회원은 한명만 선택해야 합니다</label>
+                        <select name="olds" multiple class="form-control" id="select-multiple-old"
+                                size="{{ old | length }}">
+                            {% for old in olds %}
+                                <option value="{{ old.pk }}">{{ old }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                 <div class="form-group">
-                    <label for="select-multiple-old">기존회원은 한명만 선택해야 합니다</label>
-                    <select name="olds" multiple class="form-control" id="select-multiple-old" size="{{ old | length }}">
-                        {% for old in olds %}
-                            <option value="{{ old.pk }}">{{ old }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="row text-center">
+                <button type="submit" class="btn btn-primary btn-block">매칭!</button>
             </div>
+        </form>
+
+        <h2 class="text-center" style="margin-top: 100px;">매칭된 짝지들</h2>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>위짝지</th>
+                    <th>아래짝지 1</th>
+                    <th>아래짝지 2</th>
+                    <th>아래짝지 3</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for partner in matched %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td>
+                            {{ partner.up_partner }}
+                        </td>
+                        <td>
+                            {% if partner.down_partner_1 %}
+                                {{ partner.down_partner_1 }}
+                            {% else %}
+                                없음
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if partner.down_partner_2 %}
+                                {{ partner.down_partner_2 }}
+                            {% else %}
+                                없음
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if partner.down_partner_3 %}
+                                {{ partner.down_partner_3 }}
+                            {% else %}
+                                없음
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-    <div class="row text-center">
-        <button type="submit" class="btn btn-primary btn-block">매칭!</button>
-    </div>
-    </form>
     </div>
 {% endblock %}
