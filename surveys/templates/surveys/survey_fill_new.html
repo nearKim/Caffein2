@@ -27,7 +27,7 @@
                                 {% if question.question_type == 'text' %}
                                     <div class="form-group">
                                         <input type="text" class="form-control" name="{{ question.question_text }}"
-                                               placeholder="Text answer">
+                                               placeholder="Text answer" required>
                                     </div>
                                 {% elif question.question_type == 'choice_one' %}
                                     <div class="form-check answer-type">
@@ -36,7 +36,7 @@
                                                 <label class="form-check-label">
                                                     <input class="form-check-input" type="radio"
                                                            name="{{ question.question_text }}"
-                                                           value="{{ choice.choice_text }}">
+                                                           value="{{ choice.choice_text }}" required>
                                                     <span class="option-text">{{ choice.choice_text }}</span>
                                                 </label>
                                             {% endif %}
@@ -59,12 +59,12 @@
                                     <div class="form-check answer-type">
                                         <label class="form-check-label">
                                             <input class="form-check-input" type="radio"
-                                                   name="{{ question.question_text }}" value="yes">
+                                                   name="{{ question.question_text }}" value="yes" required>
                                             <span class="option-text">예</span>
                                         </label>
                                         <label class="form-check-label">
                                             <input class="form-check-input" type="radio"
-                                                   name="{{ question.question_text }}" value="no">
+                                                   name="{{ question.question_text }}" value="no" required>
                                             <span class="option-text">아니오</span>
                                         </label>
                                     </div>
