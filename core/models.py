@@ -110,6 +110,9 @@ class Meeting(Postable):
     def count_participants(self):
         return self.participants.count()
 
+    def list_participants(self):
+        return [activeuser.user for activeuser in self.participants.all()]
+    '''
     def update_partner_score(self, active_user, increment):
         # TODO: 커모, 교육 참가시 가산점 제도 확정
         from partners.models import Partner
@@ -142,17 +145,18 @@ class Meeting(Postable):
                         related_partner.raise_score(-(latest_os.coffee_point + latest_os.extra_author_point))
                     else:
                         related_partner.raise_score(-latest_os.coffee_point)
+                        '''
 
     def participate_or_not(self, active_user):
         from meetings.models import CoffeeMeeting
         if active_user in self.participants.all():
             # 참여 취소
-            self.update_partner_score(active_user, False)
+            #self.update_partner_score(active_user, False)
             self.participants.remove(active_user)
             return False
         else:
             # 참여
-            self.update_partner_score(active_user, True)
+            #self.update_partner_score(active_user, True)
             self.participants.add(active_user)
             return True
 

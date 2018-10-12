@@ -47,7 +47,7 @@ class Partner(models.Model):
     def raise_score(self, score):
         latest_os = OperationScheme.latest()
         if latest_os.semester_end:
-            if now() > latest_os.semester_end:
+            if now().date() > latest_os.semester_end:
                 # 학기가 종료된 후에는 짝지점수를 올리면 안된다.
                 return
         self.score += score
