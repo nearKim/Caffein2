@@ -19,7 +19,7 @@ from django.views.generic.edit import (
 from accounts.models import ActiveUser
 from cafes.models import Cafe, CafePhoto
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin, StaffRequiredMixin
+from core.mixins import FaceBookPostMixin, StaffRequiredMixin, ValidAuthorRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
 from .models import (
@@ -209,7 +209,7 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
         return context
 
 
-class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
+class CoffeeMeetingUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
 
@@ -228,11 +228,6 @@ class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin
                 photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
-
-
-class CoffeeMeetingDeleteView(LoginRequiredMixin, DeleteView):
-    model = CoffeeMeeting
-    success_url = reverse_lazy('meetings:meetings-list')
 
 
 class CoffeeMeetingListView(LoginRequiredMixin, ListView):
@@ -300,12 +295,13 @@ def participate_meeting(request, pk):
 def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
     if request.user == meeting.author or request.user.is_staff:
-        meeting.delete()
         if isinstance(meeting.cast(), CoffeeMeeting):
             # 현재 지운 meeting이 커모였다면 커모 리스트로 이동한다.
+            meeting.delete()
             return redirect('meetings:coffee-meeting-list')
         else:
             # 아니라면 공식모임 또는 커피교육이므로 해당 리스트로 이동한다.
+            meeting.delete()
             return redirect('meetings:meetings-list')
     else:
         raise PermissionDenied
