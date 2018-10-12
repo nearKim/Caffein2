@@ -105,11 +105,6 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
         return context
 
 
-class OfficialMeetingDeleteView(StaffRequiredMixin, DeleteView):
-    model = OfficialMeeting
-    success_url = reverse_lazy('meetings:meetings-list')
-
-
 # CoffeeEducation
 class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
     def get_success_url(self, **kwargs):
@@ -161,11 +156,6 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
-
-
-class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
-    model = CoffeeEducation
-    success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CoffeeMeeting
@@ -300,6 +290,9 @@ def delete_meeting(request, pk):
             meeting.delete()
             return redirect('meetings:coffee-meeting-list')
         else:
+            # 공식모임이나 커피교육은 반드시 운영진이 지워야 한다.
+            if not request.user.is_staff:
+                raise PermissionDenied
             # 아니라면 공식모임 또는 커피교육이므로 해당 리스트로 이동한다.
             meeting.delete()
             return redirect('meetings:meetings-list')

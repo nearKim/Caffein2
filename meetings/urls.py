@@ -4,20 +4,17 @@ from .views import (
     OfficialAndEducationListView,
     OfficialMeetingCreateView,
     OfficialMeetingUpdateView,
-    OfficialMeetingDeleteView,
     OfficialMeetingDetailView,
     OfficialMeetingListView,
 
     CoffeeEducationCreateView,
     CoffeeEducationUpdateView,
-    CoffeeEducationDeleteView,
     CoffeeEducationListView,
     CoffeeEducationDetailView,
 
     CoffeeMeetingCreateView,
     CoffeeMeetingDetailView,
     CoffeeMeetingListView,
-    CoffeeMeetingDeleteView,
     CoffeeMeetingUpdateView,
 
     participate_meeting,
