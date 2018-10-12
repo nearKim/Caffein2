@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -137,18 +138,20 @@ class AlbumDeleteView(ValidAuthorRequiredMixin, DeleteView):
     success_url = reverse_lazy('photo_albums:photo-album-main')
 
 
-class PhotoDeleteView(ValidAuthorRequiredMixin, DeleteView):
+class PhotoDeleteView(LoginRequiredMixin, DeleteView):
     # 단일 사진 객체를 삭제하는 view
     model = Photo
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if not self.object.author == self.request.user:
+            raise PermissionDenied
         success_url = self.object.album.get_absolute_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
 
-class PhotoBatchDeleteView(ValidAuthorRequiredMixin, DeleteView):
+class PhotoBatchDeleteView(LoginRequiredMixin, DeleteView):
     # 사진업로드 모달을 저장없이 닫았을 때 호출되어 앨범이 지정되지 않은 모든 사진 객체를 삭제한다.
     model = Photo
 
