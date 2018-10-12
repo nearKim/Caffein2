@@ -108,10 +108,16 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
 class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         coffee_meeting_pk = self.kwargs['pk']
-        print(coffee_meeting_pk)
-        if CoffeeMeetingFeed.objects.filter(coffee_meeting_id=coffee_meeting_pk).exists():
+        coffee_meeting = CoffeeMeeting.objects.get(id=coffee_meeting_pk)
+        participants = coffee_meeting.list_participants()
+        from django.http import HttpResponseRedirect
+        # 참가하지 않은 사람이 후기를 남기려 시도할시
+        if request.user not in participants:
+            messages.warning(request, '참가하지 않은 커모입니다. 다른 사람의 후기를 기다려주세요!')
+            return HttpResponseRedirect(reverse('partners:meeting-list'))
+        # 이미 후기가 있는 커모의 후기를 남기려 시도할시
+        elif CoffeeMeetingFeed.objects.filter(coffee_meeting_id=coffee_meeting_pk).exists():
             messages.warning(request, '이미 선택하신 커모의 후기가 작성되어 있습니다. 여기서 확인해주세요!')
-            from django.http import HttpResponseRedirect
             return HttpResponseRedirect(reverse('partners:meeting-list'))
         return super().dispatch(request, *args, **kwargs)
 
@@ -127,6 +133,17 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
                 feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        # 커모에 참여한 사람의 점수를 업데이트한다.
+        coffee_meeting = CoffeeMeeting.objects.get(id=self.kwargs['pk'])
+        participants = coffee_meeting.list_participants()
+        # 참가자가 4명 이상일 경우만 점수를 올린다.
+        if len(participants) >= 4:
+            if len(participants) != len(set(participants).intersection(Partner.related_partner_activeuser(
+                    coffee_meeting.participants.all()[0]).containing_active_users())):
+                coffee_meeting.update_partner_score()
+        return super(CoffeeMeetingFeedCreateView, self).post(request, *args, **kwargs)
 
 
 class CoffeeMeetingFeedUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, UpdateView):
