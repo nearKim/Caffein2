@@ -137,12 +137,18 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
     def post(self, request, *args, **kwargs):
         # 커모에 참여한 사람의 점수를 업데이트한다.
         coffee_meeting = CoffeeMeeting.objects.get(id=self.kwargs['pk'])
-        participants = coffee_meeting.list_participants()
-        # 참가자가 4명 이상일 경우만 점수를 올린다.
-        if len(participants) >= 4:
-            if len(participants) != len(set(participants).intersection(Partner.related_partner_activeuser(
-                    coffee_meeting.participants.all()[0]).containing_active_users())):
-                coffee_meeting.update_partner_score()
+        participants = coffee_meeting.participants.all()
+        if len(participants) > 0:
+            group = Partner.related_partner_activeuser(participants[0])
+            # 커모가 한 짝지 그룹으로만 이루어지지 않은 경우 점수를 올린다.
+            if len(participants) != len(set(participants).intersection(group.containing_active_users())):
+                # 참가자가 4명 이상일 경우만 점수를 올린다.
+                if len(participants) >= 4:
+                    coffee_meeting.update_partner_score()
+            # 한 짝지 그룹으로만 이루어진 경우 짝모로 계산한다. 윗짝지가 존재해야한다.
+            elif group.up_partner in participants:
+                # 아래짝지 수 * 커피점수만큼 점수를 부여한다.
+                group.raise_score((len(participants) - 1) * OperationScheme.latest().coffee_point)
         return super(CoffeeMeetingFeedCreateView, self).post(request, *args, **kwargs)
 
 
