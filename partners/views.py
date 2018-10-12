@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -108,7 +109,7 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
     def dispatch(self, request, *args, **kwargs):
         coffee_meeting_pk = self.kwargs['pk']
         print(coffee_meeting_pk)
-        if CoffeeMeeting.objects.filter(pk=coffee_meeting_pk).exists():
+        if CoffeeMeetingFeed.objects.filter(coffee_meeting_id=coffee_meeting_pk).exists():
             messages.warning(request, '이미 선택하신 커모의 후기가 작성되어 있습니다. 여기서 확인해주세요!')
             from django.http import HttpResponseRedirect
             return HttpResponseRedirect(reverse('partners:meeting-list'))
@@ -152,3 +153,18 @@ class CoffeeMeetingFeedDeleteView(ValidAuthorRequiredMixin, DeleteView):
 # Deprecated
 class PartnerDetailView(DetailView):
     model = Partner
+
+@login_required
+def admit_or_deny_partnermeeting(request, pk):
+    if request.user.is_staff:
+        partnermeeting = PartnerMeeting.objects.get(id=pk)
+        if partnermeeting.point == 0.0:
+            # 0점이거나 불인정된 짝모 점수를 다시 계산
+            partnermeeting.check_point()
+            partnermeeting.save()
+        else:
+            # 해당 짝모를 불인정
+            partnermeeting.partner.raise_score(-partnermeeting.point)
+            partnermeeting.point = 0
+            partnermeeting.save()
+    return redirect('partners:meeting-list')
