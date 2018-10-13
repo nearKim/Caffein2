@@ -77,7 +77,7 @@
                     </ul>
                     <div class="card-body">
                         <h5 class="card-title">{{ object.title }}</h5>
-                        {% if object.is_past_due %}
+                        {% if object.is_past_due and user in object.list_participants %}
                             <a href="{% url 'partners:coffeemeeting-feed-create' object.pk %}">
                                 <button class="btn-lg btn-primary" style="cursor: pointer; pointer-events: auto;">커모 후기
                                     남기기!

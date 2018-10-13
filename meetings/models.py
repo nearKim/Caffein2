@@ -2,7 +2,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import Meeting
+from core.models import Meeting, OperationScheme
+from accounts.models import ActiveUser
 
 
 class OfficialMeeting(Meeting):
@@ -79,3 +80,27 @@ class CoffeeMeeting(Meeting):
 
     def __str__(self):
         return "{} {} 커모".format(self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"), self.cafe.name)
+
+    def update_partner_score(self):
+        from partners.models import Partner
+        latest_os = OperationScheme.latest()
+        # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
+        for active_user in self.participants.all():
+            related_partner = Partner.related_partner_activeuser(active_user)
+            if related_partner is None:
+                # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
+                return
+
+            # 짝지 년도, 학기를 가장 최신의 운영정보 년도, 학기와 비교한다
+            if not (related_partner.partner_year == latest_os.current_year
+                    and related_partner.partner_semester == latest_os.current_semester):
+                # 만일 다르다면 아무것도 하지 않는다. 신학기에 예전학기 짝지 정보를 불러온 것이기 때문이다.
+                return
+
+            else:
+                from meetings.models import CoffeeMeeting
+                # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다. 단 커모 개최자는 추가점수를 준다.
+                if active_user == ActiveUser.objects.filter(user=self.author).latest():
+                    related_partner.raise_score(latest_os.coffee_point + latest_os.extra_author_point)
+                else:
+                    related_partner.raise_score(latest_os.coffee_point)

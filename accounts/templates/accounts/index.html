@@ -444,7 +444,7 @@
                                     style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.cafe.name }}</h5>
                                 <hr>
                                 <p style="font-size:calc(0.3vw + 14px); ">{{ coffeemeeting.meeting_date | date:"m월 d일 A h시 i분" }}</p>
-                                {% if coffeemeeting.is_past_due %}
+                                {% if coffeemeeting.is_past_due and user in coffeemeeting.list_participants %}
                                     <hr style="margin-bottom: 0;">
                                     <a href="{% url 'partners:coffeemeeting-feed-create' coffeemeeting.pk %}">
                                         <button class="btn-primary btn-lg"

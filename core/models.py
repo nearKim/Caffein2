@@ -110,49 +110,17 @@ class Meeting(Postable):
     def count_participants(self):
         return self.participants.count()
 
-    def update_partner_score(self, active_user, increment):
-        # TODO: 커모, 교육 참가시 가산점 제도 확정
-        from partners.models import Partner
-        # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
-        related_partner = Partner.related_partner_activeuser(active_user)
-        if related_partner is None:
-            # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
-            return
-        latest_os = OperationScheme.latest()
-        # 짝지 년도, 학기를 가장 최신의 운영정보 년도, 학기와 비교한다
-        if not (related_partner.partner_year == latest_os.current_year
-                and related_partner.partner_semester == latest_os.current_semester):
-            # 만일 다르다면 아무것도 하지 않는다. 신학기에 예전학기 짝지 정보를 불러온 것이기 때문이다.
-            return
-
-        else:
-            from meetings.models import CoffeeMeeting
-            # 커피모임인 경우만 점수를 올린다. 추후 커피교육, 공식모임에도 점수를 줄 수도 있다.
-            if isinstance(self.cast(), CoffeeMeeting):
-                if increment:
-                    # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다. 단 커모 개최자는 추가점수를 준다.
-                    if active_user == ActiveUser.objects.filter(user=self.author).latest():
-                        related_partner.raise_score(latest_os.coffee_point + latest_os.extra_author_point)
-                    else:
-                        related_partner.raise_score(latest_os.coffee_point)
-
-                else:
-                    # 참여취소일 경우 점수를 하향해야 한다. 단 커모 개최자는 추가점수를 회수한다.
-                    if active_user == ActiveUser.objects.filter(user=self.author).latest():
-                        related_partner.raise_score(-(latest_os.coffee_point + latest_os.extra_author_point))
-                    else:
-                        related_partner.raise_score(-latest_os.coffee_point)
+    def list_participants(self):
+        return [activeuser.user for activeuser in self.participants.all()]
 
     def participate_or_not(self, active_user):
         from meetings.models import CoffeeMeeting
         if active_user in self.participants.all():
             # 참여 취소
-            self.update_partner_score(active_user, False)
             self.participants.remove(active_user)
             return False
         else:
             # 참여
-            self.update_partner_score(active_user, True)
             self.participants.add(active_user)
             return True
 

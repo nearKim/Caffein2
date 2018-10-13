@@ -1,21 +1,52 @@
 [
-{
-  "model": "core.operationscheme",
-  "pk": 1,
-  "fields": {
-    "semester_start": "2018-09-03",
-    "semester_end": null,
-    "new_register_start": "2018-09-03T04:51:27Z",
-    "new_register_end": null,
-    "old_register_start": "2018-08-21T04:51:43Z",
-    "old_register_end": null,
-    "coffee_point": 2.0,
-    "eat_point": 1.0,
-    "bank_account": "620-220027-999",
-    "bank": "kb",
-    "boss": 4,
-    "new_pay": 20000,
-    "old_pay": 10000
+  {
+    "model": "core.operationscheme",
+    "pk": 1,
+    "fields": {
+      "semester_start": "2018-03-01",
+      "semester_end": "2018-08-20",
+      "new_register_start": "2018-03-01T00:00:00",
+      "new_register_end": "2018-03-20T23:59:59",
+      "old_register_start": "2018-08-10T00:00:00",
+      "old_register_end": "2018-08-20T23:59:59",
+      "coffee_point": 2.0,
+      "eat_point": 1.0,
+      "extra_author_point": 2.0,
+      "extra_2_point": 1.0,
+      "extra_3_point": 0.5,
+      "extra_4_point": 1.0,
+      "limit_coffee": 3,
+      "limit_eat": 2,
+      "bank_account": "123-456789-123",
+      "bank": "kb",
+      "boss": 2,
+      "new_pay": 30000,
+      "old_pay": 25000
+    }
+  },
+  {
+    "model": "core.operationscheme",
+    "pk": 2,
+    "fields": {
+      "semester_start": "2018-09-01",
+      "semester_end": "2019-02-20",
+      "new_register_start": "2018-09-01T00:00:00",
+      "new_register_end": "2018-09-20T23:59:59",
+      "old_register_start": "2019-02-10T00:00:00",
+      "old_register_end": "2019-02-20T23:59:59",
+      "coffee_point": 1.0,
+      "eat_point": 1.0,
+      "extra_author_point": 2.0,
+      "extra_2_point": 1.0,
+      "extra_3_point": 0.5,
+      "extra_4_point": 1.0,
+      "limit_coffee": 3,
+      "limit_eat": 2,
+      "bank_account": "123-456789-123",
+      "bank": "kb",
+      "boss": 2,
+      "new_pay": 30000,
+      "old_pay": 25000
+    }
   }
-}
 ]

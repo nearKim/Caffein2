@@ -5,7 +5,8 @@ from .views import (
     PartnerMeetingCreateView,
     PartnerMeetingUpdateView,
     PartnerMeetingDeleteView,
-    FeedListView, CoffeeMeetingFeedCreateView, CoffeeMeetingFeedUpdateView, CoffeeMeetingFeedDeleteView)
+    FeedListView, CoffeeMeetingFeedCreateView, CoffeeMeetingFeedUpdateView, CoffeeMeetingFeedDeleteView,
+    admit_or_deny_partnermeeting)
 
 app_name = 'partners'
 
@@ -17,6 +18,7 @@ urlpatterns = [
     path('meeting/create/', PartnerMeetingCreateView.as_view(), name='meeting-create'),
     path('meeting/update/<int:pk>/', PartnerMeetingUpdateView.as_view(), name='meeting-update'),
     path('meeting/delete/<int:pk>/', PartnerMeetingDeleteView.as_view(), name='meeting-delete'),
+    path('meeting/admit-deny/<int:pk>', admit_or_deny_partnermeeting, name='meeting-admit-deny'),
     # 커모후기 관련 뷰
     path('coffee-meeting-feed/create/<int:pk>/', CoffeeMeetingFeedCreateView.as_view(), name='coffeemeeting-feed-create'),
     path('coffee-meeting-feed/update/<int:pk>/', CoffeeMeetingFeedUpdateView.as_view(), name='coffeemeeting-feed-update'),
