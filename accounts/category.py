@@ -18,6 +18,8 @@ class College(Enum):
     MUSIC = 'mus'
     MEDICINE = 'med'
     FREE = 'cls'
+    INTERNATIONAL = 'int'
+    DENTISTRY = 'den'
     UNION = 'uni'
     CORRELATION = 'cor'
 
@@ -39,6 +41,8 @@ COLLEGE_CHOICES = (
     (College.MUSIC.value, '음악대학'),
     (College.MEDICINE.value, '의과대학'),
     (College.FREE.value, '자유전공학부'),
+    (College.INTERNATIONAL.value, '국제대학'),
+    (College.DENTISTRY.value, '치의대학'),
     (College.UNION.value, '연합전공'),
     (College.CORRELATION.value, '연계전공')
 )
@@ -98,14 +102,14 @@ DEPARTMENT_COLLEGE_MAP = {
         ('40', '건축공학과'),
         ('41', '조선해양공학과'),
         ('42', '에너지자원공학과'),
-        ('43', '원자력공학과')
+        ('43', '원자핵공학과')
     ),
     College.AGRICULTURE: (
         ('44', '식물생산과학부'),
         ('45', '산림과학부'),
         ('46', '응용생물화학부'),
         ('47', '식품동물생명공학부'),
-        ('48', '바비오시스템소재학부'),
+        ('48', '바이오시스템소재학부'),
         ('49', '조경지역시스템공학부'),
         ('50', '농경제사회학부')
     ),
@@ -117,7 +121,7 @@ DEPARTMENT_COLLEGE_MAP = {
         ('55', '디자인과')
     ),
     College.LAW: (
-        ('56', '법학부'),
+        ('86', '법학부'),
     ),
     College.EDUCATION: (
         ('56', '교육학과'),
@@ -162,6 +166,16 @@ DEPARTMENT_COLLEGE_MAP = {
     ),
     College.FREE: (
         ('85', '자유전공학부'),
+    ),
+    College.INTERNATIONAL: (
+        ('87', '국제통상'),
+        ('88', '국제협력'),
+        ('89', '국제지역학'),
+        ('90', '한국학')
+    ),
+    College.DENTISTRY: (
+        ('91', '치의학과'),
+        ('92', '치의과학과')
     ),
     College.UNION: (
         ('u0', '계산과학'),
