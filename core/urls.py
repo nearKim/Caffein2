@@ -9,7 +9,7 @@ from cafes.models import CafePhoto
 from core.models import FeedPhoto
 from partners.models import CoffeeMeetingFeed
 from photo_albums.models import Photo
-from .views import entrypoint
+from .views import entrypoint, developer
 
 app_name = 'core'
 
@@ -22,6 +22,7 @@ extra_context = {
 urlpatterns = [
     path('', entrypoint, name='entrypoint'),
     path('home/', LoginView.as_view(template_name='index.html', extra_context=extra_context), name='index'),
-    path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:index')), name='logout')
+    path('logout/', LogoutView.as_view(next_page=reverse_lazy('core:index')), name='logout'),
+    path('developers/', developer, name='developers')
 
 ]
