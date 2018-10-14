@@ -14,7 +14,8 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="container-fluid" style="{% if not request.user_agent.is_mobile or partner_set%}padding-top: 150px;{% endif %}">
+        <div class="container-fluid"
+             style="{% if not request.user_agent.is_mobile or partner_set %}padding-top: 150px;{% endif %}">
             <div class="row mb-100">
                 <div class="col-sm-6" style="margin:0; padding-left:30px;">
                     {% if partner_set %}
@@ -88,7 +89,8 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 mt-50">
-                                    <h2>{{ score }}점</h2>
+                                    <!-- 프로필카드와 비슷하면 예쁘다 -->
+                                    <h2><span class="profile-card" style="padding:5px;">{{ score }}점</span></h2>
                                 </div>
                             </div>
                         {% else %}
@@ -241,7 +243,7 @@
                     {% endif %}
                 </div>
                 <!-- 공지사항  -->
-                <div class="col-sm-6" style="{% if request.user_agent.is_mobile %} margin-top: 50px; {% endif %}">
+                <div class="col-sm-6" style="{% if request.user_agent.is_mobile %} margin-top: 100px; {% endif %}">
                     <div class="row" style="margin-bottom: 30px;">
                         <div class="col-sm-12">
                             <h2 style="margin: 0;">공지사항</h2>
