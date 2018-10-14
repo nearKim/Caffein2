@@ -14,7 +14,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="container-fluid" style="{% if not request.user_agent.is_mobile %}padding-top: 150px;{% endif %}">
+        <div class="container-fluid" style="{% if not request.user_agent.is_mobile or partner_set%}padding-top: 150px;{% endif %}">
             <div class="row mb-100">
                 <div class="col-sm-6" style="margin:0; padding-left:30px;">
                     {% if partner_set %}
