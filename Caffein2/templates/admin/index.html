@@ -22,11 +22,11 @@
                 <p><b>학기 시작:</b> {{ os.semester_start |date:"m월 d일" }}</p>
                 <p><b>학기 종료:</b>  {% if os.semester_end %} {{ os.semester_end |date:"m월 d일" }}  {% else %} 아직 입력
                     안됨 {% endif %} </p>
-                <p><b>신입 가입 시작:</b> {{ os.new_register_start |date:"m월 d일 h시 m분" }}  </p>
-                <p><b>신입 가입 종료:</b> {% if os.new_register_end %} {{ os.new_register_end |date:"m월 d일 h시 m" }} {% else %}
+                <p><b>신입 가입 시작:</b> {{ os.new_register_start |date:"m월 d일 h시 i분" }}  </p>
+                <p><b>신입 가입 종료:</b> {% if os.new_register_end %} {{ os.new_register_end |date:"m월 d일 h시 i분" }} {% else %}
                     아직 입력 안됨 {% endif %} </p>
-                <p><b>기존 가입 시작:</b> {{ os.old_register_start |date:"m월 d일 h시 m분" }}  </p>
-                <p><b>기존 가입 종료:</b> {% if os.old_register_end %} {{ os.old_register_end |date:"m월 d일 h시 m" }} {% else %}
+                <p><b>기존 가입 시작:</b> {{ os.old_register_start |date:"m월 d일 h시 i분" }}  </p>
+                <p><b>기존 가입 종료:</b> {% if os.old_register_end %} {{ os.old_register_end |date:"m월 d일 h시 i분" }} {% else %}
                     아직 입력 안됨 {% endif %} </p>
             </div>
             <div class="col-sm-6">
