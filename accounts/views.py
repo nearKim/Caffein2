@@ -204,7 +204,7 @@ def export_users_excel(request, category):
                     for col_num in range(len(row)):
                         ws.write(row_num, col_num, row[col_num], font_style)
         # 신입 회원의 정보를 반환한다.
-        else:
+        elif category == 3:
             response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
                                               + str(latest_os.current_semester) + ' new user list.xls"'
             for active_user in users:
@@ -215,6 +215,8 @@ def export_users_excel(request, category):
                            user.phone, user.email]
                     for col_num in range(len(row)):
                         ws.write(row_num, col_num, row[col_num], font_style)
+        else:
+            return redirect('core:entrypoint')
         wb.save(response)
         return response
     # 운영진이 아니면 메인 페이지로 간다.

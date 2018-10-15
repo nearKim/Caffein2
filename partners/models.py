@@ -127,7 +127,7 @@ class PartnerMeeting(Instagram):
     partner = models.ForeignKey('partners.Partner', on_delete=models.CASCADE)
     num_coffee = models.SmallIntegerField(_('마신 커피 수'), default=0, validators=[meeting_coffee_validator, ])
     num_eat = models.SmallIntegerField(_('먹은 식사 수'), default=0, validators=[meeting_eat_validator, ])
-    num_down_partner = models.SmallIntegerField(_('참여한 아래짝지 수'), default=0)
+    num_down_partner = models.SmallIntegerField(_('참여한 아래짝지 수'), help_text=_('아래짝지의 수만 입력해주세요.'), default=0)
     point = models.FloatField(default=0.0) # 짝모 삭제시 빼줄 점수
 
     class Meta:
