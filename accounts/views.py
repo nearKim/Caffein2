@@ -160,105 +160,117 @@ def old_register_done(request):
                       context={'user': request.user})
 
 
+@login_required()
 def export_all_users_excel(request):
-    latest_os = OperationScheme.latest()
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                      + str(latest_os.current_semester) + ' all user list.xls"'
+    if request.user.is_staff:
+        latest_os = OperationScheme.latest()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                          + str(latest_os.current_semester) + ' all user list.xls"'
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Users')
-    row_num = 0
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Users')
+        row_num = 0
 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
 
-    columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
+        columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
 
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
 
-    font_style = xlwt.XFStyle()
+        font_style = xlwt.XFStyle()
 
-    users = ActiveUser.objects.filter(active_year=latest_os.current_year,
-                                      active_semester=latest_os.current_semester)
-    for active_user in users:
-        row_num += 1
-        user = active_user.user
-        row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
-        for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
+        users = ActiveUser.objects.filter(active_year=latest_os.current_year,
+                                          active_semester=latest_os.current_semester)
+        for active_user in users:
+            row_num += 1
+            user = active_user.user
+            row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
 
-    wb.save(response)
-    return response
+        wb.save(response)
+        return response
+    else:
+        return redirect('core:entrypoint')
 
 
+@login_required()
 def export_old_users_excel(request):
-    latest_os = OperationScheme.latest()
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                      + str(latest_os.current_semester) + ' old user list.xls"'
+    if request.user.is_staff:
+        latest_os = OperationScheme.latest()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                          + str(latest_os.current_semester) + ' old user list.xls"'
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Users')
-    row_num = 0
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Users')
+        row_num = 0
 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
 
-    columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
+        columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
 
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
 
-    font_style = xlwt.XFStyle()
+        font_style = xlwt.XFStyle()
 
-    users = ActiveUser.objects.filter(active_year=latest_os.current_year,
-                                      active_semester=latest_os.current_semester)
-    for active_user in users:
-        if not active_user.is_new:
-            row_num += 1
-            user = active_user.user
-            row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
-            for col_num in range(len(row)):
-                ws.write(row_num, col_num, row[col_num], font_style)
+        users = ActiveUser.objects.filter(active_year=latest_os.current_year,
+                                          active_semester=latest_os.current_semester)
+        for active_user in users:
+            if not active_user.is_new:
+                row_num += 1
+                user = active_user.user
+                row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
+                for col_num in range(len(row)):
+                    ws.write(row_num, col_num, row[col_num], font_style)
 
-    wb.save(response)
-    return response
+        wb.save(response)
+        return response
+    else:
+        return redirect('core:entrypoint')
 
 
+@login_required()
 def export_new_users_excel(request):
-    latest_os = OperationScheme.latest()
-    response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                      + str(latest_os.current_semester) + ' new user list.xls"'
+    if request.user.is_staff:
+        latest_os = OperationScheme.latest()
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                          + str(latest_os.current_semester) + ' new user list.xls"'
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Users')
-    row_num = 0
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Users')
+        row_num = 0
 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
 
-    columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
+        columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
 
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        for col_num in range(len(columns)):
+            ws.write(row_num, col_num, columns[col_num], font_style)
 
-    font_style = xlwt.XFStyle()
+        font_style = xlwt.XFStyle()
 
-    users = ActiveUser.objects.filter(active_year=latest_os.current_year,
-                                      active_semester=latest_os.current_semester)
-    for active_user in users:
-        if active_user.is_new:
-            row_num += 1
-            user = active_user.user
-            row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
-            for col_num in range(len(row)):
-                ws.write(row_num, col_num, row[col_num], font_style)
+        users = ActiveUser.objects.filter(active_year=latest_os.current_year,
+                                          active_semester=latest_os.current_semester)
+        for active_user in users:
+            if active_user.is_new:
+                row_num += 1
+                user = active_user.user
+                row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
+                for col_num in range(len(row)):
+                    ws.write(row_num, col_num, row[col_num], font_style)
 
-    wb.save(response)
-    return response
+        wb.save(response)
+        return response
+    else:
+        return redirect('core:entrypoint')
 
 
 # Deprecated
