@@ -9,9 +9,7 @@ from .views import (
     UserUpdateView,
     ActiveUserCreateView,
     PaymentView,
-    export_all_users_excel,
-    export_old_users_excel,
-    export_new_users_excel,
+    export_users_excel,
     old_register_done,
     load_departments)
 
@@ -33,9 +31,9 @@ urlpatterns = [
     path('<int:pk>/update/', UserUpdateView.as_view(), name='update'),
     path('<int:pk>/pay/', PaymentView.as_view(), name='payment'),
     path('<int:pk>/old-register/', ActiveUserCreateView.as_view(), name='old-register'),
-    path('export/all/', export_all_users_excel, name='export-all-users-excel'),
-    path('export/old/', export_old_users_excel, name='export-old-users-excel'),
-    path('export/new/', export_new_users_excel, name='export-new-users-excel'),
+    path('export/<int:category>/', export_users_excel, name='export-users-excel'),
+    #path('export/old/', export_old_users_excel, name='export-old-users-excel'),
+    #path('export/new/', export_new_users_excel, name='export-new-users-excel'),
     path('old-register/done/', old_register_done, name='old-register-done'),
 
     path('ajax/load-departments/', load_departments, name='ajax-load-departments'),

@@ -161,114 +161,63 @@ def old_register_done(request):
 
 
 @login_required()
-def export_all_users_excel(request):
+def export_users_excel(request, category):
+    # 운영진인지 먼저 확인한다.
     if request.user.is_staff:
         latest_os = OperationScheme.latest()
         response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                          + str(latest_os.current_semester) + ' all user list.xls"'
-
         wb = xlwt.Workbook(encoding='utf-8')
         ws = wb.add_sheet('Users')
         row_num = 0
-
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
+        # 회원정보 중 이름, 단과대, 학과, 학번, 전화번호, 이메일을 내보낸다.
         columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
-
         for col_num in range(len(columns)):
             ws.write(row_num, col_num, columns[col_num], font_style)
-
         font_style = xlwt.XFStyle()
-
+        # 회원 정보를 받아온다.
         users = ActiveUser.objects.filter(active_year=latest_os.current_year,
                                           active_semester=latest_os.current_semester)
-        for active_user in users:
-            row_num += 1
-            user = active_user.user
-            row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
-            for col_num in range(len(row)):
-                ws.write(row_num, col_num, row[col_num], font_style)
-
-        wb.save(response)
-        return response
-    else:
-        return redirect('core:entrypoint')
-
-
-@login_required()
-def export_old_users_excel(request):
-    if request.user.is_staff:
-        latest_os = OperationScheme.latest()
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                          + str(latest_os.current_semester) + ' old user list.xls"'
-
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('Users')
-        row_num = 0
-
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-
-        columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
-
-        for col_num in range(len(columns)):
-            ws.write(row_num, col_num, columns[col_num], font_style)
-
-        font_style = xlwt.XFStyle()
-
-        users = ActiveUser.objects.filter(active_year=latest_os.current_year,
-                                          active_semester=latest_os.current_semester)
-        for active_user in users:
-            if not active_user.is_new:
+        # 모든 회원의 정보를 반환한다.
+        if category == 1:
+            response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                              + str(latest_os.current_semester) + ' all user list.xls"'
+            for active_user in users:
                 row_num += 1
                 user = active_user.user
-                row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
+                row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no,
+                       user.phone, user.email]
                 for col_num in range(len(row)):
                     ws.write(row_num, col_num, row[col_num], font_style)
-
+        # 기존 회원의 정보를 반환한다.
+        elif category == 2:
+            response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                              + str(latest_os.current_semester) + ' old user list.xls"'
+            for active_user in users:
+                if not active_user.is_new:
+                    row_num += 1
+                    user = active_user.user
+                    row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no,
+                           user.phone, user.email]
+                    for col_num in range(len(row)):
+                        ws.write(row_num, col_num, row[col_num], font_style)
+        # 신입 회원의 정보를 반환한다.
+        else:
+            response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
+                                              + str(latest_os.current_semester) + ' new user list.xls"'
+            for active_user in users:
+                if active_user.is_new:
+                    row_num += 1
+                    user = active_user.user
+                    row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no,
+                           user.phone, user.email]
+                    for col_num in range(len(row)):
+                        ws.write(row_num, col_num, row[col_num], font_style)
         wb.save(response)
         return response
-    else:
-        return redirect('core:entrypoint')
-
-
-@login_required()
-def export_new_users_excel(request):
-    if request.user.is_staff:
-        latest_os = OperationScheme.latest()
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="' + str(latest_os.current_year) + '.' \
-                                          + str(latest_os.current_semester) + ' new user list.xls"'
-
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('Users')
-        row_num = 0
-
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-
-        columns = ['이름', '단과대', '학과', '학번', '전화번호', '이메일', ]
-
-        for col_num in range(len(columns)):
-            ws.write(row_num, col_num, columns[col_num], font_style)
-
-        font_style = xlwt.XFStyle()
-
-        users = ActiveUser.objects.filter(active_year=latest_os.current_year,
-                                          active_semester=latest_os.current_semester)
-        for active_user in users:
-            if active_user.is_new:
-                row_num += 1
-                user = active_user.user
-                row = [user.name, user.get_college_display(), user.get_department_display(), user.student_no, user.phone, user.email]
-                for col_num in range(len(row)):
-                    ws.write(row_num, col_num, row[col_num], font_style)
-
-        wb.save(response)
-        return response
+    # 운영진이 아니면 메인 페이지로 간다.
     else:
         return redirect('core:entrypoint')
 

@@ -46,9 +46,9 @@
         <a href="{% url 'admin:partner-create' %}" role="button" class="btn btn-default btn-lg ">짝지 매칭하기</a>
     </div>
     <div class="row text-center" style="margin-top: 20px; margin-bottom: 20px">
-        <a href="{% url 'accounts:export-all-users-excel' %}" role="button" class="btn btn-primary btn-lg ">모든 회원명단 엑셀 받기</a>
-        <a href="{% url 'accounts:export-old-users-excel' %}" role="button" class="btn btn-primary btn-lg ">기존 회원명단 엑셀 받기</a>
-        <a href="{% url 'accounts:export-new-users-excel' %}" role="button" class="btn btn-primary btn-lg ">신입 회원명단 엑셀 받기</a>
+        <a href="{% url 'accounts:export-users-excel' category=1 %}" role="button" class="btn btn-primary btn-lg ">모든 회원명단 엑셀 받기</a>
+        <a href="{% url 'accounts:export-users-excel' category=2 %}" role="button" class="btn btn-primary btn-lg ">기존 회원명단 엑셀 받기</a>
+        <a href="{% url 'accounts:export-users-excel' category=3 %}" role="button" class="btn btn-primary btn-lg ">신입 회원명단 엑셀 받기</a>
     </div>
     <div id="content-main">
         {% if app_list %}
