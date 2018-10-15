@@ -96,7 +96,7 @@
                     <li><a href="{% url 'meetings:meetings-list' %}">공지사항</a><i class="lnr lnr-pushpin"
                                                                                 style="color:white;"></i></li>
                     <li><a href="{% url 'partners:meeting-list' %}">카페인 타임라인</a><i class="lnr lnr-bubble"
-                                                                                style="color:white;"></i></li>
+                                                                                   style="color:white;"></i></li>
                     <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup"
                                                                                        style="color:white;"></i></li>
                     <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier"
@@ -146,6 +146,12 @@
                     </div>
                 </div>
             </div>
+
+            {# 로그인 실패했을 때 보여줄 에러메세지. #}
+            {% if form.errors %}
+                <p style="color:red; font-weight: 500;" >이메일과 비밀번호가 일치하지 않습니다. 만일 비밀번호를 잊으셨다면 운영진에게 문의해주세요.</p>
+            {% endif %}
+
             <h3 class="box-headline letters rotate-2">
 										<span class="box-words-wrapper">
 												<b class="is-visible">서울대학교&nbsp; 커피동아리&nbsp;</b>
