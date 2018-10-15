@@ -1200,7 +1200,7 @@ ul.tags li a:hover {
 
 /* box-intro
 ==================================================*/
-
+@media only screen and (min-width: 1200px) {
 .box-intro {
     text-align: center;
     display: table;
@@ -1211,6 +1211,8 @@ ul.tags li a:hover {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+
 }
 
 .bg-film:before {
