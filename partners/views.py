@@ -24,10 +24,9 @@ from .models import (
 
 
 class FeedListView(LoginRequiredMixin, FormMixin, ListView):
-    # TODO: Add infinite scroll feature
     form_class = CommentForm
     template_name = 'partners/feed_list.html'
-    paginate_by = 1
+    paginate_by = 20
 
     def get_context_data(self, **kwargs):
         context = super(FeedListView, self).get_context_data(**kwargs)

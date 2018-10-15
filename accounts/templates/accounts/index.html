@@ -214,8 +214,8 @@
                                 {% endif %}
                             </div>
                             <div class="row">
-                                <div class="col-sm-12 mt-50 ">
-                                    <h2>{{ score }}점</h2>
+                                <div class="col-sm-12 mt-50">
+                                    <h2><span class="profile-card" style="padding:15px;">{{ score }}점</span></h2>
                                 </div>
                             </div>
                         {% endif %}
@@ -385,16 +385,20 @@
                     </div>
                 </div>
             </div>
-            <div class="row btn-container ">
+            <div class="row btn-container">
                 <div class="btn-group-lg mb-50 panel panel-default">
-                    <a href="{% url 'cafes:cafes-search' %}" class="btn" style="margin-right: 10px;">커모
-                        열기</a>
-                    <a href="{% url 'partners:meeting-list' %}" class="btn">짝모 보기</a>
+                    <a href="{% url 'cafes:cafes-search' %}"
+                       class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}"
+                       style="margin-right: 10px;">커모열기</a>
+                    <a href="{% url 'partners:meeting-list' %}"
+                       class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}">카페인 타임라인</a>
                     {% if partner_set %}
-                        <a href="{% url 'partners:meeting-create' %}" class="btn" style="margin-left:10px;">
-                            짝모 등록</a>
+                        <a href="{% url 'partners:meeting-create' %}"
+                           class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}"
+                           style="margin-left:10px;">짝모등록</a>
                     {% else %}
-                        <a href="{% url 'partners:meeting-create' %}" class="btn disabled">짝모 등록</a>
+                        <a href="{% url 'partners:meeting-create' %}"
+                           class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %} disabled">짝모등록</a>
                     {% endif %}
                 </div>
             </div>

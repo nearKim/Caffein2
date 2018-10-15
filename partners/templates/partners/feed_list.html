@@ -82,7 +82,7 @@
                         </div>
                         {% if user.is_staff %}
                         <a href="{% url 'partners:meeting-admit-deny' feed.partnermeeting.pk %}">
-                            <button class="btn btn-default btn-block" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
+                            <button class="btn btn-success btn-block" onclick="return confirm('다시 인정합니까?');" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
                                 다시 인정하기
                             </button>
                         </a>
@@ -91,7 +91,7 @@
                         {# 짝모인데 점수가 0점이 아닌경우 #}
                         {% if user.is_staff %}
                         <a href="{% url 'partners:meeting-admit-deny' feed.partnermeeting.pk %}">
-                            <button class="btn btn-default btn-block" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
+                            <button class="btn btn-danger btn-block" onclick="return confirm('정말 취소하시겠습니까?');" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
                                 점수 취소하기
                             </button>
                         </a>
