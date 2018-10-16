@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'imagekit',
     'crispy_forms',
     'debug_toolbar',
+    'raven.contrib.django.raven_compat',
     'django_user_agents',
 
     # AWS
