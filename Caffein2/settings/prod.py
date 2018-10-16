@@ -15,25 +15,15 @@ FACEBOOK_GROUP_ID = '542458402875116'  # django_test
 # FIXME: 이 토큰은 2개월후 만료된다.
 FACEBOOK_TOKEN = os.environ['FACEBOOK_APP_TOKEN_60']
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Caffein2', 'static'),
-]
-
-STATIC_ROOT = 'staticfiles'
-MEDIA_ROOT = 'mediafiles'
-# Media files
-
-MEDIA_URL = '/media/'
-MEDIAFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Caffein2', 'media'),
-]
-
 # NaverMap
 NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
 NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']
 
 # AWS
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'static'),
+]
+
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME = 'caffein-alpha-assets'
@@ -49,9 +39,10 @@ STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
 DEFAULT_FILE_STORAGE = 'Caffein2.settings.storage_backend.MediaStorage'
 
+
 # Raven
 RAVEN_CONFIG = {
-    'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
+    'dsn': 'https://868d9c61c3444c28b27c4bfe1438a20e:91e6adbd57c240928fb093594314f3ef@sentry.io/1301900',
 }
 # Logging
 LOGGING = {
