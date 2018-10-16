@@ -42,7 +42,7 @@ DEFAULT_FILE_STORAGE = 'Caffein2.settings.storage_backend.MediaStorage'
 
 # Raven
 RAVEN_CONFIG = {
-    'dsn': 'https://868d9c61c3444c28b27c4bfe1438a20e:91e6adbd57c240928fb093594314f3ef@sentry.io/1301900',
+    'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
 }
 # Logging
 LOGGING = {
