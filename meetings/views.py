@@ -225,6 +225,7 @@ class CoffeeMeetingListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CoffeeMeetingListView, self).get_context_data(*args, **kwargs)
+        context['type'] = 'all'
         return context
 
     def get_queryset(self):
@@ -235,6 +236,25 @@ class CoffeeMeetingListView(LoginRequiredMixin, ListView):
             .prefetch_related('participants__user') \
             .prefetch_related('photos') \
             .all().order_by('-meeting_date')
+        return queryset
+
+
+class CoffeeMeetingUserListView(LoginRequiredMixin, ListView):
+    paginate_by = 10
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CoffeeMeetingUserListView, self).get_context_data(*args, **kwargs)
+        context['type'] = 'user'
+        return context
+
+    def get_queryset(self):
+        queryset = CoffeeMeeting.objects \
+            .select_related('author') \
+            .select_related('cafe') \
+            .prefetch_related('cafe__photos') \
+            .prefetch_related('participants__user') \
+            .prefetch_related('photos') \
+            .all().filter(author=self.request.user).order_by('-meeting_date')
         return queryset
 
 
