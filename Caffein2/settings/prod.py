@@ -1,7 +1,6 @@
 from .base import *
 import django_heroku
 import dj_database_url
-import raven
 
 DEBUG = False
 
@@ -15,6 +14,18 @@ APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
 FACEBOOK_GROUP_ID = '542458402875116'  # django_test
 # FIXME: 이 토큰은 2개월후 만료된다.
 FACEBOOK_TOKEN = os.environ['FACEBOOK_APP_TOKEN_60']
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'static'),
+]
+
+# Media files
+
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'media'),
+]
 
 # NaverMap
 NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
