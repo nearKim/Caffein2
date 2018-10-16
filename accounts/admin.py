@@ -54,7 +54,7 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
     )
     search_fields = ('email', 'name', 'phone', 'student_no')
     ordering = ('-date_joined',)
-    actions = ['invalidate_user', 'activate_and_add_active', ]
+    actions = ['invalidate_user', 'activate_and_add_active', 'old_to_new', ]
 
     def is_new(self, obj):
         latest_os = OperationScheme.latest()
@@ -98,9 +98,16 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
         queryset.update(is_active=False)
         self.message_user(request, str(queryset.count()) + "명의 사용자가 비활성화 되었습니다.")
 
+    def old_to_new(self, request, queryset):
+        """기존회원을 신입회원으로 만든다"""
+        latest_os = OperationScheme.latest()
+        queryset.update(join_year=latest_os.current_year, join_semester=latest_os.current_semester)
+        self.message_user(request, str(queryset.count()) + "명의 기존회원을 신입회원으로 만들었습니다.")
+
     is_new.short_description = _('신입 여부')
-    activate_and_add_active.short_description = _('신규회원으로 확정!')
+    activate_and_add_active.short_description = _('신규회원으로 확정(입금확인)!')
     invalidate_user.short_description = _('비활성화')
+    old_to_new.short_description = _('기존회원을 신입회원으로 만들기')
 
 
 @admin.register(ActiveUser)
