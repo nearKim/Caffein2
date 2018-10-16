@@ -20,6 +20,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Caffein2', 'static'),
 ]
 
+STATIC_ROOT = 'staticfiles'
+MEDIA_ROOT = 'mediafiles'
 # Media files
 
 MEDIA_URL = '/media/'
