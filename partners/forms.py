@@ -1,5 +1,6 @@
 from django.forms import ModelForm, forms, ClearableFileInput
-
+from core.models import OperationScheme
+from accounts.models import ActiveUser
 from meetings.models import CoffeeMeeting
 from .models import (
     PartnerMeeting,
@@ -24,6 +25,17 @@ class PartnerMeetingForm(ModelForm):
         instance.author = self.request.user
         instance.save()
         return instance
+
+    def clean(self):
+        cleaned_data = super().clean()
+        latest_os = OperationScheme.latest()
+        down_len = Partner.related_partner_activeuser(ActiveUser.objects.get(user=self.request.user,
+                                                                             active_year=latest_os.current_year,
+                                                                             active_semester=latest_os.current_semester)).down_partner_count()
+        # 아래짝지 수를 초과하는 입력시 validation error 발생
+        if cleaned_data.get('num_down_partner') > down_len:
+            raise forms.ValidationError('아래짝지의 수 {}명을 초과해서 입력할 수 없습니다.'.format(down_len))
+
 
 
 class CoffeeMeetingFeedForm(ModelForm):
