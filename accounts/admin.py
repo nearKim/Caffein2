@@ -18,6 +18,7 @@ from partners.models import Partner
 from .models import (
     ActiveUser
 )
+import random
 
 User = get_user_model()
 
@@ -189,9 +190,45 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
         new_list = request.POST.getlist('news')
 
         # 위,아래짝지의 수에 따라 적절한 예외처리를 해준다.
-        if len(old_list) != 1:
-            messages.error(request, "위짝지는 반드시 한명이어야 합니다!")
-        elif not (0 < len(new_list) < 4):
+        if not new_list:
+            messages.error(request, "아래짝지를 선택해주세요")
+        elif not old_list:
+            messages.error(request, "위짝지를 선택해주세요")
+        elif len(old_list) >= 2:
+            if len(new_list) == 0:
+                messages.error(request, "랜덤매칭할 아래짝지도 선택해주세요")
+            else:
+                random.shuffle(new_list)
+                random.shuffle(old_list)
+                flag = True
+                # 남은 위짝지가 없거나, 남은 아래짝지가 1명 이하일때까지 랜덤매칭한다.
+                while len(new_list) >= 2 and old_list:
+                    flag = False
+                    old = old_list.pop()
+                    new1 = new_list.pop()
+                    new2 = new_list.pop()
+                    Partner.objects.create(partner_year=year, partner_semester=semester,
+                                           up_partner_id=old,
+                                           down_partner_1_id=new1,
+                                           down_partner_2_id=new2,
+                                           down_partner_3=None
+                                           )
+                if flag:
+                    messages.error(request, "아무도 매칭되지 않았습니다.")
+                elif new_list and old_list:
+                    # 위짝지, 아래짝지 모두 남은 경우이다.
+                    messages.success(request, "위짝지 {}명, 아래짝지 {}명을 제외하고 매칭되었습니다.".format(len(old_list), len(new_list)))
+                elif new_list:
+                    # 아래짝지가 남은 경우이다.
+                    messages.success(request, "아래짝지 {}명을 제외하고 매칭되었습니다.".format(len(new_list)))
+                elif old_list:
+                    # 위짝지가 남은 경우이다.
+                    messages.success(request, "위짝지 {}명을 제외하고 매칭되었습니다.".format(len(old_list)))
+                else:
+                    # 모두 매칭된 경우이다.
+                    messages.success(request, "모두 랜덤매칭되었습니다.")
+        # 위짝지가 1명 선택된 경우
+        elif not (len(new_list) < 4):
             messages.error(request, "아래짝지는 1명에서 3명이어야 합니다!")
         elif len(new_list) == 1:
             Partner.objects.create(partner_year=year, partner_semester=semester,
