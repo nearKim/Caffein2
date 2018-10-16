@@ -6,8 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
-from Caffein2.settings.base import NAVER_CLIENT_ID, NAVER_CLIENT_SECRET
+from django.conf import settings
 
 
 @login_required
@@ -24,8 +23,8 @@ def search_place(request):
         url = "https://openapi.naver.com/v1/search/local?display=10&query=" + encText  # json 결과
 
         request_obj = urllib.request.Request(url)
-        request_obj.add_header("X-Naver-Client-Id", NAVER_CLIENT_ID)
-        request_obj.add_header("X-Naver-Client-Secret", NAVER_CLIENT_SECRET)
+        request_obj.add_header("X-Naver-Client-Id", settings.NAVER_CLIENT_ID)
+        request_obj.add_header("X-Naver-Client-Secret", settings.NAVER_CLIENT_SECRET)
         response = urllib.request.urlopen(request_obj)
 
         # 정상 작동시
