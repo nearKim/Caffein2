@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -23,9 +24,9 @@ from .models import (
 
 
 class FeedListView(LoginRequiredMixin, FormMixin, ListView):
-    # TODO: Add infinite scroll feature
     form_class = CommentForm
     template_name = 'partners/feed_list.html'
+    paginate_by = 20
 
     def get_context_data(self, **kwargs):
         context = super(FeedListView, self).get_context_data(**kwargs)
@@ -50,10 +51,19 @@ class PartnerMeetingDeleteView(ValidAuthorRequiredMixin, DeleteView):
     model = PartnerMeeting
     success_url = reverse_lazy('partners:meeting-list')
 
+    def delete(self, request, *args, **kwargs):
+        # 삭제하기 전 해당 짝모의 점수를 삭제하고 해당 짝모가 삭제된다.
+        obj = self.get_object()
+        obj.partner.raise_score(-obj.point)
+        return super(PartnerMeetingDeleteView, self).delete(request, *args, **kwargs)
+
 
 class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCreateMixin, UpdateView):
     def form_valid(self, form):
         instance = form.save()
+        # 기존 점수를 제거해주고, 업데이트된 정보로 점수를 부여한다.
+        instance.partner.raise_score(-instance.point)
+        instance.check_point()
         FeedPhoto.objects.filter(instagram=instance).delete()
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
@@ -97,10 +107,16 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
 class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         coffee_meeting_pk = self.kwargs['pk']
-        print(coffee_meeting_pk)
-        if CoffeeMeeting.objects.filter(pk=coffee_meeting_pk).exists():
+        coffee_meeting = CoffeeMeeting.objects.get(id=coffee_meeting_pk)
+        participants = coffee_meeting.list_participants()
+        from django.http import HttpResponseRedirect
+        # 참가하지 않은 사람이 후기를 남기려 시도할시
+        if request.user not in participants:
+            messages.warning(request, '참가하지 않은 커모입니다. 다른 사람의 후기를 기다려주세요!')
+            return HttpResponseRedirect(reverse('partners:meeting-list'))
+        # 이미 후기가 있는 커모의 후기를 남기려 시도할시
+        elif CoffeeMeetingFeed.objects.filter(coffee_meeting_id=coffee_meeting_pk).exists():
             messages.warning(request, '이미 선택하신 커모의 후기가 작성되어 있습니다. 여기서 확인해주세요!')
-            from django.http import HttpResponseRedirect
             return HttpResponseRedirect(reverse('partners:meeting-list'))
         return super().dispatch(request, *args, **kwargs)
 
@@ -116,6 +132,23 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
                 feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        # 커모에 참여한 사람의 점수를 업데이트한다.
+        coffee_meeting = CoffeeMeeting.objects.get(id=self.kwargs['pk'])
+        participants = coffee_meeting.participants.all()
+        if len(participants) > 0:
+            group = Partner.related_partner_activeuser(participants[0])
+            # 커모가 한 짝지 그룹으로만 이루어지지 않은 경우 점수를 올린다.
+            if len(participants) != len(set(participants).intersection(group.containing_active_users())):
+                # 참가자가 4명 이상일 경우만 점수를 올린다.
+                if len(participants) >= 4:
+                    coffee_meeting.update_partner_score()
+            # 한 짝지 그룹으로만 이루어진 경우 짝모로 계산한다. 윗짝지가 존재해야한다.
+            elif group.up_partner in participants:
+                # 아래짝지 수 * 커피점수만큼 점수를 부여한다.
+                group.raise_score((len(participants) - 1) * OperationScheme.latest().coffee_point)
+        return super(CoffeeMeetingFeedCreateView, self).post(request, *args, **kwargs)
 
 
 class CoffeeMeetingFeedUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, UpdateView):
@@ -142,3 +175,18 @@ class CoffeeMeetingFeedDeleteView(ValidAuthorRequiredMixin, DeleteView):
 # Deprecated
 class PartnerDetailView(DetailView):
     model = Partner
+
+@login_required
+def admit_or_deny_partnermeeting(request, pk):
+    if request.user.is_staff:
+        partnermeeting = PartnerMeeting.objects.get(id=pk)
+        if partnermeeting.point == 0.0:
+            # 0점이거나 불인정된 짝모 점수를 다시 계산
+            partnermeeting.check_point()
+            partnermeeting.save()
+        else:
+            # 해당 짝모를 불인정
+            partnermeeting.partner.raise_score(-partnermeeting.point)
+            partnermeeting.point = 0
+            partnermeeting.save()
+    return redirect('partners:meeting-list')

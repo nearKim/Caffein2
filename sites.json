@@ -1,0 +1,10 @@
+[
+  {
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+      "domain": "caffein-alpha.herokuapp.com",
+      "name": "caffein-alpha.herokuapp.com"
+    }
+  }
+]

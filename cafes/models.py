@@ -73,7 +73,7 @@ class Cafe(TimeStampedMixin):
         return reverse('cafes:cafes-detail', args=[str(self.id)])
 
 
-class CafePhoto(models.Model):
+class CafePhoto(TimeStampedMixin):
     image = models.ImageField(upload_to=get_cafe_photo_path, verbose_name=_('카페 사진'))
     image_thumb = ImageSpecField(source='image',
                                  processors=[ResizeToFill(300, 340)],

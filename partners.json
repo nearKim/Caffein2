@@ -1,0 +1,93 @@
+[
+  {
+    "model": "partners.partner",
+    "pk": 1,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 24,
+      "down_partner_1": 10,
+      "down_partner_2": 11,
+      "down_partner_3": 33,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 2,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 25,
+      "down_partner_1": 12,
+      "down_partner_2": 13,
+      "down_partner_3": 34,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 3,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 26,
+      "down_partner_1": 15,
+      "down_partner_2": 14,
+      "down_partner_3": null,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 4,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 27,
+      "down_partner_1": 16,
+      "down_partner_2": 17,
+      "down_partner_3": null,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 5,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 28,
+      "down_partner_1": 19,
+      "down_partner_2": 18,
+      "down_partner_3": null,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 6,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 29,
+      "down_partner_1": 21,
+      "down_partner_2": 20,
+      "down_partner_3": null,
+      "score": 0.0
+    }
+  },
+  {
+    "model": "partners.partner",
+    "pk": 7,
+    "fields": {
+      "partner_year": 2018,
+      "partner_semester": 2,
+      "up_partner": 30,
+      "down_partner_1": 23,
+      "down_partner_2": 22,
+      "down_partner_3": null,
+      "score": 0.0
+    }
+  }
+]

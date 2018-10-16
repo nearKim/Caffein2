@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
+from accounts.models import ActiveUser
 from comments.models import Comment
 from meetings.validators import meeting_date_validator
 
@@ -109,41 +110,17 @@ class Meeting(Postable):
     def count_participants(self):
         return self.participants.count()
 
-    def update_partner_score(self, active_user, increment):
-        # TODO: 커모, 교육 참가시 가산점 제도 확정
-        from partners.models import Partner
-        # 현재 참여하고자 하는 active user의 가장 최신의 짝지 객체를 가져온다
-        related_partner = Partner.related_partner_activeuser(active_user)
-        if related_partner is None:
-            # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
-            return
-        latest_os = OperationScheme.latest()
-        # 짝지 년도, 학기를 가장 최신의 운영정보 년도, 학기와 비교한다
-        if not (related_partner.partner_year == latest_os.current_year
-                and related_partner.partner_semester == latest_os.current_semester):
-            # 만일 다르다면 아무것도 하지 않는다. 신학기에 예전학기 짝지 정보를 불러온 것이기 때문이다.
-            return
-
-        else:
-            # 같다면 짝지의 구성원이 현재 참여자에 존재하는지 확인한다.
-            participants_set = {participant for participant in self.participants.all()}
-            partner_in_meeting = related_partner.containing_active_users().intersection(participants_set)
-            if len(partner_in_meeting) != 0:
-                if increment:
-                    # 참여였을 경우 원하는 점수만큼(현재는 커피 한잔 점수) 올린다.
-                    related_partner.raise_score(latest_os.coffee_point)
-                else:
-                    # 참여취소일 경우 점수를 하향해야 한다.
-                    related_partner.raise_score(-latest_os.coffee_point)
+    def list_participants(self):
+        return [activeuser.user for activeuser in self.participants.all()]
 
     def participate_or_not(self, active_user):
+        from meetings.models import CoffeeMeeting
         if active_user in self.participants.all():
             # 참여 취소
-            self.update_partner_score(active_user, False)
             self.participants.remove(active_user)
             return False
         else:
-            self.update_partner_score(active_user, True)
+            # 참여
             self.participants.add(active_user)
             return True
 
@@ -224,6 +201,24 @@ class OperationScheme(models.Model):
     coffee_point = models.FloatField(_('커모 1회당 점수'), default=2.0,
                                      help_text=_('실수형 점수입니다. 모임에 같은 짝지끼리 참석한 경우 이 점수를 추가로 부여받습니다. 예: 2.0'))
     eat_point = models.FloatField(_('밥모 1회당 점수'), default=1.0, help_text=_('실수형 점수입니다. 예: 2.0'))
+    extra_author_point = models.FloatField(_('커모 개최자 추가 점수'), default=2.0,
+                                           help_text=_('커모를 개최하는 사람에게 추가로 부여하는 점수입니다.'
+                                                       '커모 개최자에게 커모점수 + 개최자 추가 점수'))
+
+    extra_2_point = models.FloatField(_('2인 추가점수'), default=1.0,
+                                      help_text=_('윗짝지 1명, 아래짝지 1명인 모임에서, 2명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수 + 추가점수'))
+    extra_3_point = models.FloatField(_('3인 추가점수'), default=0.5,
+                                      help_text=_('윗짝지 1명, 아래짝지 2명인 모임에서, 3명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수. 2명 모이면 커모점수 x 2 + 추가점수'))
+    extra_4_point = models.FloatField(_('4인 추가점수'), default=1.0,
+                                      help_text=_('윗짝지 1명, 아래짝지 3명인 모임에서, 4명이 모두 모였을 때 추가로 부여하는 점수입니다. '
+                                                  '아래짝지 1명 모이면 커모점수. 2명 모이면 커모점수 x 2. 3명 모이면 커모점수 x 3 + 추가점수'))
+
+    limit_coffee = models.SmallIntegerField(_('1일 커모 제한 횟수'), default=3,
+                                            help_text=_('정수형 점수입니다. 하루에 커모할 수 있는 횟수를 지정합니다.'))
+    limit_eat = models.SmallIntegerField(_('1일 밥모 제한 횟수'), default=2,
+                                         help_text=_('정수형 점수입니다. 하루에 밥모할 수 있는 횟수를 지정합니다.'))
 
     bank_account = models.CharField(_('입금 계좌'), max_length=30, help_text=_('반드시 회장의 계좌여야 합니다.'))
     bank = models.CharField(_('입금 은행'), choices=BANK_CHOICES, max_length=2)

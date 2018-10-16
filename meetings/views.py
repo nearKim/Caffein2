@@ -19,7 +19,7 @@ from django.views.generic.edit import (
 from accounts.models import ActiveUser
 from cafes.models import Cafe, CafePhoto
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin, StaffRequiredMixin
+from core.mixins import FaceBookPostMixin, StaffRequiredMixin, ValidAuthorRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
 from .models import (
@@ -27,15 +27,16 @@ from .models import (
     CoffeeEducation,
     CoffeeMeeting)
 from core.models import Meeting, MeetingPhoto, OperationScheme
+from partners.models import Partner
 
 
 # TODO: 정리하기
-# 모든 모임을 한 화면에 보여주는 ListView
-class EveryMeetingListView(LoginRequiredMixin, ListView):
+# 공식 모임과 커피교육을 한 화면에 보여주는 ListView
+class OfficialAndEducationListView(LoginRequiredMixin, ListView):
     template_name = 'meetings/meeting_list.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(EveryMeetingListView, self).get_context_data(**kwargs)
+        context = super(OfficialAndEducationListView, self).get_context_data(**kwargs)
         context['coffee_education_list'] = CoffeeEducation.objects \
             .select_related('author') \
             .all() \
@@ -97,14 +98,11 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(OfficialMeetingDetailView, self).get_context_data()
         context['user'] = self.request.user
+        context['participated'] = True if ActiveUser.objects.filter(
+            user=self.request.user).latest() in self.object.participants.all() else False
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
-
-
-class OfficialMeetingDeleteView(StaffRequiredMixin, DeleteView):
-    model = OfficialMeeting
-    success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CoffeeEducation
@@ -153,14 +151,11 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(CoffeeEducationDetailView, self).get_context_data()
         context['user'] = self.request.user
+        context['participated'] = True if ActiveUser.objects.filter(
+            user=self.request.user).latest() in self.object.participants.all() else False
         context['comments'] = self.object.comments
         context['comment_form'] = self.get_form()
         return context
-
-
-class CoffeeEducationDeleteView(StaffRequiredMixin, DeleteView):
-    model = CoffeeEducation
-    success_url = reverse_lazy('meetings:meetings-list')
 
 
 # CoffeeMeeting
@@ -181,9 +176,9 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
 
     def form_valid(self, form):
         instance = form.save()
-        # 커모의 작성자는 디폴트로 참여해야 한다.
+        # 커모의 작성자는 디폴트로 참여해야 하고, 작성자에게 참가 점수를 부여한다.
         author_active = ActiveUser.objects.filter(user=instance.author).latest()
-        instance.participants.add(author_active)
+        instance.participate_or_not(author_active)
         self.message = '{}님이 커모를  열었습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
         if self.request.FILES:
             if not 'save_cafephoto' in self.request.POST:
@@ -204,7 +199,7 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
         return context
 
 
-class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
+class CoffeeMeetingUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingCreateUpdateMixin, UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
 
@@ -223,11 +218,6 @@ class CoffeeMeetingUpdateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin
                 photo = MeetingPhoto(meeting=instance, image=f)
                 photo.save()
         return super(CoffeeMeetingUpdateView, self).form_valid(form)
-
-
-class CoffeeMeetingDeleteView(LoginRequiredMixin, DeleteView):
-    model = CoffeeMeeting
-    success_url = reverse_lazy('meetings:meetings-list')
 
 
 class CoffeeMeetingListView(LoginRequiredMixin, ListView):
@@ -295,12 +285,16 @@ def participate_meeting(request, pk):
 def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
     if request.user == meeting.author or request.user.is_staff:
-        meeting.delete()
         if isinstance(meeting.cast(), CoffeeMeeting):
             # 현재 지운 meeting이 커모였다면 커모 리스트로 이동한다.
+            meeting.delete()
             return redirect('meetings:coffee-meeting-list')
         else:
+            # 공식모임이나 커피교육은 반드시 운영진이 지워야 한다.
+            if not request.user.is_staff:
+                raise PermissionDenied
             # 아니라면 공식모임 또는 커피교육이므로 해당 리스트로 이동한다.
+            meeting.delete()
             return redirect('meetings:meetings-list')
     else:
         raise PermissionDenied

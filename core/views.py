@@ -88,3 +88,8 @@ def entrypoint(request):
     else:
         # 사용자가 인증되지 않았으면 index로 보낸다
         return redirect('core:index')
+
+
+def developer(request):
+    if request.method == 'GET':
+        return render(request, 'core/developers.html')

@@ -13,14 +13,14 @@
             <ul class="messages text-center">
                 {% for message in messages %}
                     <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                         {{ message }}
                     </div>
                 {% endfor %}
             </ul>
         {% endif %}
         {% for feed in object_list %}
-            <div class="card center-block">
+            <div class="card center-block {% if feed.partnermeeting.point == 0.0 %} should-overlay {% endif %}">
                 <div class="container-fluid">
                     <div class="row" style="margin-bottom:10px; margin-top:10px;">
                         <div class="col-xs-4">
@@ -73,8 +73,32 @@
                                 <p class="lead">{{ feed.coffeemeetingfeed }}</p>
                             </div>
                         </div>
-                        <hr style="margin:0;">
+                    {% elif feed.partnermeeting.point == 0.0 %}
+                        {# 짝모인 경우 점수를 확인한다. 0점인 경우는 인정되지 않은 경우 #}
+                        <div class="row" style="padding:10px; margin-top:10px; font-size: calc(0.5vw + 10px);">
+                            <div class="col-sm-12 text-center">
+                                <p class="lead">짝모 횟수 초과나 짝모 규정 미준수로 점수에 반영되지 않았습니다.</p>
+                            </div>
+                        </div>
+                        {% if user.is_staff %}
+                        <a href="{% url 'partners:meeting-admit-deny' feed.partnermeeting.pk %}">
+                            <button class="btn btn-success btn-block" onclick="return confirm('다시 인정합니까?');" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
+                                다시 인정하기
+                            </button>
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        {# 짝모인데 점수가 0점이 아닌경우 #}
+                        {% if user.is_staff %}
+                        <a href="{% url 'partners:meeting-admit-deny' feed.partnermeeting.pk %}">
+                            <button class="btn btn-danger btn-block" onclick="return confirm('정말 취소하시겠습니까?');" style="margin-top: 15px; cursor: pointer; pointer-events: auto;">
+                                점수 취소하기
+                            </button>
+                        </a>
+                        {% endif %}
                     {% endif %}
+
+                    <hr style="margin:0;">
                     <div class="row" style="padding:16px;">
                         <section style="font-size: calc(0.5vw + 10px);">
                             <b>{{ feed.author.name }}</b>
@@ -90,8 +114,17 @@
                 </div>
             </div>
         {% endfor %}
-
     </div>
+    <div class="loading row text-center center-block" style="display:none;">
+        <div class="col-sm-12">
+            <h2>로딩중...</h2>
+        </div>
+    </div>
+    {% if is_paginated %}
+        {% if page_obj.has_next %}
+            <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">More</a>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 
@@ -99,6 +132,8 @@
 {% block javascript %}
     <script src="{% static 'core/js/ajax-csrf-django.js' %}"></script>
     <script src="{% static 'comments/js/ajax-comment-create.js' %}"></script>
+    <script src="{% static 'core/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'core/js/infinite.min.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var csrftoken = getCookie('csrftoken');
@@ -106,7 +141,6 @@
             {# 사진 슬라이드를 위한 처리 #}
             {# 기본 css로 사진이 디폴트로 hide 처리 되어있는데 각 card의 첫번째 사진은 보여줘야 한다. #}
             $('.card .photo-slide:nth-child(1)').show()
-
             $('.prev').on('click', function (event) {
                 {# 현재 visible한 사진의 인덱스를 얻는다 #}
                 let index = $(this).siblings('.photo-slide:visible').index()
@@ -116,19 +150,16 @@
                     {# 현재 사진이 첫번째 사진일 경우 #}
                     {# 마지막 사진을 보여준다. #}
                     $(this).siblings('.photo-slide').last().show()
-
                 } else {
                     {# 현재 사진이 첫번째 사진이 아닐 때 #}
                     {# 인덱스-1번째 사진을 보여준다 #}
                     $(this).siblings('.photo-slide').eq(index - 1).show()
                 }
-
             })
             $('.next').on('click', function (event) {
                 {# 현재 visible한 사진의 인덱스를 얻는다 #}
                 let index = $(this).siblings('.photo-slide:visible').index()
                 let length = $(this).siblings('.photo-slide').length
-
                 {# 일단 현재 사진을 숨긴다 #}
                 $(this).siblings('.photo-slide:visible').hide()
                 if (index === length - 1) {
@@ -140,7 +171,6 @@
                     $(this).siblings('.photo-slide').eq(index + 1).show()
                 }
             })
-
             {# dropdown-option div를 클릭하면 드롭다운을 열어준다 #}
             $('.dropdown-option').on('click', function (event) {
                 $(this).find('.dropdown-content')
@@ -148,7 +178,6 @@
                     .classList
                     .toggle("show")
             })
-
             {# 삭제버튼을 누르면 해당 글을 삭제한다 #}
             $('.delete-instagram').on('click', function (event) {
                 let flag = confirm('정말 지우시겠습니까?')
@@ -170,6 +199,65 @@
                 }
             })
         })
+    </script>
+    <script type="text/javascript">
+        var infinite = new Waypoint.Infinite({
+            element: $('.card-box')[0],
+            items: '.card',
+            onBeforePageLoad: function () {
+                $('.loading').show();
+            },
+            onAfterPageLoad: function (items) {
+                $('.loading').hide();
+                {# 새로 로드되는 card에게 동일한 리스너들을 달아줘야 한다. #}
+                {# 각 card당 아래 클래스들은 1개밖에 없으므로 갯수체크는 필요없다. #}
+                items.find('.photo-slide').first().show()
+                items.find('.prev').on('click', function (event) {
+                    {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                    let index = $(this).siblings('.photo-slide:visible').index()
+                    {# 일단 현재 사진을 숨긴다 #}
+                    $(this).siblings('.photo-slide:visible').hide()
+                    if (index === 0) {
+                        {# 현재 사진이 첫번째 사진일 경우 #}
+                        {# 마지막 사진을 보여준다. #}
+                        $(this).siblings('.photo-slide').last().show()
 
+                    } else {
+                        {# 현재 사진이 첫번째 사진이 아닐 때 #}
+                        {# 인덱스-1번째 사진을 보여준다 #}
+                        $(this).siblings('.photo-slide').eq(index - 1).show()
+                    }
+
+                })
+                items.find('.next').on('click', function (event) {
+                    {# 현재 visible한 사진의 인덱스를 얻는다 #}
+                    let index = $(this).siblings('.photo-slide:visible').index()
+                    let length = $(this).siblings('.photo-slide').length
+
+                    {# 일단 현재 사진을 숨긴다 #}
+                    $(this).siblings('.photo-slide:visible').hide()
+                    if (index === length - 1) {
+                        {# 현재 사진이 마지막 사진일 때 #}
+                        {# 첫번째 사진을 보여준다 #}
+                        $(this).siblings('.photo-slide').first().show()
+                    } else {
+                        {# 인덱스+1번째 사진을 보여준다 #}
+                        $(this).siblings('.photo-slide').eq(index + 1).show()
+                    }
+                })
+                items.find('.dropdown-option').on('click', function (event) {
+                    $(this).find('.dropdown-content')
+                        .first()[0]
+                        .classList
+                        .toggle("show")
+                })
+                items.find('.delete-instagram').on('click', function (event) {
+                    let flag = confirm('정말 지우시겠습니까?')
+                    if (flag) {
+                        $(this).closest('form').trigger('submit')
+                    }
+                })
+            }
+        });
     </script>
 {% endblock %}

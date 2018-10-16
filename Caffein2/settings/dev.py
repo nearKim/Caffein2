@@ -1,6 +1,42 @@
 from .base import *
 import facebook
 
+DEBUG = True
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+def get_secret(setting):
+    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
+    try:
+        secret_file = os.path.join(BASE_DIR, 'Caffein2', 'secrets.json')
+        with open(secret_file) as f:
+            secrets = json.loads(f.read())
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+    except:
+        return None
+
+
+SECRET_KEY = get_secret('SECRET_KEY')
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'static'),
+]
+
+# Media files
+
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'media'),
+]
+
 # Facebook
 # snucoffee계정
 APP_ID = get_secret('FACEBOOK_APP_ID')
@@ -10,21 +46,9 @@ FACEBOOK_GROUP_ID = '542458402875116'  # django_test
 # FIXME: 이 토큰은 2개월후 만료된다.
 FACEBOOK_TOKEN = get_secret('FACEBOOK_APP_TOKEN_60')
 
-# AWS
-AWS_ACCESS_KEY_ID = get_secret('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = get_secret('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = 'caffein-alpha-assets'
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-
-AWS_LOCATION = 'static'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-
-DEFAULT_FILE_STORAGE = 'Caffein2.settings.storage_backend.MediaStorage'
+# Naver Map
+NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases

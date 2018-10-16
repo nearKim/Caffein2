@@ -71,7 +71,7 @@ class SelfUserChangeForm(forms.ModelForm):
         fields = ['profile_pic', 'password', 'email', 'name', 'phone', 'student_no', 'college', 'department',
                   'category']
 
-    password = ReadOnlyPasswordHashField(label='비밀번호',
+    password = ReadOnlyPasswordHashField(label='비밀번호', disabled=True,
                                          help_text='비밀번호는 암호화되어 서버에 저장됩니다. 비밀번호를 바꾸려면 위 비밀번호 변경 버튼을 클릭하세요!')
 
     def __init__(self, *args, **kwargs):
@@ -80,7 +80,6 @@ class SelfUserChangeForm(forms.ModelForm):
         if f is not None:
             f.queryset = f.queryset.select_related('content_type')
         # Text Input
-        self.fields['email'].widget.attrs['readonly'] = True
         self.fields['name'].widget.attrs['readonly'] = True
         self.fields['phone'].widget.attrs['readonly'] = True
         self.fields['student_no'].widget.attrs['readonly'] = True

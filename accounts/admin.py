@@ -146,18 +146,32 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
         new_actives = new_actives.difference(matched_users)
         old_actives = old_actives.difference(matched_users).order_by('user__name')
 
+        # 현재 학기에 매칭된 짝지들도 얻어온다
+        matched_partners = Partner.objects \
+            .select_related('up_partner') \
+            .select_related('down_partner_3') \
+            .select_related('down_partner_2') \
+            .select_related('down_partner_1') \
+            .filter(partner_semester=latest_os.current_semester, partner_year=latest_os.current_year)
+
         # 각각을 다른 context에 넣어 뿌려준다
         context = dict(
             self.admin_site.each_context(request),
             os=latest_os,
             news=new_actives,
             olds=old_actives,
+            matched=matched_partners
         )
         return TemplateResponse(request, "admin/match_partner.html", context)
+    def match_random_partner_2(self, request):
+        # 두명의 아래짝지를 랜덤하게 배정해준다
+        if not (request.user.is_superuser or request.user.is_staff):
+            return HttpResponseForbidden()
+        year, semester = request.POST.get('year'), request.POST.get('semester')
+
 
     def match_partner(self, request):
         # 실제로 짝지를 매칭해주는 뷰
-
         if not (request.user.is_superuser or request.user.is_staff):
             return HttpResponseForbidden()
 
