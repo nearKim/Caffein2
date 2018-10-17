@@ -2244,7 +2244,6 @@ footer a:hover {
 .flex-direction-nav a:before {
     content: " ";
     display: block;
-    /*FIXME: 좀더 괜찮은 좌우 이미지*/
     background: url('../img/left.png') !important;
     width: 40px;
     height: 40px;
@@ -2253,7 +2252,6 @@ footer a:hover {
 .flex-direction-nav a.flex-next:before {
     content: " ";
     display: block;
-    /*FIXME: 좀더 괜찮은 좌우 이미지*/
     background: url('../img/right.png') !important;
     width: 40px;
     height: 40px;

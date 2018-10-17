@@ -18,26 +18,6 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-DEBUG = True
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-def get_secret(setting):
-    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
-    try:
-        secret_file = os.path.join(BASE_DIR, 'Caffein2', 'secrets.json')
-        with open(secret_file) as f:
-            secrets = json.loads(f.read())
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
-    except:
-        return None
-
-
-SECRET_KEY = get_secret('SECRET_KEY') if get_secret('SECRET_KEY') else os.environ['SECRET_KEY']
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,6 +44,7 @@ INSTALLED_APPS = [
     'imagekit',
     'crispy_forms',
     'debug_toolbar',
+    'raven.contrib.django.raven_compat',
     'django_user_agents',
 
     # AWS
@@ -163,9 +144,9 @@ MEDIAFILES_DIRS = [
 # User Model
 AUTH_USER_MODEL = 'accounts.User'
 
-
 # Messages(alert.error -> alert.danger)
 from django.contrib.messages import constants as message_constants
+
 MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.INFO: 'info',
                 message_constants.SUCCESS: 'success',
@@ -173,11 +154,3 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger', }
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
-# NaverMap
-if DEBUG:
-    NAVER_CLIENT_ID = get_secret("NAVER_CLIENT_ID")
-    NAVER_CLIENT_SECRET = get_secret("NAVER_CLIENT_SECRET")
-else:
-    NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
-    NAVER_CLIENT_SECRET = os.environ['NAVER_CLIENT_SECRET']
