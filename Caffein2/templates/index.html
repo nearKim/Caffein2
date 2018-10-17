@@ -250,7 +250,8 @@
     </section>
     <!-- Testimonials -->
     <section id="testimonials"
-             class="testimonials mb-50 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background">
+             class="testimonials mb-50 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background"
+             style="{% if request.user_agent.is_mobile %}background-attachment: unset !important; {% endif %}">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -318,7 +319,8 @@
 
     <!-- SERVICES PARALAX -->
     <section id="services"
-             class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background">
+             class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background"
+             style="{% if request.user_agent.is_mobile %}background-attachment: unset !important;{% endif %}">
         <div class="section-overlay"></div>
         <div class="container">
             <div class="row center" style="color:white;">
