@@ -1,4 +1,4 @@
-from django.forms import ModelForm, forms, ClearableFileInput
+from django.forms import ModelForm, forms, ClearableFileInput, MultipleChoiceField, CheckboxSelectMultiple, ChoiceField
 from core.models import OperationScheme
 from accounts.models import ActiveUser
 from meetings.models import CoffeeMeeting
@@ -44,14 +44,22 @@ class CoffeeMeetingFeedForm(ModelForm):
         fields = ['content', 'coffee_meeting']
 
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}), label='커모 후기 사진')
+    #participants = MultipleChoiceField(label='참가자', choices=clean_participants, widget=CheckboxSelectMultiple)
+
 
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         self.coffee_meeting = kwargs.pop('coffee_meeting', None)
+        self.participants = kwargs.pop('participants', None)
         super(CoffeeMeetingFeedForm, self).__init__(*args, **kwargs)
         # 커모는 바꾸면 안되겠지
         self.fields['coffee_meeting'].initial = self.coffee_meeting
         self.fields['coffee_meeting'].widget.attrs['readonly'] = True
+        #self.fields['participants'].initial = self.participants
+        self.fields['participants'] = MultipleChoiceField(label='참가자',
+                                                          choices=[(participant.pk, participant.name) for participant in self.participants],
+                                                          widget=CheckboxSelectMultiple,
+                                                          )
 
     def clean_coffee_meeting(self):
         # 항상 넘어온 커모를 리턴한다

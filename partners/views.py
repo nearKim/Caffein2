@@ -21,6 +21,7 @@ from .models import (
     PartnerMeeting,
     Partner
 )
+from accounts.models import User, ActiveUser
 
 
 class FeedListView(LoginRequiredMixin, FormMixin, ListView):
@@ -123,14 +124,25 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs['coffee_meeting'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk'])
+        form_kwargs['participants'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk']).list_participants()
         return form_kwargs
 
     def form_valid(self, form):
         instance = form.save()
+        latest_os = OperationScheme.latest()
+        year, semester = latest_os.current_year, latest_os.current_semester
+        # 실제 참여한 사람으로만 참가자 목록을 업데이트한다.
+        participants = []
+        for pk in self.request.POST.getlist('participants'):
+            participants.append(ActiveUser.objects.get(user=User.objects.get(pk=pk),
+                                                       active_year=year,
+                                                       active_semester=semester))
+        instance.coffee_meeting.participants.set(participants)
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
+
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
