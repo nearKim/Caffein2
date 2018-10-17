@@ -1206,7 +1206,7 @@ ul.tags li a:hover {
     display: table;
     height: 100vh;
     width: 100%;
-    background: url(../img/header.jpg) fixed center center;
+    background: url(../img/header.jpg) no-repeat center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
