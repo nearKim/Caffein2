@@ -94,6 +94,23 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
             messages.error(request, '아직 짝지가 배정되지 않았습니다.')
             return redirect(reverse('core:index'))
 
+    def get_form_kwargs(self):
+        # 해당 유저의 짝지 정보를 검색해 보낸다.
+        form_kwargs = super().get_form_kwargs()
+        latest_os = OperationScheme.latest()
+        year, semester = latest_os.current_year, latest_os.current_semester
+        partner_member = Partner.related_partner_activeuser(ActiveUser.objects.get(user=self.request.user,
+                                                                                   active_year=year,
+                                                                                   active_semester=semester
+                                                                                   )).containing_active_users()
+        partner = []
+        for member in partner_member:
+            # 실제 짝지 객체만 추가한다.
+            if member is not None:
+                partner.append(member)
+        form_kwargs['participants'] = partner
+        return form_kwargs
+
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 짝모했어요!. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -101,7 +118,8 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
             for f in self.request.FILES.getlist('images'):
                 feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
-
+        # 위짝지가 반드시 포함되어 있으므로, 1을 빼면 참가한 아래짝지 수이다.
+        instance.num_down_partner = len(self.request.POST.getlist('participants')) - 1
         return super(PartnerMeetingCreateView, self).form_valid(form)
 
 
@@ -122,9 +140,11 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
+        # 커모 정보와 참가자 정보를 보낸다.
         form_kwargs = super().get_form_kwargs()
-        form_kwargs['coffee_meeting'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk'])
-        form_kwargs['participants'] = CoffeeMeeting.objects.get(pk=self.kwargs['pk']).list_participants()
+        coffee_meeting = CoffeeMeeting.objects.get(pk=self.kwargs['pk'])
+        form_kwargs['coffee_meeting'] = coffee_meeting
+        form_kwargs['participants'] = coffee_meeting.list_participants()
         return form_kwargs
 
     def form_valid(self, form):
@@ -138,29 +158,35 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
                                                        active_year=year,
                                                        active_semester=semester))
         instance.coffee_meeting.participants.set(participants)
+        participants_len = len(participants)
+        # 커모에 참여한 사람의 점수를 업데이트한다.
+        if participants_len > 0:
+            group = Partner.related_partner_activeuser(participants[0])
+            # 커모가 한 짝지 그룹으로만 이루어지지 않은 경우 점수를 올린다.
+            if participants_len != len(set(participants).intersection(group.containing_active_users())):
+                # 참가자가 4명 이상일 경우만 점수를 올린다.
+                if participants_len >= 4:
+                    instance.coffee_meeting.update_partner_score()
+            # 한 짝지 그룹으로만 이루어진 경우 짝모로 계산한다. 윗짝지가 존재해야한다.
+            elif group.up_partner in participants:
+                extra = 0
+                num_partner = group.down_partner_count() + 1  # 몇 인조인지 확인
+                if num_partner == participants_len:
+                    if num_partner == 2:
+                        extra = latest_os.extra_2_point
+                    elif num_partner == 3:
+                        extra = latest_os.extra_3_point
+                    elif num_partner == 4:
+                        extra = latest_os.extra_4_point
+                # 아래짝지 수 * 커피점수(모두 모였으면 추가점수까지)만큼 점수를 부여한다.
+                group.raise_score((participants_len - 1) * latest_os.coffee_point + extra)
+
         if self.request.FILES:
             for f in self.request.FILES.getlist('images'):
                 feed_photo = FeedPhoto(instagram=instance, image=f)
                 feed_photo.save()
 
         return super().form_valid(form)
-
-    def post(self, request, *args, **kwargs):
-        # 커모에 참여한 사람의 점수를 업데이트한다.
-        coffee_meeting = CoffeeMeeting.objects.get(id=self.kwargs['pk'])
-        participants = coffee_meeting.participants.all()
-        if len(participants) > 0:
-            group = Partner.related_partner_activeuser(participants[0])
-            # 커모가 한 짝지 그룹으로만 이루어지지 않은 경우 점수를 올린다.
-            if len(participants) != len(set(participants).intersection(group.containing_active_users())):
-                # 참가자가 4명 이상일 경우만 점수를 올린다.
-                if len(participants) >= 4:
-                    coffee_meeting.update_partner_score()
-            # 한 짝지 그룹으로만 이루어진 경우 짝모로 계산한다. 윗짝지가 존재해야한다.
-            elif group.up_partner in participants:
-                # 아래짝지 수 * 커피점수만큼 점수를 부여한다.
-                group.raise_score((len(participants) - 1) * OperationScheme.latest().coffee_point)
-        return super(CoffeeMeetingFeedCreateView, self).post(request, *args, **kwargs)
 
 
 class CoffeeMeetingFeedUpdateView(ValidAuthorRequiredMixin, CoffeeMeetingFeedUpdateCreateMixin, UpdateView):
