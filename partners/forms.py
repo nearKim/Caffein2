@@ -20,7 +20,7 @@ class PartnerMeetingForm(ModelForm):
         self.participants = kwargs.pop('participants', None)
         super(PartnerMeetingForm, self).__init__(*args, **kwargs)
         self.fields['participants'] = MultipleChoiceField(label='참가자',
-                                                          choices=[(participant.user.pk, participant.user.name) for participant in
+                                                          choices=[(participant.user.pk, participant.user) for participant in
                                                                    self.participants],
                                                           widget=CheckboxSelectMultiple)
 
@@ -68,7 +68,7 @@ class CoffeeMeetingFeedForm(ModelForm):
         self.fields['coffee_meeting'].initial = self.coffee_meeting
         self.fields['coffee_meeting'].widget.attrs['readonly'] = True
         self.fields['participants'] = MultipleChoiceField(label='참가자',
-                                                          choices=[(participant.pk, participant.name) for participant in self.participants],
+                                                          choices=[(participant.pk, participant) for participant in self.participants],
                                                           widget=CheckboxSelectMultiple)
 
     def clean_coffee_meeting(self):
