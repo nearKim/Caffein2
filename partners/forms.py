@@ -38,8 +38,11 @@ class PartnerMeetingForm(ModelForm):
                                                                             active_year=latest_os.current_year,
                                                                             active_semester=latest_os.current_semester))
         participants = cleaned_data.get('participants')
+        # 커피와 식사 모두 0인 경우
+        if cleaned_data.get('num_coffee') == 0 and cleaned_data.get('num_eat') == 0:
+            raise forms.ValidationError('\'마신 커피 수\'와 \'먹은 식사 수\' 모두 0일 수 없습니다.')
         # 아무도 선택하지 않았을때
-        if participants is None:
+        elif participants is None:
             raise forms.ValidationError('짝모에 참가한 사람을 선택해주세요.')
         # 위짝지가 없으면 에러 발생
         elif str(partner.up_partner.user.pk) not in participants:
