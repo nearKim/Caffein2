@@ -15,6 +15,7 @@ from .views import (
     CoffeeMeetingCreateView,
     CoffeeMeetingDetailView,
     CoffeeMeetingListView,
+    CoffeeMeetingUserListView,
     CoffeeMeetingUpdateView,
 
     participate_meeting,
@@ -39,6 +40,7 @@ urlpatterns = [
     path('coffee-meeting/update/<int:pk>', CoffeeMeetingUpdateView.as_view(), name='coffee-meeting-update'),
     path('coffee-meeting/<int:pk>', CoffeeMeetingDetailView.as_view(), name='coffee-meeting-detail'),
     path('coffee-meeting/', CoffeeMeetingListView.as_view(), name='coffee-meeting-list'),
+    path('coffee-meeting/user/', CoffeeMeetingUserListView.as_view(), name='coffee-meeting-user-list'),
 
     path('participate/<int:pk>/', participate_meeting, name='participate'),
     path('delete-meeting/<int:pk>', delete_meeting, name='delete-meeting'),
