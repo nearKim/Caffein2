@@ -68,11 +68,8 @@ class CustomUserChangeForm(UserChangeForm):
 class SelfUserChangeForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ['profile_pic', 'password', 'email', 'name', 'phone', 'student_no', 'college', 'department',
+        fields = ['profile_pic', 'email', 'name', 'phone', 'student_no', 'college', 'department',
                   'category']
-
-    password = ReadOnlyPasswordHashField(label='비밀번호', disabled=True,
-                                         help_text='비밀번호는 암호화되어 서버에 저장됩니다. 비밀번호를 바꾸려면 위 비밀번호 변경 버튼을 클릭하세요!')
 
     def __init__(self, *args, **kwargs):
         super(SelfUserChangeForm, self).__init__(*args, **kwargs)
