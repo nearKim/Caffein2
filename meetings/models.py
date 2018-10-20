@@ -89,13 +89,13 @@ class CoffeeMeeting(Meeting):
             related_partner = Partner.related_partner_activeuser(active_user)
             if related_partner is None:
                 # related partner가 없으면(운영자계정, 신입회원 등) 아무것도 하지 않는다
-                return
+                continue
 
             # 짝지 년도, 학기를 가장 최신의 운영정보 년도, 학기와 비교한다
             if not (related_partner.partner_year == latest_os.current_year
                     and related_partner.partner_semester == latest_os.current_semester):
                 # 만일 다르다면 아무것도 하지 않는다. 신학기에 예전학기 짝지 정보를 불러온 것이기 때문이다.
-                return
+                continue
 
             else:
                 from meetings.models import CoffeeMeeting
