@@ -214,6 +214,7 @@ class CoffeeMeetingFeedDeleteView(ValidAuthorRequiredMixin, DeleteView):
 class PartnerDetailView(DetailView):
     model = Partner
 
+
 @login_required
 def admit_or_deny_partnermeeting(request, pk):
     if request.user.is_staff:
