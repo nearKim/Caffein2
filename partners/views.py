@@ -120,6 +120,7 @@ class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMee
                 feed_photo.save()
         # 위짝지가 반드시 포함되어 있으므로, 1을 빼면 참가한 아래짝지 수이다.
         instance.num_down_partner = len(self.request.POST.getlist('participants')) - 1
+        instance.check_point()
         return super(PartnerMeetingCreateView, self).form_valid(form)
 
 
