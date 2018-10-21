@@ -73,6 +73,13 @@
                                 <p class="lead">{{ feed.coffeemeetingfeed }}</p>
                             </div>
                         </div>
+                        <div class="row" style="font-size: calc(0.5vw + 10px);">
+                            <div class="col-sm-12 text-center"> 참가자:
+                                {% for participant in feed.coffeemeetingfeed.coffee_meeting.list_participants %}
+                                    {{ participant.name }}&nbsp;
+                                {% endfor %}
+                            </div>
+                        </div>
                     {% elif feed.partnermeeting.point == 0.0 %}
                         {# 짝모인 경우 점수를 확인한다. 0점인 경우는 인정되지 않은 경우 #}
                         <div class="row" style="padding:10px; margin-top:10px; font-size: calc(0.5vw + 10px);">
