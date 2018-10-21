@@ -171,12 +171,6 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
             matched=matched_partners
         )
         return TemplateResponse(request, "admin/match_partner.html", context)
-    def match_random_partner_2(self, request):
-        # 두명의 아래짝지를 랜덤하게 배정해준다
-        if not (request.user.is_superuser or request.user.is_staff):
-            return HttpResponseForbidden()
-        year, semester = request.POST.get('year'), request.POST.get('semester')
-
 
     def match_partner(self, request):
         # 실제로 짝지를 매칭해주는 뷰

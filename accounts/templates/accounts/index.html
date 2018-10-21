@@ -521,6 +521,75 @@
             </div>
         </div>
     </section>
+    <!-- 짝모순위 -->
+    <section class="portfolio mb-50" style="padding-top: 75px;">
+        <div class="container text-center">
+            <div class="row ">
+                <div class="col-sm-12">
+                    <h2 style="margin: 0;">짝모 순위</h2>
+                    <p style="margin-top:20px;">짝지 점수 상위 4팀이 보여집니다.</p>
+                </div>
+            </div>
+            <div class="row">
+                {% for partner in partner_rank %}
+                    <div class="col-sm-3">
+                        <div class="card" style="margin: 20px; max-height: 100%;">
+                            <div class="row" style="padding:10px;">
+                                <div>
+                                    <p style="font-size:calc(0.3vw + 14px); ">위짝지
+                                        {% if partner.up_partner.user.profile_pic %}
+                                            {% thumbnail "30x30" partner.up_partner.user.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                 height="30" class="img-profile">
+                                        {% endif %}
+                                        <b>{{ partner.up_partner.user.name }}</b></p>
+                                </div>
+                                {% if partner.down_partner_1 is not null %}
+                                    <div>
+                                        <p style="font-size:calc(0.3vw + 14px); ">아래짝지
+                                            {% if partner.down_partner_1.user.profile_pic %}
+                                                {% thumbnail "30x30" partner.down_partner_1.user.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                     height="30" class="img-profile">
+                                            {% endif %}
+                                            <b>{{ partner.down_partner_1.user.name }}</b></p>
+                                    </div>
+                                {% endif %}
+                                {% if partner.down_partner_2 is not null %}
+                                    <div>
+                                    <p style="font-size:calc(0.3vw + 14px); ">아래짝지
+                                        {% if partner.down_partner_2.user.profile_pic %}
+                                            {% thumbnail "30x30" partner.down_partner_2.user.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                 height="30" class="img-profile">
+                                        {% endif %}
+                                        <b>{{ partner.down_partner_2.user.name }}</b></p>
+                                    </div>
+                                {% endif %}
+                            {% if partner.down_partner_3 is not null %}
+                                <div>
+                                    <p style="font-size:calc(0.3vw + 14px); ">아래짝지
+                                        {% if partner.down_partner_3.user.profile_pic %}
+                                            {% thumbnail "30x30" partner.down_partner_3.user.profile_pic -- class="img-profile" %}
+                                        {% else %}
+                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                 height="30" class="img-profile">
+                                        {% endif %}
+                                        <b>{{ partner.down_partner_3.user.name }}</b></p>
+                                </div>
+                            {% endif %}
+                            <hr>
+                            <h5 style="font-size:calc(0.3vw + 14px); "> {{ partner.score }}점 </h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     <!-- 사진첩 -->
     <section class="portfolio">
         <div class="container-fluid ">

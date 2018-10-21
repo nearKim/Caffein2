@@ -163,7 +163,7 @@ class CoffeeMeetingFeedCreateView(LoginRequiredMixin, CoffeeMeetingFeedUpdateCre
         if participants_len > 0:
             group = Partner.related_partner_activeuser(participants[0])
             # 커모가 한 짝지 그룹으로만 이루어지지 않은 경우 점수를 올린다.
-            if participants_len != len(set(participants).intersection(group.containing_active_users())):
+            if group is None or participants_len != len(set(participants).intersection(group.containing_active_users())):
                 # 참가자가 4명 이상일 경우만 점수를 올린다.
                 if participants_len >= 4:
                     instance.coffee_meeting.update_partner_score()
@@ -213,6 +213,7 @@ class CoffeeMeetingFeedDeleteView(ValidAuthorRequiredMixin, DeleteView):
 # Deprecated
 class PartnerDetailView(DetailView):
     model = Partner
+
 
 @login_required
 def admit_or_deny_partnermeeting(request, pk):

@@ -43,6 +43,9 @@ def entrypoint(request):
             # 사진첩 carousel은 photo_album의 사진들만 8개까지 보여준다.
             latest_albumphotos = Photo.objects.all().order_by('-created')[:8]
 
+            # 짝모 순위를 가져온다
+            partner_rank = Partner.objects.all().order_by('-score')[:4]
+
             current_os = OperationScheme.latest()
 
             # 최근의 짝지 객체를 갖고와서 아래짝지가 몇명인지 반환하고 기본 context를 정의한다.
@@ -52,7 +55,8 @@ def entrypoint(request):
                        'official_meetings': official_and_educations,
                        'coffee_meetings': coffee_meetings,
                        'partner_meetings': latest_partnermeetings,
-                       'latest_photos': latest_albumphotos
+                       'latest_photos': latest_albumphotos,
+                       'partner_rank': partner_rank
                        }
 
             # latest_partner가 존재하고 이번 학기/년도와 짝지 학기/년도가 일치하면 최신의 짝지가 존재하는 것이다.
