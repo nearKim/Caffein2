@@ -23,11 +23,13 @@ class FeedCommentInline(StaffRequiredAdminMixin, TabularInline):
 
 @admin.register(Partner)
 class PartnerAdmin(StaffRequiredAdminMixin, ModelAdmin):
+    list_display = ('__str__', 'score', 'up_partner', 'down_partner_1', 'down_partner_2',
+                    'down_partner_3')
     list_filter = ('partner_year', 'partner_semester')
     search_fields = (
         'up_partner__user__name', 'down_partner_1__user__name', 'down_partner_2__user__name',
         'down_partner_3__user__name')
-    ordering = ('-partner_year', '-partner_semester')
+    ordering = ('-partner_year', '-partner_semester', '-score')
 
 
 @admin.register(PartnerMeeting)
