@@ -1,6 +1,5 @@
 from .base import *
-import django_heroku
-import dj_database_url
+import raven
 
 DEBUG = False
 
@@ -24,7 +23,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Caffein2', 'static'),
 ]
 
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY']
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME = 'caffein-alpha-assets'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
@@ -40,6 +39,17 @@ STATIC_ROOT = STATIC_URL
 
 DEFAULT_FILE_STORAGE = 'Caffein2.settings.storage_backend.MediaStorage'
 
+# RDS
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'caffein-db.cmuqfrbw8kv7.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '5432',
+        'NAME': 'caffein',
+        'USER': 'caffein_admin',
+        'PASSWORD': 'winteriscoming',
+    }
+}
 
 # Raven
 RAVEN_CONFIG = {
@@ -92,16 +102,6 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# Database for Heroku
-db_from_env = dj_database_url.config(conn_max_age=500)
-
-DATABASES = {
-    'default': db_from_env
-}
-
-# DO HEROKU WORK
-django_heroku.settings(locals())
 
 # Prod needs this
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
