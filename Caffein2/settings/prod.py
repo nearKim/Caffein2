@@ -47,7 +47,7 @@ DATABASES = {
         'PORT': '5432',
         'NAME': 'caffein',
         'USER': 'caffein_admin',
-        'PASSWORD': 'winteriscoming',
+        'PASSWORD': os.environ['RDS_PASS'],
     }
 }
 
