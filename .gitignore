@@ -18,7 +18,8 @@ tests/report/
 CACHE/
 
 # Secret information
-/Caffein2/secrets.json
+src/Caffein2/secrets.json
+secrets.json
 
 # Media Files
 media/
