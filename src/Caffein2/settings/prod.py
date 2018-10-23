@@ -1,7 +1,7 @@
 from .base import *
-import django_heroku
-import dj_database_url
-import raven
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 DEBUG = False
 
@@ -37,10 +37,24 @@ STATIC_ROOT = STATIC_URL
 
 DEFAULT_FILE_STORAGE = 'Caffein2.settings.storage_backend.MediaStorage'
 
-# Raven
-RAVEN_CONFIG = {
-    'dsn': 'https://539eede31021486b906abc8f34c84956:8969132bf49240beb2992d5dcf41b065@sentry.io/1277131',
+# RDS
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'caffein-db.cmuqfrbw8kv7.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '5432',
+        'NAME': 'caffein',
+        'USER': 'caffein_admin',
+        'PASSWORD': os.environ['RDS_PASS'],
+    }
 }
+
+# Unified sentry
+sentry_sdk.init(
+    dsn="https://10fd27bd517647c69fd07c69793bb653@sentry.io/1306729",
+    integrations=[DjangoIntegration()]
+)
+
 # Logging
 LOGGING = {
     'version': 1,
@@ -89,15 +103,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# Database for Heroku
-db_from_env = dj_database_url.config(conn_max_age=500)
-
-DATABASES = {
-    'default': db_from_env
-}
-
-# DO HEROKU WORK
-django_heroku.settings(locals())
-
 # Prod needs this
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['*']
