@@ -1,0 +1,21 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - web
+  web:
+    build: .
+    container_name: django
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn Caffein2.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - ./src:/src
+    expose:
+      - "8000"
+    
