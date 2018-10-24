@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   nginx:
     image: nginx:latest
@@ -9,13 +9,31 @@ services:
       - ./src:/src
       - ./config/nginx:/etc/nginx/conf.d
     depends_on:
-      - web
+      - "web"
   web:
     build: .
     container_name: django
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn Caffein2.wsgi -b 0.0.0.0:8000"
+    command: bash -c "python manage.py collectstatic --noinput && python manage.py makemigrations && python manage.py migrate && gunicorn Caffein2.wsgi -b 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
     volumes:
       - ./src:/src
     expose:
       - "8000"
-    
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: 0814
+      POSTGRES_USER: postgres
+      POSTGRES_DB: caffein
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 3s
+      timeout: 1s
+      retries: 10
+

@@ -1,7 +1,8 @@
 from .base import *
-import facebook
 
 DEBUG = True
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,7 +44,7 @@ DATABASES = {
         'NAME': 'caffein',
         'USER': 'postgres',
         'PASSWORD': '0814',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -52,3 +53,5 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 # EMAIL provider
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ALLOWED_HOSTS = ['*']
