@@ -18,6 +18,7 @@ from partners.models import Partner
 from .models import (
     ActiveUser
 )
+from meetings.models import CoffeeEducation
 import random
 
 User = get_user_model()
@@ -124,11 +125,51 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
 
     def get_urls(self):
         urls = super().get_urls()
-        match_urls = [
+        admin_action_urls = [
             path('partner/create/', self.admin_site.admin_view(self.partner_match_view), name='partner-create'),
             path('partner/match/', self.admin_site.admin_view(self.match_partner), name='match-partner'),
+            path('meetings/education/participants', self.admin_site.admin_view(self.education_participants_view),
+                 name='education-participants')
         ]
-        return match_urls + urls
+        return admin_action_urls + urls
+
+    def education_participants_view(self, request):
+        if not (request.user.is_staff or request.user.is_superuser):
+            return HttpResponseForbidden()
+        latest_os = OperationScheme.latest()
+        year, semester = latest_os.current_year, latest_os.current_semester
+
+        # 활동회원 중 이번학기 회원들을 불러온다
+        active_users = ActiveUser.objects \
+            .select_related('user') \
+            .filter(active_year=year, active_semester=semester) \
+            .order_by('user__name')
+
+        participants = []
+        not_participants = []
+
+        # 커피교육에 참가한 사람과 그 정보를 가져온다
+        for user in active_users:
+            educations = CoffeeEducation.objects.filter(participants__user=user.user)
+            # 비어 있지 않으면 추가한다
+            if educations:
+                participants.append({
+                    'user': user,
+                    'educations': educations
+                })
+            else:
+                not_participants.append({
+                    'user': user,
+                })
+
+        # context에 넣어 준다
+        context = dict(
+            self.admin_site.each_context(request),
+            os=latest_os,
+            participants=participants
+        )
+        return TemplateResponse(request, "admin/education_participants.html", context)
+
 
     def partner_match_view(self, request):
         # 짝지 매칭을 위한 템플릿을 뿌려주는 뷰
