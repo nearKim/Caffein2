@@ -1,0 +1,64 @@
+{% extends 'admin/base_site.html' %}
+{% block title %}커피 교육 명단{% endblock %}
+{% block content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">{{ os.current_year }}년 {{ os.current_semester }}학기 커피 교육 명단</h1>
+        </div>
+    </div>
+    <div class="container">
+        <h2 class="text-center" style="margin-top: 100px;">교육 참가자 명단</h2>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>교육 참가자</th>
+                    <th>참가 커피교육</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in participants %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td>
+                            {{ item.user }}
+                        </td>
+                        <td>
+                            {% for education in item.educations %}
+                                {{ education }},
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <h2 class="text-center" style="margin-top: 100px;">미교육 명단</h2>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>교육 미참가자</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in participants %}
+                    <tr>
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td>
+                            {{ item.user }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
