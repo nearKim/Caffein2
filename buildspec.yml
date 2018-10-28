@@ -2,7 +2,6 @@ version: 0.2
 
 env:
   variables:
-    DB_NAME: "caffein"
     AWS_DEFAULT_REGION: "ap-northeast-2"
     AWS_ACCOUNT_ID: "395641204581"
     IMAGE_REPO_NAME: "caffein-repository"
