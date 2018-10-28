@@ -8,17 +8,6 @@ env:
     IMAGE_REPO_NAME: "caffein-repository"
     IMAGE_TAG: "latest"
 
-
-  parameter-store:
-    AWS_ACCESS_KEY_ID: "/prod/aws/aws_access_key_id"
-    AWS_ACCESS_SECRET: "/prod/aws/aws_secret_access_key"
-    DJANGO_SECRET: "/prod/django/secret_key"
-    FACEBOOK_APP_ID: "/prod/facebook/app_id"
-    FACEBOOK_APP_SECRET: "/prod/facebook/app_secret"
-    GMAIL_PASS: "/prod/google/gmail"
-    NAVER_CLIENT_ID: "/prod/naver/client_id"
-    NAVER_CLIENT_SECRET: "/prod/naver/client_secret"
-
 phases:
   pre_build:
     commands:
