@@ -2,63 +2,37 @@ version: 0.2
 
 env:
   variables:
-    key: "value"
-    key: "value"
+    DB_NAME: "caffein"
+    AWS_DEFAULT_REGION: "ap-northeast-2"
+    AWS_ACCOUNT_ID: "395641204581"
+    IMAGE_REPO_NAME: "caffein-repository"
+    IMAGE_TAG: "latest"
+
+
   parameter-store:
-    key: "value"
-    key: "value"
-            
+    AWS_ACCESS_KEY_ID: "/prod/aws/aws_access_key_id"
+    AWS_ACCESS_SECRET: "/prod/aws/aws_secret_access_key"
+    DJANGO_SECRET: "/prod/django/secret_key"
+    FACEBOOK_APP_ID: "/prod/facebook/app_id"
+    FACEBOOK_APP_SECRET: "/prod/facebook/app_secret"
+    GMAIL_PASS: "/prod/google/gmail"
+    NAVER_CLIENT_ID: "/prod/naver/client_id"
+    NAVER_CLIENT_SECRET: "/prod/naver/client_secret"
+
 phases:
-  install:
-    commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
   pre_build:
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
+      - echo ..........Logging in to Amazon ECR.............
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
   build:
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
+      - echo ..........Building Started.............
+      - echo ..........Build started on `date`
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
-      - command
-      - command
-    finally:
-      - command
-      - command
-artifacts:
-  files:
-    - location
-    - location
-    - name
-  discard-paths: yes
-  base-directory: location
-  secondary-artifacts:
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      discard-paths: yes
-      base-directory: location
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      discard-paths: yes
-      base-directory: location
-cache:
-  paths:
-    - path
-    - path
-
+      - echo ..........Building Completed.............
+      - echo ..........Build finished on `date`
+      - echo ..........Pushing the docker image
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
