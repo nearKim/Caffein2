@@ -9,6 +9,6 @@ tail -n 0 -f /src/logs/*.log &
 
 echo Starting nginx...
 echo Starging Gunicorn...
-exec gunicorn Caffein2.wsgi --bind 0.0.0.0:8000 --workers=3
+exec gunicorn Caffein2.wsgi --bind :8000 --workers=3
 
 exec service nginx start

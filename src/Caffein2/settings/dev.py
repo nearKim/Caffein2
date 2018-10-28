@@ -23,6 +23,21 @@ def get_secret(setting):
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'static'),
+]
+
+# Media files
+
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Caffein2', 'media'),
+]
+
 # Facebook
 # snucoffee계정
 APP_ID = get_secret('FACEBOOK_APP_ID')

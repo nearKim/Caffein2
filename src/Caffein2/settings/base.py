@@ -126,23 +126,10 @@ USE_TZ = False
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Caffein2', 'static'),
-]
-
-# Media files
-
-MEDIA_URL = '/media/'
-MEDIAFILES_DIRS = [
-    os.path.join(BASE_DIR, 'Caffein2', 'media'),
-]
 
 # User Model
 AUTH_USER_MODEL = 'accounts.User'
+
 
 # Messages(alert.error -> alert.danger)
 from django.contrib.messages import constants as message_constants
