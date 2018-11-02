@@ -17,9 +17,12 @@ ENV DOCKYARD_SRVPROJ=$DOCKYARD_SRVHOME/$CAFFEIN_SRC
 RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y python3 python3-pip
 RUN alias python='python3'
+RUN alias pip='pip3'
 RUN apt-get install -y git
+RUN apt-get install -y awscli
 RUN apt-get install -y vim
 RUN apt-get install -y nginx
+RUN apt-get install -y jq
 
 # Install requirements and set initial settings
 WORKDIR $DOCKYARD_SRVHOME
