@@ -33,8 +33,9 @@ VOLUME ["$DOCKYARD_SRVHOME/media/", "$DOCKYARD_SRVHOME/logs/"]
 COPY $CAFFEIN_SRC $DOCKYARD_SRVPROJ
 COPY $CAFFEIN_SEED_SRC $DOCKYARD_SRVHOME/seeds/
 
-# Install dependencies
+# Install dependencies and seed db
 RUN pip3 install -r $DOCKYARD_SRVPROJ/requirements.txt
+RUN $DOCKYARD_SRVHOME/seeds/seeddb.sh
 
 EXPOSE 8000
 
