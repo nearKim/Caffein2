@@ -45,4 +45,4 @@ COPY ./config/nginx/caffein.conf /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/caffein.conf /etc/nginx/sites-enabled
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT /entrypoint.sh
