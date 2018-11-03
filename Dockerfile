@@ -10,7 +10,7 @@ ENV CAFFEIN_SEED_SRC=/seeds
 ENV CAFFEIN_CONFIG_SRC=/config
 
 # Directory in container for source codes
-ENV DOCKYARD_SRVHOME=/data
+ENV DOCKYARD_SRVHOME=/srv
 ENV DOCKYARD_SRVPROJ=$DOCKYARD_SRVHOME/$CAFFEIN_SRC
 
 # Install dependencies
