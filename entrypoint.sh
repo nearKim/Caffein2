@@ -21,7 +21,7 @@ export SECRET_KEY="$(aws ssm get-parameters \
                             --with-decryption \
                             --name /prod/django/secret_key \
                             | jq -r '.Parameters| .[] | .Value')"
-export GMAIL_PASS="$(aws ssm get-parameters \
+export EMAIL_HOST_PASSWORD="$(aws ssm get-parameters \
                             --region ${REGION} \
                             --with-decryption \
                             --name /prod/google/gmail_pass \
@@ -44,7 +44,7 @@ export FACEBOOK_APP_SECRET="$(aws ssm get-parameters \
                             --with-decryption \
                             --name /prod/facebook/app_secret \
                             | jq -r '.Parameters | .[] | .Value')"
-export FACEBOOK_APP_TOKEN="$(aws ssm get-parameters \
+export FACEBOOK_APP_TOKEN_60="$(aws ssm get-parameters \
                             --region ${REGION} \
                             --with-decryption \
                             --name /prod/facebook/app_token_60 \
