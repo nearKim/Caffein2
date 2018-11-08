@@ -55,15 +55,19 @@ echo Environment Variable register complete.....
 
 echo Now make Django work......
 python3 manage.py migrate
-python3 manage.py collectstatic --clear --noinput
-python3 manage.py --noinput
+echo Migration Complete......
 
-touch /src/logs/gunicorn.log
-touch /src/logs/access.log
-tail -n 0 -f /src/logs/*.log &
+echo Collect static......
+python3 manage.py collectstatic --clear --noinput
+python3 manage.py collectstatic --noinput
+echo Collect static Complete
+
+touch /srv/logs/gunicorn.log
+touch /srv/logs/access.log
+tail -n 0 -f /srv/logs/*.log &
 
 echo Starting nginx...
-echo Starging Gunicorn...
+echo Starting Gunicorn...
 exec gunicorn Caffein2.wsgi --bind 0.0.0.0:8000 --workers=3
 
 exec service nginx start

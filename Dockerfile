@@ -6,7 +6,6 @@ ENV PYTHONUNBUFFERED 1
 
 # Local directory for source codes
 ENV CAFFEIN_SRC=/src
-ENV CAFFEIN_SEED_SRC=/seeds
 ENV CAFFEIN_CONFIG_SRC=/config
 
 # Directory in container for source codes
@@ -31,18 +30,17 @@ VOLUME ["$DOCKYARD_SRVHOME/media/", "$DOCKYARD_SRVHOME/logs/"]
 
 # Copy application source code and seeds to SRC DIR
 COPY $CAFFEIN_SRC $DOCKYARD_SRVPROJ
-COPY $CAFFEIN_SEED_SRC $DOCKYARD_SRVHOME/seeds/
 
 # Install dependencies and seed db
 RUN pip3 install -r $DOCKYARD_SRVPROJ/requirements.txt
-RUN $DOCKYARD_SRVHOME/seeds/seeddb.sh
 
 EXPOSE 8000
 
 # Copy entrypoint to image
 WORKDIR $DOCKYARD_SRVPROJ
-COPY ./entrypoint.sh /
+COPY ./entrypoint.sh /entrypoint.sh
 COPY ./config/nginx/caffein.conf /etc/nginx/sites-available/
+RUN ["chmod", "+x", "/entrypoint.sh"]
 RUN ln -s /etc/nginx/sites-available/caffein.conf /etc/nginx/sites-enabled
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 

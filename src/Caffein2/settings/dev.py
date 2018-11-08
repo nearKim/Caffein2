@@ -59,7 +59,7 @@ DATABASES = {
         'NAME': 'caffein',
         'USER': 'postgres',
         'PASSWORD': '0814',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
