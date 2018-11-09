@@ -9,8 +9,8 @@ from django.views.generic import (
     UpdateView
 )
 
-from cafes.forms import CafeCreateUpdateForm
-from cafes.models import Cafe, CafePhoto
+from .forms import CafeCreateUpdateForm
+from .models import Cafe, CafePhoto
 
 
 class CafeListView(LoginRequiredMixin, ListView):
@@ -115,6 +115,12 @@ class CafeSearchView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CafeSearchView, self).get_context_data(*args, **kwargs)
+
+        # 검색어를 입력했는데 결과가 없다면 화면에 등록메세지를 띄워줘야 한다.
+        if self.request.GET.get('search-term') is not None and len(context['cafe_list']) == 0:
+            context['show_register_message'] = True
+
+        # 랜덤하게 3개의 카페를 넣어준다
         if Cafe.objects.all().count() > 2:
             cafe_id_list = list(Cafe.objects.values_list('id', flat=True))
             cafe_id_list_3 = random.sample(cafe_id_list, 3)
