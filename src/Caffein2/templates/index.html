@@ -4,6 +4,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128992971-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-128992971-1');
+    </script>
+
     {% block title %}
         <title>서울대학교 중앙 커피동아리 카페인</title>
     {% endblock %}
@@ -99,8 +113,9 @@
                                                                                    style="color:white;"></i></li>
                     <li><a href="{% url 'meetings:coffee-meeting-list' %}">커모 보기</a><i class="lnr lnr-coffee-cup"
                                                                                        style="color:white;"></i></li>
-                    <li><a href="{% url 'meetings:coffee-meeting-user-list' %}">내가 개최한 커모 보기</a><i class="lnr lnr-coffee-cup"
-                                                                                       style="color:white;"></i></li>
+                    <li><a href="{% url 'meetings:coffee-meeting-user-list' %}">내가 개최한 커모 보기</a><i
+                            class="lnr lnr-coffee-cup"
+                            style="color:white;"></i></li>
                     <li><a href="{% url 'cafes:cafes-search' %}">카페검색/커모열기</a><i class="lnr lnr-magnifier"
                                                                                  style="color:white;"></i></li>
                     <li><a href="{% url 'photo_albums:photo-album-main' %}">사진첩</a><i class="lnr lnr-camera"
