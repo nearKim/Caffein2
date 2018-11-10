@@ -76,7 +76,7 @@
                                     <div class="col-xs-3">
                                         <div class="row center-block " style="padding:10px;">
                                             {% if education.author.profile_pic %}
-                                                {% thumbnail "100x100" education.author.profile_pic -- style='max-width:100%;' %}
+                                                {% thumbnail "100x100" education.author.profile_pic -- class="img-profile" -- style='max-width:100%;' %}
                                             {% else %}
                                                 <img src="{% static 'assets/img/default-avatar.png' %}"
                                                      class="img-profile img-default-up" style="max-width: 100%;">

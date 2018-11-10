@@ -30,14 +30,14 @@
                     <h1>{{ cafe.name }}</h1>
                     <h6>
                         {% if cafe.uploader.profile_pic %}
-                            {% thumbnail "30x30" cafe.uploader.profile_pic %}
+                            {% thumbnail "30x30" cafe.uploader.profile_pic -- class="img-profile" %}
                         {% endif %}
                         {{ cafe.uploader.name }} 님이 {{ cafe.created|date:"Y년 m월 d일" }}에 등록
                     </h6>
                     <h6>
                         {% if cafe.last_modifier %}
                             {% if cafe.last_modifier.profile_pic %}
-                                {% thumbnail "30x30" cafe.last_modifier.profile_pic %}
+                                {% thumbnail "30x30" cafe.last_modifier.profile_pic -- class="img-profile" %}
                             {% endif %}
                             {{ cafe.last_modifier.name }} 님이 {{ cafe.modified|date:"Y년 m월 d일" }}에 마지막으로 수정
                         {% endif %}
