@@ -68,7 +68,7 @@
                     <div class="card-footer">
                         <small class="text-muted">
                             {% if cafe.uploader.profile_pic %}
-                                {% thumbnail "30x30" cafe.uploader.profile_pic %}
+                                {% thumbnail "30x30" cafe.uploader.profile_pic -- class="img-profile" %}
                             {% endif %}
                             {{ cafe.uploader.name }} 님이 등록한 카페입니다.
                         </small>
