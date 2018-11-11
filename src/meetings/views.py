@@ -159,7 +159,7 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
     def dispatch(self, request, *args, **kwargs):
         self.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
 
-        latest_active_user = ActiveUser.objects.filter(user=request.user).latest()
+        latest_active_user = ActiveUser.objects.select_related('user').filter(user=request.user).latest()
         latest_os = OperationScheme.latest()
         # 이번 년도,학기와 가장 마지막 등록한 activeuser의 등록 년도,학기가 일치해야 커모를 열 수 있다.
         # 그게 아니라면 예전에 등록하고 이번에는 등록하지 않은 회원인 것이다.

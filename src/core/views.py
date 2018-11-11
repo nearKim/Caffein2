@@ -44,7 +44,12 @@ def entrypoint(request):
             latest_albumphotos = Photo.objects.all().order_by('-created')[:8]
 
             # 짝모 순위를 가져온다
-            partner_rank = Partner.objects.all().order_by('-score')[:4]
+            partner_rank = Partner.objects \
+                                        .select_related('up_partner__user')\
+                                        .select_related('down_partner_1__user')\
+                                        .select_related('down_partner_2__user')\
+                                        .select_related('down_partner_3__user')\
+                                        .all().order_by('-score')[:4]
 
             current_os = OperationScheme.latest()
 
