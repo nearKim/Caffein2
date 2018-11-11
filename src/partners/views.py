@@ -218,7 +218,7 @@ class PartnerDetailView(DetailView):
 
 @login_required
 def admit_or_deny_partnermeeting(request, pk):
-    if request.user.is_staff:
+    if request.user.is_staff or request.user.is_superuser:
         partnermeeting = PartnerMeeting.objects.get(id=pk)
         if partnermeeting.point == 0.0:
             # 0점이거나 불인정된 짝모 점수를 다시 계산
