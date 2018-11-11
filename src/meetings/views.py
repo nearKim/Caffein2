@@ -22,6 +22,8 @@ from comments.forms import CommentForm
 from core.mixins import FaceBookPostMixin, StaffRequiredMixin, ValidAuthorRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
+
+from core.models import OperationScheme
 from .models import (
     OfficialMeeting,
     CoffeeEducation,
@@ -156,6 +158,14 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
 class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
+
+        latest_active_user = ActiveUser.objects.filter(user=request.user).latest()
+        latest_os = OperationScheme.latest()
+        # 이번 년도,학기와 가장 마지막 등록한 activeuser의 등록 년도,학기가 일치해야 커모를 열 수 있다.
+        # 그게 아니라면 예전에 등록하고 이번에는 등록하지 않은 회원인 것이다.
+        if not (latest_os.current_year == latest_active_user.active_year and
+                latest_os.current_semester == latest_active_user.active_semester):
+            raise PermissionDenied('활동회원으로 등록하셔야 커모를 열 수 있습니다.')
         return super(CoffeeMeetingCreateView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -283,6 +293,11 @@ def participate_meeting(request, pk):
             active_user = ActiveUser.objects.filter(user=request.user)
             if active_user:
                 active_user = active_user.latest()
+                latest_os = OperationScheme.latest()
+                # 이번 년도,학기와 활동회원의 년도, 학기가 다르면 참여할 수 없다.
+                if not (active_user.active_year, active_user.active_semester) == \
+                       (latest_os.current_year, latest_os.current_semester):
+                    raise PermissionDenied('이번학기 활동회원만이 커모에 참가할 수 있습니다.')
                 # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
                 flag = meeting.participate_or_not(active_user)
                 messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
@@ -295,7 +310,8 @@ def participate_meeting(request, pk):
 @login_required()
 def delete_meeting(request, pk):
     meeting = get_object_or_404(Meeting, pk=pk)
-    if request.user == meeting.author or request.user.is_staff:
+    # 운영진이거나 글쓴이인 경우에만 삭제를 허용한다.
+    if request.user == meeting.author or request.user.is_staff or request.user.is_superuser:
         if isinstance(meeting.cast(), CoffeeMeeting):
             # 현재 지운 meeting이 커모였다면 커모 리스트로 이동한다.
             meeting.delete()
