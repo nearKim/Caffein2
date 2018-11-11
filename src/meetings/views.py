@@ -26,8 +26,7 @@ from .models import (
     OfficialMeeting,
     CoffeeEducation,
     CoffeeMeeting)
-from core.models import Meeting, MeetingPhoto, OperationScheme
-from partners.models import Partner
+from core.models import Meeting, MeetingPhoto
 
 
 # TODO: 정리하기
@@ -54,9 +53,6 @@ class OfficialAndEducationListView(LoginRequiredMixin, ListView):
 # CRUD for OfficialMeeting
 
 class OfficialMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('meetings:official-detail', kwargs={'pk': self.object.id})
-
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 공식모임을 생성하였습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -107,8 +103,6 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
 # CoffeeEducation
 class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('meetings:education-detail', kwargs={'pk': self.object.id})
 
     def form_valid(self, form):
         instance = form.save()
@@ -163,9 +157,6 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
     def dispatch(self, request, *args, **kwargs):
         self.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
         return super(CoffeeMeetingCreateView, self).dispatch(request, *args, **kwargs)
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('meetings:coffee-meeting-detail', kwargs={'pk': self.object.id})
 
     def get_form_kwargs(self):
         form_kwargs = super(CoffeeMeetingCreateView, self).get_form_kwargs()
