@@ -58,9 +58,12 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
     ordering = ('-date_joined',)
     actions = ['invalidate_user', 'activate_and_add_active', 'old_to_new', ]
 
+    def __init__(self, model, admin_site):
+        self.latest_os = OperationScheme.latest()
+        super().__init__(model, admin_site)
+
     def is_new(self, obj):
-        latest_os = OperationScheme.latest()
-        if (obj.join_year, obj.join_semester) == (latest_os.current_year, latest_os.current_semester):
+        if (obj.join_year, obj.join_semester) == (self.latest_os.current_year, self.latest_os.current_semester):
             return True
         else:
             return False
@@ -77,17 +80,16 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
 
     def activate_and_add_active(self, request, queryset):
         """신규회원 가입시 설문도 작성하고 가입비도 납부했을 경우 운영자가 확인하여 로그인활성화 및 활동회원으로 추가한다."""
-        latest_os = OperationScheme.latest()
         queryset.update(is_active=True)
         for q in queryset:
             # 만일 현재 사용자가 신입회원이 아닌경우 잘못 체크된 경우이므로 에러와 함께 활동회원을 만들면 안된다.
-            if not (q.join_year, q.join_semester) == (latest_os.current_year, latest_os.current_semester):
+            if not (q.join_year, q.join_semester) == (self.latest_os.current_year, self.latest_os.current_semester):
                 messages.error(request, q.__str__() + ' 회원은 신규회원이 아닙니다!! 다시 확인해주세요!')
                 continue
 
             ActiveUser.objects.create(user=q,
-                                      active_year=latest_os.current_year,
-                                      active_semester=latest_os.current_semester,
+                                      active_year=self.latest_os.current_year,
+                                      active_semester=self.latest_os.current_semester,
                                       is_paid=True)
             # 4명까지는 알림창을 띄워주자
             if queryset.count() < 5:
@@ -102,8 +104,7 @@ class UserAdmin(StaffRequiredAdminMixin, BaseUserAdmin):
 
     def old_to_new(self, request, queryset):
         """기존회원을 신입회원으로 만든다"""
-        latest_os = OperationScheme.latest()
-        queryset.update(join_year=latest_os.current_year, join_semester=latest_os.current_semester)
+        queryset.update(join_year=self.latest_os.current_year, join_semester=self.latest_os.current_semester)
         self.message_user(request, str(queryset.count()) + "명의 기존회원을 신입회원으로 만들었습니다.")
 
     is_new.short_description = _('신입 여부')
@@ -123,6 +124,10 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
 
     list_per_page = 150
 
+    def __init__(self, model, admin_site):
+        self.latest_os = OperationScheme.latest()
+        super().__init__(model, admin_site)
+
     def get_urls(self):
         urls = super().get_urls()
         admin_action_urls = [
@@ -136,8 +141,7 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
     def education_participants_view(self, request):
         if not (request.user.is_staff or request.user.is_superuser):
             return HttpResponseForbidden()
-        latest_os = OperationScheme.latest()
-        year, semester = latest_os.current_year, latest_os.current_semester
+        year, semester = self.latest_os.current_year, self.latest_os.current_semester
 
         # 활동회원 중 이번학기 회원들을 불러온다
         active_users = ActiveUser.objects \
@@ -165,7 +169,6 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
         # context에 넣어 준다
         context = dict(
             self.admin_site.each_context(request),
-            os=latest_os,
             participants=participants
         )
         return TemplateResponse(request, "admin/education_participants.html", context)
@@ -175,8 +178,7 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
         # 짝지 매칭을 위한 템플릿을 뿌려주는 뷰
         if not (request.user.is_staff or request.user.is_superuser):
             return HttpResponseForbidden()
-        latest_os = OperationScheme.latest()
-        year, semester = latest_os.current_year, latest_os.current_semester
+        year, semester = self.latest_os.current_year, self.latest_os.current_semester
 
         # 활동회원 중 이번학기 회원들을 불러온다
         active_users = ActiveUser.objects \
@@ -201,12 +203,11 @@ class ActiveUserAdmin(StaffRequiredAdminMixin, ModelAdmin):
             .select_related('down_partner_3') \
             .select_related('down_partner_2') \
             .select_related('down_partner_1') \
-            .filter(partner_semester=latest_os.current_semester, partner_year=latest_os.current_year)
+            .filter(partner_semester=self.latest_os.current_semester, partner_year=self.latest_os.current_year)
 
         # 각각을 다른 context에 넣어 뿌려준다
         context = dict(
             self.admin_site.each_context(request),
-            os=latest_os,
             news=new_actives,
             olds=old_actives,
             matched=matched_partners
