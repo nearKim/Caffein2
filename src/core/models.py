@@ -114,7 +114,6 @@ class Meeting(Postable):
         return [activeuser.user for activeuser in self.participants.all()]
 
     def participate_or_not(self, active_user):
-        from meetings.models import CoffeeMeeting
         if active_user in self.participants.all():
             # 참여 취소
             self.participants.remove(active_user)

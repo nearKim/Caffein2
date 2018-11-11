@@ -86,6 +86,8 @@ class ValidAuthorRequiredMixin(AccessMixin):
 
 # Admin mixins
 class StaffRequiredAdminMixin(object):
+    # FIXME: 이 mixin을 통해 수정 및 삭제 권한을 부여하려 했었지만 delete는 permission이 주어지지 않았다.
+    # FIXME: 지금은 User based로 permission을 부여했기 때문에 이 mixin이 불필요하다.
 
     def check_perm(self, user_obj):
         if not user_obj.is_active or user_obj.is_anonymous:

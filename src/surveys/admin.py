@@ -34,5 +34,5 @@ class FormAdmin(StaffRequiredAdminMixin, admin.ModelAdmin):
     make_closed.short_description = '지정 Form을 닫기'
 
 
-admin.site.register(Form, FormAdmin)
+# admin.site.register(Form, FormAdmin)
 

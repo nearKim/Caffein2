@@ -133,6 +133,18 @@ class User(AbstractBaseUser, PermissionsMixin):
                                            self.short_student_no)
         return "{}({} {}학번)".format(self.name, self.get_department_display(), self.short_student_no)
 
+    def has_perm(self, perm, obj=None):
+        # 운영진이거나 관리자인경우 어떠한 Permission이라도 인정한다.
+        if self.is_staff or self.is_superuser:
+            return True
+        return super().has_perm(perm, obj)
+
+    def has_module_perms(self, app_label):
+        # 운영진이거나 관리자인경우 admin페이지에서 모든 앱들을 봐야 한다.
+        if self.is_staff or self.is_superuser:
+            return True
+        return super().has_module_perms(app_label)
+
     @property
     def short_student_no(self):
         return self.student_no[2:4]
