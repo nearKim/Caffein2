@@ -25,6 +25,7 @@ class CoffeeMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('cafe',)
     search_fields = ('cafe__name',)
     inlines = (MeetingCommentInline, MeetingPhotoInline,)
+    list_select_related = ('cafe', 'author')
 
 
 @admin.register(OfficialMeeting)
@@ -32,6 +33,7 @@ class OfficialMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('category',)
     readonly_fields = ('location', 'mapx', 'mapy',)
     inlines = (MeetingCommentInline, MeetingPhotoInline,)
+    list_select_related = ('author',)
 
 
 @admin.register(CoffeeEducation)
@@ -39,3 +41,4 @@ class CoffeeEducationAdmin(StaffRequiredAdminMixin, ModelAdmin):
     list_filter = ('category', 'difficulty')
     readonly_fields = ('location', 'mapx', 'mapy',)
     inlines = (MeetingCommentInline, MeetingPhotoInline,)
+    list_select_related = ('author',)
