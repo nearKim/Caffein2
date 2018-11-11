@@ -68,7 +68,9 @@ class CoffeeMeetingFeedForm(ModelForm):
         self.fields['coffee_meeting'].initial = self.coffee_meeting
         self.fields['coffee_meeting'].widget.attrs['readonly'] = True
         self.fields['participants'] = MultipleChoiceField(label='참가자',
+                                                          help_text='참가하지 못한 사람은 꼭 <b>체크를 해제</b>해주세요!',
                                                           choices=[(participant.pk, participant) for participant in self.participants],
+                                                          initial=[participant.pk for participant in self.participants],
                                                           widget=CheckboxSelectMultiple)
 
     def clean_coffee_meeting(self):
