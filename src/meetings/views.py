@@ -288,22 +288,27 @@ class CoffeeMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
 def participate_meeting(request, pk):
     if request.method == 'POST':
         meeting = get_object_or_404(Meeting, pk=pk)
+
+        # 가장 최신의 활동회원 객체를 불러온다.
+        active_user = ActiveUser.objects.filter(user=request.user).latest()
+        latest_os = OperationScheme.latest()
+
+        # 상황이 어떻게 되었든 이번 년도,학기와 활동회원의 년도, 학기가 다르면 참여할 수 없다.
+        if not (active_user.active_year, active_user.active_semester) == \
+               (latest_os.current_year, latest_os.current_semester):
+            raise PermissionDenied('이번학기 활동회원만이 커모에 참가할 수 있습니다.')
+
+        # 참가자가 꽉 차지 않은 경우
         if meeting.can_participate():
-            # 참여가능인원이 다 차지 않은 경우 가장 최신의 활동회원 객체를 불러온다.
-            active_user = ActiveUser.objects.filter(user=request.user)
-            if active_user:
-                active_user = active_user.latest()
-                latest_os = OperationScheme.latest()
-                # 이번 년도,학기와 활동회원의 년도, 학기가 다르면 참여할 수 없다.
-                if not (active_user.active_year, active_user.active_semester) == \
-                       (latest_os.current_year, latest_os.current_semester):
-                    raise PermissionDenied('이번학기 활동회원만이 커모에 참가할 수 있습니다.')
-                # 참여하거나 아니면 참여취소후 여부를 boolean flag로 반환한다.
-                flag = meeting.participate_or_not(active_user)
-                messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
+            # 참여/취소 여부를 boolean flag로 반환한다.
+            flag = meeting.participate_or_not(active_user)
+            messages.success(request, "참여했습니다") if flag else messages.success(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
         else:
-            messages.error(request, '참여 인원이 다 찼습니다.')
+            # 참여자가 꽉 찬 경우 만일 참여 취소인 경우 참여 취소를 허용한다.
+            if active_user in meeting.participants.all():
+                meeting.participants.remove(active_user)
+                messages.success(request, "참여 취소되었습니다.")
             return redirect(meeting.cast())
 
 
