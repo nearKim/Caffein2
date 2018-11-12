@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'raven.contrib.django.raven_compat',
     'django_user_agents',
+    'rest_framework',
 
     # AWS
     'storages',
