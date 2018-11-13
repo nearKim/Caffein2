@@ -11,7 +11,7 @@
                 <img src="{% static 'assets/img/default-avatar.png' %}" class="img-profile"
                      style="width: 100%; max-width: 25px;height: auto;">
             {% endif %}
-            {{ comment.author.name }} {{ comment.content }}
+            <b>{{ comment.author.name }}</b> &nbsp {{ comment.content }}
         </p>
     </div>
     <div class="col-xs-3 text-right" style="font-size: 10px;">
