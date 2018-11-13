@@ -3,8 +3,8 @@
     "model": "sites.site",
     "pk": 1,
     "fields": {
-      "domain": "caffein-alpha.herokuapp.com",
-      "name": "caffein-alpha.herokuapp.com"
+      "domain": "www.snucoffee.com",
+      "name": "www.snucoffee.com"
     }
   }
 ]
