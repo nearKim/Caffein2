@@ -17,7 +17,9 @@ class PartnerMeetingForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.participants = kwargs.pop('participants', kwargs['instance'].partner.containing_active_users())
+        self.participants = kwargs.pop('participants', None)
+        if self.participants is None:
+            self.participants = kwargs['instance'].partner.containing_active_users()
         super(PartnerMeetingForm, self).__init__(*args, **kwargs)
         self.fields['participants'] = MultipleChoiceField(label='참가자',
                                                           choices=[(participant.user.pk, participant.user) for participant in
@@ -40,7 +42,13 @@ class PartnerMeetingForm(ModelForm):
         participants = cleaned_data.get('participants')
         # 커피와 식사 모두 0인 경우
         if cleaned_data.get('num_coffee') == 0 and cleaned_data.get('num_eat') == 0:
-            raise forms.ValidationError('\'마신 커피 수\'와 \'먹은 식사 수\' 모두 0일 수 없습니다.')
+            raise forms.ValidationError('\'커모 횟수\'와 \'밥모 횟수\' 모두 0일 수 없습니다.')
+        # 커모 수가 음수일 경우
+        elif cleaned_data.get('num_coffee') < 0:
+            raise forms.ValidationError('\'커모 횟수\'가 음수일 수 없습니다.')
+        # 밥모 수가 음수일 경우
+        elif cleaned_data.get('num_eat') < 0:
+            raise forms.ValidationError('\'밥모 횟수\'가 음수일 수 없습니다.')
         # 아무도 선택하지 않았을때
         elif participants is None:
             raise forms.ValidationError('짝모에 참가한 사람을 선택해주세요.')
