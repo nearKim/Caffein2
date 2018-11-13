@@ -17,7 +17,7 @@ class PartnerMeetingForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.participants = kwargs.pop('participants', None)
+        self.participants = kwargs.pop('participants', kwargs['instance'].partner.containing_active_users())
         super(PartnerMeetingForm, self).__init__(*args, **kwargs)
         self.fields['participants'] = MultipleChoiceField(label='참가자',
                                                           choices=[(participant.user.pk, participant.user) for participant in

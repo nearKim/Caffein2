@@ -64,6 +64,7 @@ class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCre
         instance = form.save()
         # 기존 점수를 제거해주고, 업데이트된 정보로 점수를 부여한다.
         instance.partner.raise_score(-instance.point)
+        instance.num_down_partner = len(self.request.POST.getlist('participants')) - 1
         instance.check_point()
         FeedPhoto.objects.filter(instagram=instance).delete()
         if self.request.FILES:
