@@ -144,7 +144,8 @@ class PhotoDeleteView(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.author == self.request.user:
+        # 사진의 업로더가 작성자이거나 운영진인 경우에만 삭제를 허용한다.
+        if not (self.object.author == self.request.user or self.request.user.is_staff):
             raise PermissionDenied
         success_url = self.object.album.get_absolute_url()
         self.object.delete()
