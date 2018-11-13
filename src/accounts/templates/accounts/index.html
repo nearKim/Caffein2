@@ -536,18 +536,20 @@
                         <div class="card" style="margin: 20px; max-height: 100%;">
                             <div class="row" style="padding:10px;">
                                 <div>
-                                    <p style="font-size:calc(0.3vw + 14px); ">위짝지
+                                    <p style="font-size:calc(0.3vw + 14px); ">
                                         {% if partner.up_partner.user.profile_pic %}
                                             {% thumbnail "30x30" partner.up_partner.user.profile_pic -- class="img-profile" %}
                                         {% else %}
                                             <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
                                                  height="30" class="img-profile">
                                         {% endif %}
-                                        <b>{{ partner.up_partner.user.name }}</b></p>
+                                        <b>{{ partner.up_partner.user.name }}</b><span style="margin-left:2px;"
+                                                                                       class="glyphicon glyphicon-star"></span>
+                                    </p>
                                 </div>
                                 {% if partner.down_partner_1 is not null %}
                                     <div>
-                                        <p style="font-size:calc(0.3vw + 14px); ">아래짝지
+                                        <p style="font-size:calc(0.3vw + 14px); ">
                                             {% if partner.down_partner_1.user.profile_pic %}
                                                 {% thumbnail "30x30" partner.down_partner_1.user.profile_pic -- class="img-profile" %}
                                             {% else %}
@@ -559,30 +561,31 @@
                                 {% endif %}
                                 {% if partner.down_partner_2 is not null %}
                                     <div>
-                                    <p style="font-size:calc(0.3vw + 14px); ">아래짝지
-                                        {% if partner.down_partner_2.user.profile_pic %}
-                                            {% thumbnail "30x30" partner.down_partner_2.user.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
-                                                 height="30" class="img-profile">
-                                        {% endif %}
-                                        <b>{{ partner.down_partner_2.user.name }}</b></p>
+                                        <p style="font-size:calc(0.3vw + 14px); ">
+                                            {% if partner.down_partner_2.user.profile_pic %}
+                                                {% thumbnail "30x30" partner.down_partner_2.user.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                     height="30" class="img-profile">
+                                            {% endif %}
+                                            <b>{{ partner.down_partner_2.user.name }}</b></p>
                                     </div>
                                 {% endif %}
-                            {% if partner.down_partner_3 is not null %}
-                                <div>
-                                    <p style="font-size:calc(0.3vw + 14px); ">아래짝지
-                                        {% if partner.down_partner_3.user.profile_pic %}
-                                            {% thumbnail "30x30" partner.down_partner_3.user.profile_pic -- class="img-profile" %}
-                                        {% else %}
-                                            <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
-                                                 height="30" class="img-profile">
-                                        {% endif %}
-                                        <b>{{ partner.down_partner_3.user.name }}</b></p>
-                                </div>
-                            {% endif %}
-                            <hr>
-                            <h5 style="font-size:calc(0.3vw + 14px); "> {{ partner.score }}점 </h5>
+                                {% if partner.down_partner_3 is not null %}
+                                    <div>
+                                        <p style="font-size:calc(0.3vw + 14px); ">
+                                            {% if partner.down_partner_3.user.profile_pic %}
+                                                {% thumbnail "30x30" partner.down_partner_3.user.profile_pic -- class="img-profile" %}
+                                            {% else %}
+                                                <img src="{% static 'assets/img/default-avatar.png' %}" width="30"
+                                                     height="30" class="img-profile">
+                                            {% endif %}
+                                            <b>{{ partner.down_partner_3.user.name }}</b></p>
+                                    </div>
+                                {% endif %}
+                                <hr>
+                                <h5 class="text-center"
+                                    style="font-size:calc(0.3vw + 14px); "> {{ partner.score }}점 </h5>
                             </div>
                         </div>
                     </div>
