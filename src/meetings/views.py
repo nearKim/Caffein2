@@ -188,10 +188,12 @@ class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeeti
                     photo = MeetingPhoto(meeting=instance, image=f)
                     photo.save()
             else:
-                # 사용자가 flag를 넣었으면 카페 자체의 사진으로 저장한다.
+                # 사용자가 flag를 넣었으면 카페 자체의 사진으로 저장하고 동시에 모임사진으로도 저장한다.
                 for f in self.request.FILES.getlist('images'):
-                    photo = CafePhoto(cafe_id=self.request.POST['cafe'], image=f)
-                    photo.save()
+                    meeting_photo = MeetingPhoto(meeting=instance, image=f)
+                    cafe_photo = CafePhoto(cafe_id=self.request.POST['cafe'], image=f)
+                    cafe_photo.save()
+                    meeting_photo.save()
         return super(CoffeeMeetingCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
