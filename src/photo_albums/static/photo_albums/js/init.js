@@ -23,27 +23,29 @@ $(document).ready(function () {
     // 모달에서 저장하지 않고 닫았을 경우 업로드된 사진들을 모두 삭제한다.
     $(".close").click(function () {
         // 항상 묻는 레비.
-        confirm('정말 닫으시겠습니까? 데이터가 모두 손실됩니다.')
-
-        let pks = []
-        // 업로드된 사진의 PK를 모두 얻는다. 사진들의 pk는 input의 id에 담겨있다.
-        $("input[name*='photo-desc']").each(function () {
-            pks.push($(this).attr('id'))
-        })
-        // batch delete로 넘겨준다. 하나씩 deleteview를 호출하는 것 보다 효율적이겠지.
-        $.ajax({
-            url: $('.close').attr('delete-url'),
-            method: 'post',
-            data: {
-                'dangling-photos-pks': pks
-            },
-            success: (data) => {
-                console.log("success!")
-                console.log(data)
-            },
-            fail: (data) => {
-                console.log("fail")
-            }
-        })
+        if (confirm('정말 닫으시겠습니까? 데이터가 모두 손실됩니다.')) {
+            let pks = []
+            // 업로드된 사진의 PK를 모두 얻는다. 사진들의 pk는 input의 id에 담겨있다.
+            $("input[name*='photo-desc']").each(function () {
+                pks.push($(this).attr('id'))
+            })
+            // batch delete로 넘겨준다. 하나씩 deleteview를 호출하는 것 보다 효율적이겠지.
+            $.ajax({
+                url: $('.close').attr('delete-url'),
+                method: 'post',
+                data: {
+                    'dangling-photos-pks': pks
+                },
+                success: (data) => {
+                    console.log("success!")
+                    console.log(data)
+                    // 모달창 데이터를 없애기 위해 그냥 새로고침한다
+                    location.reload()
+                },
+                fail: (data) => {
+                    console.log("fail")
+                }
+            })
+        }
     })
 })
