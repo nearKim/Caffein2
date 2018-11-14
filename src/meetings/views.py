@@ -41,14 +41,14 @@ class OfficialAndEducationListView(LoginRequiredMixin, ListView):
         context['coffee_education_list'] = CoffeeEducation.objects \
             .select_related('author') \
             .all() \
-            .order_by('-created')
+            .order_by('-created')[:5]
         return context
 
     def get_queryset(self):
         queryset = OfficialMeeting.objects \
             .select_related('author') \
             .all() \
-            .order_by('-created')
+            .order_by('-created')[:5]
         return queryset
 
 
