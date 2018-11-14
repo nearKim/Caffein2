@@ -12,6 +12,7 @@
                     <div class="row">
                         <div class="col-sm-12 mb-50">
                             <h2>공식 모임</h2>
+                            <p>가장 최신의 모임 5개까지 보여집니다</p>
                         </div>
                     </div>
                     <div id="div-official-container">
@@ -29,7 +30,7 @@
                                         </div>
                                         <div class="row center-block">
                                             <h4>{{ meeting.author.name }}
-                                            <span class="lnr lnr-diamond"></span>
+                                                <span class="lnr lnr-diamond"></span>
                                             </h4>
                                         </div>
                                     </div>
@@ -56,6 +57,7 @@
                     <div class="row">
                         <div class="col-sm-12 mb-50">
                             <h2>커피 교육</h2>
+                            <p>가장 최신의 교육 5개까지 보여집니다</p>
                         </div>
                     </div>
                     <div id="div-official-container">
@@ -68,7 +70,8 @@
                                                  style=" padding: 5px; margin-bottom: 5px;">
                                                 <h4>{{ education.title }}</h4>
                                                 <h5>{{ education.get_category_display }}
-                                                    ({{ education.get_difficulty_display }}) / {{ education.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
+                                                    ({{ education.get_difficulty_display }})
+                                                    / {{ education.meeting_date |date:"m월 d일 A h시 i분" }}</h5>
                                                 <h5><b>{{ education.location }}</b>에서 </h5>
                                             </div>
                                         </a>
@@ -76,7 +79,7 @@
                                     <div class="col-xs-3">
                                         <div class="row center-block " style="padding:10px;">
                                             {% if education.author.profile_pic %}
-                                                {% thumbnail "100x100" education.author.profile_pic -- class="img-profile" style="max-width: 100%;"%}
+                                                {% thumbnail "100x100" education.author.profile_pic -- class="img-profile" style="max-width: 100%;" %}
                                             {% else %}
                                                 <img src="{% static 'assets/img/default-avatar.png' %}"
                                                      class="img-profile img-default-up" style="max-width: 100%;">
@@ -84,7 +87,7 @@
                                         </div>
                                         <div class="row center-block">
                                             <h4>{{ education.author.name }}
-                                            <span class="lnr lnr-diamond"></span>
+                                                <span class="lnr lnr-diamond"></span>
                                             </h4>
                                         </div>
                                     </div>
