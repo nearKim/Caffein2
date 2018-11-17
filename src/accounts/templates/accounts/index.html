@@ -394,8 +394,7 @@
                        class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}">카페인 타임라인</a>
                     {% if partner_set %}
                         <a href="{% url 'partners:meeting-create' %}"
-                           class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}"
-                           style="margin-left:10px;">짝모등록</a>
+                           class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %}">짝모등록</a>
                     {% else %}
                         <a href="{% url 'partners:meeting-create' %}"
                            class="btn {% if request.user_agent.is_mobile %} btn-block {% endif %} disabled">짝모등록</a>

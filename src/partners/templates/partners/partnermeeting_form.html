@@ -4,7 +4,7 @@
 {% block content %}
     <section class="contact">
         <div class="container">
-            <h1 class="text-center"> 짝모 올리기!</h1>
+            <h1 class="text-center {% if request.user_agent.is_mobile %} mt-100 {% endif %}">짝모 올리기!</h1>
             <hr>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}

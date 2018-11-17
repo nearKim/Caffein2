@@ -311,6 +311,8 @@ def participate_meeting(request, pk):
             if active_user in meeting.participants.all():
                 meeting.participants.remove(active_user)
                 messages.success(request, "참여 취소되었습니다.")
+            else:
+                messages.warning(request, "정원이 다 찼습니다.")
             return redirect(meeting.cast())
 
 

@@ -99,7 +99,11 @@
 
                     </div>
                     <div class="modal-footer float-right">
-                        <button id="btn-create-album" class="btn btn-xs">게시</button>
+                        <button id="btn-create-album"
+                                class="btn btn-xs"
+                        {% if request.user_agent.is_mobile %}
+                                style="display:block; margin-right: auto !important; margin-left: auto !important;"
+                        {% endif %}>게시</button>
                     </div>
                 </div>
             </div>
@@ -191,6 +195,7 @@
                     success: (data) => {
                         // 모달을 닫고 사진첩 탭을 눌러야겠지.
                         $('#modal-create-album').modal('hide')
+                        location.reload()
                         $('#a-albums').click()
                     },
                     error: (data) => {

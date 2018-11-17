@@ -5,10 +5,15 @@
 {% block content %}
     <section class="contact">
         <div class="container">
-            <h1 class="jumbotron">카페 정보 수정하기</h1>
+            <h1 class="jumbotron mt-100 text-center">카페 정보 수정하기</h1>
             <form method="post" enctype="multipart/form-data">{% csrf_token %}
                 {{ form | crispy }}
-                <input class="btn btn-default center-block" type="submit" value="수정하기"/>
+                <input class="btn btn-default center-block"
+                       type="submit"
+                       {% if request.user_agent.is_mobile %}
+                       style="display:block; margin-right: auto !important; margin-left: auto !important;"
+                       {% endif %}
+                       value="수정하기"/>
             </form>
         </div>
     </section>
