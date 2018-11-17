@@ -43,4 +43,4 @@ class PartnerMeetingAdmin(StaffRequiredAdminMixin, ModelAdmin):
 @admin.register(CoffeeMeetingFeed)
 class CoffeeMeetingFeedAdmin(StaffRequiredAdminMixin, ModelAdmin):
     inlines = (FeedPhotoInline, FeedCommentInline)
-    list_select_related = ('coffee_meeting__cafe', 'author__user')
+    list_select_related = ('coffee_meeting__cafe', 'author')

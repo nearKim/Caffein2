@@ -70,13 +70,14 @@
                         ( {{ object.participants.count }} )명 <br>
                 </div>
 
+                <!-- 메시지 -->
                 <div class="message-container row">
                     <div class="col-sm-12 text-center">
                         {% if messages %}
                             <ul class="messages">
                                 {% for message in messages %}
                                     {% if message.tags %}
-                                        <li class="{{ message.tags }}">{{ message }}</li>
+                                        <li class="alert alert-{{ message.tags }}">{{ message }}</li>
                                     {% else %}
                                         <li>{{ message }}</li>
                                     {% endif %}
