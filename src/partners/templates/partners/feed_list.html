@@ -36,7 +36,7 @@
                             {{ feed.created | date:"m월d일 A h시 i분" }}
                             <div class="dropdown-option">
                                 <span class="glyphicon glyphicon-option-vertical"></span>
-                                <div class="dropdown-content text-center">
+                                <div class="dropdown-content text-center" {% if request.user_agent.is_mobile %}style="float:right; right:0;"{% endif %}>
                                     {% if not feed.coffeemeetingfeed %}
                                         <a href="{% url 'partners:meeting-update' feed.pk %}">수정하기</a>
                                         <form action="{% url 'partners:meeting-delete' feed.pk %}"
@@ -70,7 +70,7 @@
                         {# 만일 커모 후기 오브젝트라면 커모의 간략한 정모를 넣어준다 #}
                         <div class="row" style="margin-top:10px; font-size: calc(0.5vw + 10px);">
                             <div class="col-sm-12 text-center">
-                                <p class="lead">{{ feed.coffeemeetingfeed }}</p>
+                                <h5>{{ feed.coffeemeetingfeed }}</h5>
                             </div>
                         </div>
                         <div class="row" style="font-size: calc(0.5vw + 10px);">

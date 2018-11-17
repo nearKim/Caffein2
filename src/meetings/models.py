@@ -79,7 +79,7 @@ class CoffeeMeeting(Meeting):
         return reverse('meetings:coffee-meeting-detail', args=[self.pk])
 
     def __str__(self):
-        return "{} {} 커모".format(self.meeting_date.strftime("%Y년 %m월 %d일 %H시 %M분"), self.cafe.name)
+        return "{} {} 커모".format(self.meeting_date.strftime("%m월 %d일 %H시 %M분"), self.cafe.name)
 
     def update_partner_score(self):
         from partners.models import Partner
