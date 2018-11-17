@@ -1,7 +1,6 @@
-from django.forms import ModelForm, forms, ClearableFileInput, MultipleChoiceField, CheckboxSelectMultiple, ChoiceField
+from django.forms import ModelForm, forms, ClearableFileInput, MultipleChoiceField, CheckboxSelectMultiple
 from core.models import OperationScheme
 from accounts.models import ActiveUser
-from meetings.models import CoffeeMeeting
 from .models import (
     PartnerMeeting,
     Partner,
@@ -18,6 +17,7 @@ class PartnerMeetingForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.participants = kwargs.pop('participants', None)
+        # 업데이트시 participants를 추가해준다.
         if self.participants is None:
             self.participants = kwargs['instance'].partner.containing_active_users()
         super(PartnerMeetingForm, self).__init__(*args, **kwargs)
@@ -71,6 +71,9 @@ class CoffeeMeetingFeedForm(ModelForm):
         self.author = kwargs.pop('author', None)
         self.coffee_meeting = kwargs.pop('coffee_meeting', None)
         self.participants = kwargs.pop('participants', None)
+        # 업데이트시 participants를 추가해준다.
+        if self.participants is None:
+            self.participants = kwargs['instance'].coffee_meeting.list_participants()
         super(CoffeeMeetingFeedForm, self).__init__(*args, **kwargs)
         # 커모는 바꾸면 안되겠지
         self.fields['coffee_meeting'].initial = self.coffee_meeting
