@@ -33,6 +33,9 @@ urlpatterns = [
     path('photo-albums/', include('photo_albums.urls', namespace='photo_albums')),
     path('surveys/', include('surveys.urls', namespace='surveys')),
     path('meetings/', include('meetings.urls', namespace='meetings')),
+
+    # APIs
+    path('api/', include('cafes.api.urls'))
 ]
 
 if settings.DEBUG:
