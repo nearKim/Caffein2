@@ -4,8 +4,11 @@ from rest_framework.utils import json
 
 
 class MultipartJsonParser(parsers.MultiPartParser):
-    # https://stackoverflow.com/a/50514022/8897256
+    '''
+    Form data는 data를 key로 한 JSON 형태의 String과 파일들을 함께 받아야 한다.
+    '''
 
+    # https://stackoverflow.com/a/50514022/8897256
     def parse(self, stream, media_type=None, parser_context=None):
         result = super().parse(
             stream,

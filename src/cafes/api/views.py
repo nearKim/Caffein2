@@ -2,8 +2,8 @@ from rest_framework.response import Response
 
 from cafes.models import Cafe, CafePhoto
 from core.api.utils import MultipartJsonParser
-from .serializers import CafeRetrieveListSerializer, CafePhotoSerializer, CafeCreateUpdateSerializer
-from rest_framework import viewsets
+from .serializers import CafeRetrieveListSerializer, CafeCreateUpdateSerializer
+from rest_framework import viewsets, status
 
 
 class CafeViewSet(viewsets.ModelViewSet):
@@ -16,6 +16,22 @@ class CafeViewSet(viewsets.ModelViewSet):
             return CafeCreateUpdateSerializer
         else:
             return CafeRetrieveListSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Serializer는 photos를 이해하지 못하므로 미리 뺀다
+        photos = request.data.pop("photos")
+
+        # Cafe를 만든다
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        cafe = serializer.save()  # perform_create은 instance를 반환하지 않는다
+
+        # 생성한 cafe로 CafePhoto를 만든다
+        for photo in photos:
+            CafePhoto.objects.create(cafe=cafe, image=photo)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
         # Patch도 그냥 Put으로 통합한다

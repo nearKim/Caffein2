@@ -7,7 +7,7 @@ from cafes.models import CafePhoto, Cafe
 class CafePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CafePhoto
-        fields = ('image', 'cafe')
+        fields = ('image',)
 
 
 class CafeRetrieveListSerializer(serializers.ModelSerializer):
