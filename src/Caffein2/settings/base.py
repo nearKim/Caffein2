@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
     # User registered apps
     'accounts',
     'cafes',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'photo_albums',
     'surveys',
     'comments',
+    'frontend',
+
     # 3rd party apps
     'imagekit',
     'crispy_forms',

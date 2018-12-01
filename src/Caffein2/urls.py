@@ -27,7 +27,8 @@ urlpatterns = [
 
     path('', include('core.urls', namespace='core')),
     path('comments', include('comments.urls', namespace='comments')),
-    path('cafes/', include('cafes.urls', namespace='cafes')),
+    # path('cafes/', include('cafes.urls', namespace='cafes')),
+    path('cafes/', include('frontend.urls', namespace='cafes')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('partners/', include('partners.urls', namespace='partners')),
     path('photo-albums/', include('photo_albums.urls', namespace='photo_albums')),
