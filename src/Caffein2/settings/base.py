@@ -127,10 +127,8 @@ USE_TZ = False
 LOGIN_REDIRECT_URL = '/home'
 LOGIN_URL = '/'
 
-
 # User Model
 AUTH_USER_MODEL = 'accounts.User'
-
 
 # Messages(alert.error -> alert.danger)
 from django.contrib.messages import constants as message_constants
@@ -142,3 +140,14 @@ MESSAGE_TAGS = {message_constants.DEBUG: 'debug',
                 message_constants.ERROR: 'danger', }
 # Crispy Forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}

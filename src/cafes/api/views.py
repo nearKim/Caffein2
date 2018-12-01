@@ -4,10 +4,10 @@ from cafes.models import Cafe, CafePhoto
 from core.api.utils import MultipartJsonParser
 from .serializers import CafeRetrieveListSerializer, CafeCreateUpdateSerializer
 from rest_framework import viewsets, status
+from rest_framework import permissions
 
 
 class CafeViewSet(viewsets.ModelViewSet):
-    queryset = Cafe.objects.all()
     parser_classes = (MultipartJsonParser,)
 
     # https://stackoverflow.com/a/22755648
@@ -16,6 +16,14 @@ class CafeViewSet(viewsets.ModelViewSet):
             return CafeCreateUpdateSerializer
         else:
             return CafeRetrieveListSerializer
+
+    def get_queryset(self):
+        qs = Cafe.objects \
+            .prefetch_related('photos') \
+            .select_related('uploader') \
+            .select_related('last_modifier') \
+            .all()
+        return qs
 
     def create(self, request, *args, **kwargs):
         # Serializer는 photos를 이해하지 못하므로 미리 뺀다
