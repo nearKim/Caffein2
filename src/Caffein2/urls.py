@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_jwt.views import obtain_jwt_token
 
 # if not settings.configured:
 #     settings.configure('Caffein2.settings.dev', DEBUG=True)
@@ -36,7 +37,8 @@ urlpatterns = [
     path('meetings/', include('meetings.urls', namespace='meetings')),
 
     # APIs
-    path('api/', include('cafes.api.urls'))
+    path('api/', include('cafes.api.urls')),
+    url(r'^api-token-auth/', obtain_jwt_token),
 ]
 
 if settings.DEBUG:

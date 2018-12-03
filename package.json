@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js",
-    "build": "webpack --mode production ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js"
+    "dev": "webpack --mode development --env.API_URL=http://127.0.0.1:8000 --config webpack.config.dev.js  ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js",
+    "build": "webpack --mode production --env.API_URL=https://www.snucoffee.com --config webpack.config.build.js  ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js"
   },
   "repository": {
     "type": "git",
@@ -30,5 +30,9 @@
     "react-dom": "^16.6.3",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {
+    "dataset": "^0.3.2",
+    "form-data": "^2.3.3"
   }
 }
