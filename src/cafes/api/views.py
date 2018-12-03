@@ -1,10 +1,13 @@
+import random
+
+from django.db.models import Count, Case, When
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from cafes.models import Cafe, CafePhoto
 from core.api.utils import MultipartJsonParser
 from .serializers import CafeRetrieveListSerializer, CafeCreateUpdateSerializer
 from rest_framework import viewsets, status
-from rest_framework import permissions
 
 
 class CafeViewSet(viewsets.ModelViewSet):
@@ -18,12 +21,33 @@ class CafeViewSet(viewsets.ModelViewSet):
             return CafeRetrieveListSerializer
 
     def get_queryset(self):
-        qs = Cafe.objects \
+        queryset = Cafe.objects \
             .prefetch_related('photos') \
+            .prefetch_related('coffeemeeting_set') \
+            .annotate(num_meetings=Count('coffeemeeting', distinct=True)) \
             .select_related('uploader') \
             .select_related('last_modifier') \
             .all()
-        return qs
+
+        # query string
+        sorting = self.request.query_params.get('sorting', None)
+        if sorting is None:
+            raise ValidationError("쿼리스트링 sorting이 제공되지 않았습니다.")
+        # query string에 따라 분기하여 결과를 리턴한
+        elif sorting == 'popularity':
+            return queryset.order_by('-num_meetings')
+        elif sorting == 'recent':
+            return queryset.order_by('-created')
+        elif sorting == 'photo':
+            return queryset.annotate(num_photo=Count('photos', distinct=True)).order_by('-num_photo')
+        elif sorting == 'random':
+            cafe_id_list = list(Cafe.objects.values_list('id', flat=True))
+            random.shuffle(cafe_id_list)
+            preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(cafe_id_list)])
+            return queryset.order_by(preserved)
+        else:
+            raise ValidationError("잘못된 쿼리스트링이 전달되었습니다.")
+        return queryset
 
     def create(self, request, *args, **kwargs):
         # Serializer는 photos를 이해하지 못하므로 미리 뺀다

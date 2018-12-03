@@ -17,8 +17,8 @@ export function createCafe(data) {
     return fetchWithAuth(`${api_root}/cafes`, {method: 'POST', body: formData})
 }
 
-export function getCafes() {
-    return fetchWithAuth(`${api_root}/cafes`)
+export function getCafes(sorting) {
+    return fetchWithAuth(`${api_root}/cafes/?sorting=${sorting}`)
 }
 
 function createCafeFormData(data) {
