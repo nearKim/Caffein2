@@ -53,6 +53,9 @@ INSTALLED_APPS = [
 
     # AWS
     'storages',
+
+    # REST related
+    'corsheaders',
 ]
 USER_AGENTS_CACHE = None
 SITE_ID = 1
@@ -71,6 +74,8 @@ MIDDLEWARE = [
 
     # 3rd party
     'django_user_agents.middleware.UserAgentMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'Caffein2.urls'
@@ -160,3 +165,8 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }
+
+# CORS
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8000',
+)

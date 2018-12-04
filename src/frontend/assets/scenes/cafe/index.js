@@ -1,17 +1,20 @@
 import React, {Component} from "react"
-import {Card, Button, ButtonGroup} from "reactstrap"
+import {Button, ButtonGroup} from "reactstrap"
 import * as api from '../../api'
+import CafeCard from '../../common/CafeCard'
 
 export default class Cafe extends Component {
     constructor(props) {
         super(props);
         this.state = {
             sorting: '',
+            selected: null,
             cafes: []
         }
 
         // JWT를 local storage에 바로 저장한다.
         window.localStorage.setItem('token', this.props.token);
+        this.getCafeList = this.getCafeList.bind(this)
 
     }
 
@@ -32,14 +35,13 @@ export default class Cafe extends Component {
                 })
             })
             .catch(err => {
-                alert(err.detail)
+                alert(err)
             })
     }
 
 
     render() {
         let description = "여러분들이 알고 있는 카페를 등록하면 여기에 정보가 나타납니다.\n그러면 회원들이 카페에서 커모를 열 수 있어요!"
-        console.log(this.state)
         return (
             <div className="cafe-view">
                 <div className="cafe-view-title-container">
@@ -66,9 +68,11 @@ export default class Cafe extends Component {
                             onClick={() => this.getCafeList('random', 4)}
                             active={this.state.selected == 4}>랜덤랜덤</Button>
                 </ButtonGroup>
-                {this.state.cafes.map((cafe, i) => {
-                    return <div key={i}>{cafe.name}</div>
-                })}
+                <div className="container-fluid">
+                    {this.state.cafes.map((cafe, i) => {
+                        return <CafeCard key={i} cafe={cafe}/>
+                    })}
+                </div>
             </div>
         )
     }
