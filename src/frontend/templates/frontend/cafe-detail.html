@@ -6,15 +6,16 @@
     {#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">#}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <title>Cafe-react</title>
+    <title>Cafe-detail</title>
 </head>
 <body>
 <section class="section">
     <div id="root"
          data-token={{ jwt }}
+         data-cafe_id={{ cafe_id }}
                  class="columns"><!-- React --></div>
 </section>
 </body>
 {% load static %}
-<script src="{% static "frontend/cafe-main.js" %}"></script>
+<script src="{% static "frontend/cafeDetail.js" %}"></script>
 </html>

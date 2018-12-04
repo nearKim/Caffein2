@@ -3,7 +3,7 @@ import {Button, ButtonGroup} from "reactstrap"
 import * as api from '../../api'
 import CafeCard from '../../common/CafeCard'
 
-export default class Cafe extends Component {
+export default class CafeList extends Component {
     constructor(props) {
         super(props);
         this.state = {

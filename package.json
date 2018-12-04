@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development --env.API_URL=http://127.0.0.1:8000 --config webpack.config.dev.js  ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js",
+    "dev": "webpack --mode development --env.API_URL=http://127.0.0.1:8000 --config webpack.config.dev.js",
     "build": "webpack --mode production --env.API_URL=https://www.snucoffee.com --config webpack.config.build.js  ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js"
   },
   "repository": {

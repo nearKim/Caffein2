@@ -5,4 +5,5 @@ app_name = 'frontend'
 
 urlpatterns = [
     path('', views.index),
+    path('<int:pk>/', views.cafe_detail),
 ]

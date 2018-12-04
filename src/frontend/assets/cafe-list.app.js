@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom"
 import dataset from 'dataset'
-import Cafe from "./scenes/cafe"
+import CafeList from "./scenes/cafeList"
 
 const root = document.getElementById("root")
 if (root) {
@@ -9,5 +9,5 @@ if (root) {
         token: root.dataset ? root.dataset.token : dataset(root, 'token')
     }
 
-    ReactDOM.render(<Cafe {...props} />, root)
+    ReactDOM.render(<CafeList {...props} />, root)
 }

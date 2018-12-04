@@ -19,8 +19,18 @@ module.exports = (env) => {
         return prev;
     }, {});
 
+    const path = require('path');
     return {
+        entry: {
+            cafeList: './src/frontend/assets/cafe-list.app.js',
+            cafeDetail: './src/frontend/assets/cafe-detail.app.js',
+        },
+        output: {
+            path: path.resolve(__dirname, 'src/frontend/static/frontend/'),
+            filename: "[name].js"
+        },
         module: {
+
             rules: [{
                 test: /\.js$/,
                 exclude: /node_modules/,
