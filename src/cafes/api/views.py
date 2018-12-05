@@ -31,9 +31,11 @@ class CafeViewSet(viewsets.ModelViewSet):
 
         # query string
         sorting = self.request.query_params.get('sorting', None)
+
+        # query string에 따라 분기하여 결과를 리턴한다.
         if sorting is None:
-            raise ValidationError("쿼리스트링 sorting이 제공되지 않았습니다.")
-        # query string에 따라 분기하여 결과를 리턴한
+            # 단일 카페 검색으로 들어온 경우 기본 쿼리셋을 알아서 처리하라고 넘겨준다.
+            return queryset
         elif sorting == 'popularity':
             return queryset.order_by('-num_meetings')
         elif sorting == 'recent':
