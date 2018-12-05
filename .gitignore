@@ -16,7 +16,8 @@ tests/report/
 
 # npm & React
 /node_modules
-/src/frontend/static/
+/src/frontend/static/frontend/*
+
 # Imagekit
 CACHE/
 
