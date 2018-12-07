@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import Slider from "react-slick";
-import {Button, ButtonGroup} from "reactstrap"
+import {Table} from "reactstrap"
 import * as api from '../../api'
 
 export default class CafeDetail extends Component {
@@ -36,7 +36,9 @@ export default class CafeDetail extends Component {
     }
 
     render() {
+        let photos = this.state.photos
         let cafe = this.state.cafe
+
         const settings = {
             dots: true,
             infinite: true,
@@ -46,27 +48,62 @@ export default class CafeDetail extends Component {
         };
 
         return (
-            <div>
-                <Slider {...settings}>
-                    <div>
-                        <h3>1</h3>
+            <div className="cafe-detail">
+                {cafe ?
+                    <div className="cafe-detail-container">
+                        <Slider {...settings}>
+                            {photos.map((photo, i) => {
+                                return (
+                                    <div key={i} className="cafe-detail-photo">
+                                        <img src={photo}/>
+                                    </div>
+                                )
+                            })}
+                        </Slider>
+
+                        <Table responsive>
+                            <tbody>
+                            <tr>
+                                <th> 이름</th>
+                                <td>{cafe.name}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{cafe.address}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{cafe.phone}</td>
+                            </tr>
+                            <tr>
+                                <th>에스프레소 머신</th>
+                                <td>{cafe.machine}</td>
+                            </tr>
+                            <tr>
+                                <th>그라인더</th>
+                                <td>{cafe.grinder}</td>
+                            </tr>
+                            <tr>
+                                <th>영업시간</th>
+                                <td>{cafe.from_time ? cafe.from_time : '아직 몰라요!'} ~ {cafe.to_time ? cafe.to_time: '아직 몰라요!'}</td>
+                            </tr>
+                            <tr>
+                                <th>휴무일 / 공휴일 휴무</th>
+                                <td>{cafe.closed_day} / {cafe.closed_holiday ? cafe.closed_holiday : '아직 몰라요!'}</td>
+                            </tr>
+                            <tr>
+                                <th>가격대</th>
+                                <td>{cafe.price}</td>
+                            </tr>
+                            </tbody>
+                        </Table>
+                        <div className="cafe-detail-description">
+                            <p>Description</p>
+                            {cafe.description}
+                        </div>
+                        <div className="cafe-detail-navermap">MAP</div>
                     </div>
-                    <div>
-                        <h3>2</h3>
-                    </div>
-                    <div>
-                        <h3>3</h3>
-                    </div>
-                    <div>
-                        <h3>4</h3>
-                    </div>
-                    <div>
-                        <h3>5</h3>
-                    </div>
-                    <div>
-                        <h3>6</h3>
-                    </div>
-                </Slider>
+                    : null}
             </div>
         )
     }
