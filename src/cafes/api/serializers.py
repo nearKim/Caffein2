@@ -16,6 +16,10 @@ class CafeRetrieveListSerializer(serializers.ModelSerializer):
     photos = CafePhotoSerializer(many=True)
     price = serializers.SerializerMethodField()
     closed_day = serializers.SerializerMethodField()
+    created = serializers.DateTimeField(format="%Y년 %m월 %d일")
+    modified = serializers.DateTimeField(format="%Y년 %m월 %d일")
+    from_time = serializers.TimeField(format="%I:%M %p")
+    to_time = serializers.TimeField(format="%I:%M %p")
 
     class Meta:
         model = Cafe

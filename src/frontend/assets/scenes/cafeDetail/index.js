@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import Slider from "react-slick";
-import {Table} from "reactstrap"
+import {Table, Button} from "reactstrap"
 import * as api from '../../api'
 
 export default class CafeDetail extends Component {
@@ -72,20 +72,33 @@ export default class CafeDetail extends Component {
             <div className="cafe-detail">
                 {cafe ?
                     <div className="cafe-detail-container">
-                        <Slider {...settings}>
-                            {photos.map((photo, i) => {
-                                return (
-                                    <div key={i} className="cafe-detail-photo">
-                                        <img src={photo}/>
-                                    </div>
-                                )
-                            })}
-                        </Slider>
-
-                        <Table responsive>
+                        <div className="cafe-detail-main">
+                            <p>{cafe.name}</p>
+                            <p className="cafe-detail-upload-info">
+                                <img src={cafe.uploader.profile_pic}/> {cafe.uploader.name}님이 {cafe.created}에 등록한 카페입니다.
+                            </p>
+                            {cafe.last_modifier ?
+                                <p className="cafe-detail-modify-info">
+                                    <img src={cafe.last_modifier.profile_pic}/> {cafe.last_modifier.name}님이 {cafe.modified}에 마지막으로 수정했습니다.</p>
+                                : null}
+                        </div>
+                        {photos.length == 0 ?
+                            <div className="cafe-detail-no-photos">아직 사진이 없습니다. 카페 사진을 업로드해주세요!</div>
+                            :
+                            <Slider className="cafe-detail-photo-slider" {...settings}>
+                                {photos.map((photo, i) => {
+                                    return (
+                                        <div key={i} className="cafe-detail-photo">
+                                            <img src={photo}/>
+                                        </div>
+                                    )
+                                })}
+                            </Slider>
+                        }
+                        <Table className="cafe-detail-info-table" responsive>
                             <tbody>
                             <tr>
-                                <th> 이름</th>
+                                <th>카페</th>
                                 <td>{cafe.name}</td>
                             </tr>
                             <tr>
@@ -98,11 +111,11 @@ export default class CafeDetail extends Component {
                             </tr>
                             <tr>
                                 <th>에스프레소 머신</th>
-                                <td>{cafe.machine}</td>
+                                <td>{cafe.machine ? cafe.machine : '아직 몰라요!'}</td>
                             </tr>
                             <tr>
                                 <th>그라인더</th>
-                                <td>{cafe.grinder}</td>
+                                <td>{cafe.grinder ? cafe.grinder : '아직 몰라요!'}</td>
                             </tr>
                             <tr>
                                 <th>영업시간</th>
@@ -110,21 +123,29 @@ export default class CafeDetail extends Component {
                             </tr>
                             <tr>
                                 <th>휴무일 / 공휴일 휴무</th>
-                                <td>{cafe.closed_day} / {cafe.closed_holiday ? cafe.closed_holiday : '아직 몰라요!'}</td>
+                                <td>{cafe.closed_day ? cafe.closed_day : '아직 몰라요!'} / {cafe.closed_holiday ? cafe.closed_holiday : '아직 몰라요!'}</td>
                             </tr>
                             <tr>
                                 <th>가격대</th>
-                                <td>{cafe.price}</td>
+                                <td>{cafe.price ? cafe.price : '아직 몰라요!'}</td>
                             </tr>
                             </tbody>
                         </Table>
                         <div className="cafe-detail-description">
                             <p>Description</p>
-                            {cafe.description}
+                            {cafe.description ? cafe.description : '카페 설명을 입력해주세요!'}
+
                         </div>
                         <div className="cafe-detail-navermap"
-                             ref={ref => {this.navermap = ref}}
-                             style={{width: 500, height: 500}}></div>
+                             ref={ref => {
+                                 this.navermap = ref
+                             }}
+                             style={{width: '100%', height: 500}}></div>
+                        <div className="cafe-detail-button-container">
+                            <Button outline color="primary" className="cafe-detail-cafe-list-btn">카페 리스트로</Button>
+                            <Button outline color="primary" className="cafe-detail-cafe-edit-btn">정보 수정하기</Button>
+                            <Button color="primary" className="cafe-detail-coffeemeeting-create-btn">커모 열기!</Button>
+                        </div>
                     </div>
                     : null}
             </div>
