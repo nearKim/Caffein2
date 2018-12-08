@@ -1,0 +1,109 @@
+[
+{
+    "model": "cafes.cafe",
+    "pk": 1,
+    "fields":
+    {
+        "created": "2018-11-10 03:40:56.023411",
+        "modified": "2018-11-10 03:40:58.337387",
+        "name": "아모르미오",
+        "address": "서울특별시 관악구 봉천동 1679-7 태화빌딩 1층",
+        "description": "낙성대역쪽에 위치한 벙커컴퍼니에서 직영하는 카페. 쥬시 아메리카노가 맛있다. 카페인 사람이라면 한번쯤 가봐야하는 카페.",
+        "phone": "070-8229-1456",
+        "machine": "",
+        "grinder": "",
+        "price": "MIDDLE",
+        "from_time": "10:00:00",
+        "to_time": "23:00:00",
+        "closed_day": "",
+        "closed_holiday": false,
+        "link": "http://www.facebook.com/AmorMioKorea",
+        "road_address": "서울특별시 관악구 행운2길 20 태화빌딩 1층",
+        "mapx": 308225,
+        "mapy": 542397,
+        "last_modifier_id": null,
+        "uploader_id": 7
+    }
+
+},
+{
+    "model": "cafes.cafe",
+    "pk": 2,
+    "fields":
+    {
+        "created": "2018-11-10 03:42:52.055442",
+        "modified": "2018-11-10 03:42:52.919140",
+        "name": "커피프레지던트",
+        "address": "서울특별시 서초구 방배동 753-7",
+        "description": "서울특별시 서초구 방배동 소재, 스페셜티커피, 마이크로로스터리샵.",
+        "phone": "02-532-3578",
+        "machine": "",
+        "grinder": "",
+        "price": "MIDDLE",
+        "from_time": "10:00:00",
+        "to_time": "00:00:00",
+        "closed_day": "",
+        "closed_holiday": false,
+        "link": "http://www.coffeepresident.com/",
+        "road_address": "서울특별시 서초구 동광로1길 107",
+        "mapx": 310328,
+        "mapy": 544328,
+        "last_modifier_id": 7,
+        "uploader_id": 2
+    }
+
+},
+{
+    "model": "cafes.cafe",
+    "pk": 3,
+    "fields":
+    {
+        "created": "2018-11-10 03:47:32.990153",
+        "modified": "2018-11-10 03:47:32.993284",
+        "name": "벙커컴퍼니",
+        "address": "경기도 하남시 상산곡동 123",
+        "description": "낙성대역에서 하남시로 이사간 스페셜티 커피 로스터리 카페. 아마 여러분이 동방에서 마시는 커피도 벙커컴퍼니의 작품일 것.",
+        "phone": "031-795-1456",
+        "machine": "",
+        "grinder": "",
+        "price": "CHEAP",
+        "from_time": "10:00:00",
+        "to_time": "21:00:00",
+        "closed_day": "",
+        "closed_holiday": false,
+        "link": "",
+        "road_address": "경기도 하남시 하남대로249번길 16-16",
+        "mapx": 332258,
+        "mapy": 544262,
+        "last_modifier_id": 3,
+        "uploader_id": 4
+    }
+
+},
+{
+    "model": "cafes.cafe",
+    "pk": 4,
+    "fields":
+    {
+        "created": "2018-11-12 11:26:25.849929",
+        "modified": "2018-11-12 11:26:26.194026",
+        "name": "학림다방",
+        "address": "서울특별시 종로구 명륜4가 94-2",
+        "description": "종로구 명륜4가 위치, 커피전문점.",
+        "phone": "02-742-2877",
+        "machine": "",
+        "grinder": "",
+        "price": "",
+        "from_time": null,
+        "to_time": null,
+        "closed_day": "",
+        "closed_holiday": false,
+        "link": "http://hakrim.pe.kr/",
+        "road_address": "서울특별시 종로구 대학로 119",
+        "mapx": 312021,
+        "mapy": 553772,
+        "last_modifier_id": 7,
+        "uploader_id": 7
+    }
+
+}]

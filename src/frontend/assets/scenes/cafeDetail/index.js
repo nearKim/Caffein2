@@ -32,7 +32,28 @@ export default class CafeDetail extends Component {
                     cafe: res,
                     photos: res.photos.flatMap(photo => photo.image)
                 })
+                //  카페 데이터가 모두 전송되면 네이버지도에 데이터를 뿌려준다
+                this.loadNaverMap(res.mapx, res.mapy)
             })
+    }
+
+    loadNaverMap(x, y) {
+        let position = new naver.maps.Point(x, y)
+
+        let map = new naver.maps.Map(this.navermap, {
+            center: position,
+            zoom: 10,
+            mapTypes: new naver.maps.MapTypeRegistry({
+                'normal': naver.maps.NaverMapTypeOption.getNormalMap({
+                    projection: naver.maps.TM128Coord
+                })
+            }),
+        })
+        let marker = new naver.maps.Marker({
+            map: map,
+            position: position,
+            zIndex: 100,
+        })
     }
 
     render() {
@@ -85,7 +106,7 @@ export default class CafeDetail extends Component {
                             </tr>
                             <tr>
                                 <th>영업시간</th>
-                                <td>{cafe.from_time ? cafe.from_time : '아직 몰라요!'} ~ {cafe.to_time ? cafe.to_time: '아직 몰라요!'}</td>
+                                <td>{cafe.from_time ? cafe.from_time : '아직 몰라요!'} ~ {cafe.to_time ? cafe.to_time : '아직 몰라요!'}</td>
                             </tr>
                             <tr>
                                 <th>휴무일 / 공휴일 휴무</th>
@@ -101,7 +122,9 @@ export default class CafeDetail extends Component {
                             <p>Description</p>
                             {cafe.description}
                         </div>
-                        <div className="cafe-detail-navermap">MAP</div>
+                        <div className="cafe-detail-navermap"
+                             ref={ref => {this.navermap = ref}}
+                             style={{width: 500, height: 500}}></div>
                     </div>
                     : null}
             </div>
