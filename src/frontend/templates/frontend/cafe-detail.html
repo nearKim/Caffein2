@@ -14,6 +14,8 @@
     <title>Cafe-detail</title>
 </head>
 <body>
+<!--네이버맵 자바스크립트 로딩-->
+{% include "core/navermap_script.html" %}
 <section class="section">
     <div id="root"
          data-token={{ jwt }}
@@ -22,7 +24,5 @@
 </section>
 </body>
 {% load static %}
-<script src="{% static "frontend/cafeDetail.js" %}"></script>
-<!--네이버맵 자바스크립트 로딩-->
-{% include "core/navermap_script.html" %}
+<script src="{% static "frontend/cafeDetailEdit.js" %}"></script>
 </html>

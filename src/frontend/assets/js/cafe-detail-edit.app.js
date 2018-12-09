@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom"
 import dataset from 'dataset'
-import CafeDetail from '../assets/scenes/cafeDetail'
+import CafeDetailEdit from './scenes/cafe/cafe-detail-edit'
 
 const root = document.getElementById("root")
 if (root) {
@@ -10,5 +10,5 @@ if (root) {
         cafe_id: root.dataset ? root.dataset.cafe_id : dataset(root, 'cafe_id')
     }
 
-    ReactDOM.render(<CafeDetail {...props} />, root)
+    ReactDOM.render(<CafeDetailEdit {...props} />, root)
 }

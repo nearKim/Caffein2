@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Button, ButtonGroup} from "reactstrap"
-import * as api from '../../api'
-import CafeCard from '../../common/CafeCard'
+import * as api from '../../../api'
+import CafeCard from '../../../common/CafeCard'
 
 export default class CafeList extends Component {
     constructor(props) {

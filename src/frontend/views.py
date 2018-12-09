@@ -19,7 +19,7 @@ def index(request):
     return render(request, 'frontend/cafe-list.html', context={'jwt': token})
 
 
-def cafe_detail(request, pk):
+def cafe_detail_edit(request, pk):
     """
     주어진 pk의 카페의 정보를 반환한다.
     API 인증처리를 위해 유저의 jwt 토큰을 발급하여 함께 전달한다.

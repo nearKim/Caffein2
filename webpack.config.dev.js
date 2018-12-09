@@ -22,8 +22,8 @@ module.exports = (env) => {
     const path = require('path');
     return {
         entry: {
-            cafeList: './src/frontend/assets/cafe-list.app.js',
-            cafeDetail: './src/frontend/assets/cafe-detail.app.js',
+            cafeList: './src/frontend/assets/js/cafe-list.app.js',
+            cafeDetailEdit: './src/frontend/assets/js/cafe-detail-edit.app.js',
         },
         output: {
             path: path.resolve(__dirname, 'src/frontend/static/frontend/'),

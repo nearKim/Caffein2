@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom"
 import dataset from 'dataset'
-import CafeList from "./scenes/cafeList"
+import CafeList from "./scenes/cafe/cafe-list"
 
 const root = document.getElementById("root")
 if (root) {

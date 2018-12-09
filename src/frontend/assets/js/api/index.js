@@ -1,6 +1,6 @@
 import FormData from 'form-data'
 
-let api_root = process.env.API_URL + '/api'
+let api_root = process.env.ROOT_URL + '/api'
 
 export function fetchWithAuth(url, options) {
     return fetch(url, {

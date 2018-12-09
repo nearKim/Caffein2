@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development --env.API_URL=http://127.0.0.1:8000 --config webpack.config.dev.js",
-    "build": "webpack --mode production --env.API_URL=https://www.snucoffee.com --config webpack.config.build.js  ./src/frontend/assets/cafe.app.js --output ./src/frontend/static/frontend/cafe-main.js"
+    "dev": "webpack --mode development --env.ROOT_URL=http://localhost:8000 --config webpack.config.dev.js",
+    "build": "webpack --mode production --env.ROOT_URL=https://www.snucoffee.com --config webpack.config.build.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,12 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "babel-loader": "^8.0.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "node-sass": "^4.10.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "bootstrap": "^4.1.3",
     "dataset": "^0.3.2",
     "form-data": "^2.3.3",
