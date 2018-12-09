@@ -41,32 +41,37 @@ export default class CafeDetailView extends Component {
 
     render() {
         let {cafe, photos, editButtonClickHandler} = this.props
-        const settings = {
+        const mapSettings = {
             dots: true,
             infinite: true,
             speed: 500,
             slidesToShow: 1,
             slidesToScroll: 1
         };
-
+        const profileSettings = { width:35, height:35}
 
         return (
             <div className="cafe-detail-container">
                 <div className="cafe-detail-main">
                     <p>{cafe.name}</p>
                     <p className="cafe-detail-upload-info">
-                        <img src={cafe.uploader.profile_pic}/> {cafe.uploader.name}님이 {cafe.created}에 등록한 카페입니다.
+                        <img src={cafe.uploader.profile_pic}
+                             class="img-profile"
+                             style={profileSettings}/>
+                        {cafe.uploader.name}님이 {cafe.created}에 등록한 카페입니다.
                     </p>
                     {cafe.last_modifier ?
                         <p className="cafe-detail-modify-info">
-                            <img src={cafe.last_modifier.profile_pic}/> {cafe.last_modifier.name}님이 {cafe.modified}에
-                            마지막으로 수정했습니다.</p>
+                            <img src={cafe.last_modifier.profile_pic}
+                                 class="img-profile"
+                                 style={profileSettings}/>
+                            {cafe.last_modifier.name}님이 {cafe.modified}에 마지막으로 수정했습니다.</p>
                         : null}
                 </div>
                 {photos.length == 0 ?
                     <div className="cafe-detail-no-photos">아직 사진이 없습니다. 카페 사진을 업로드해주세요!</div>
                     :
-                    <Slider className="cafe-detail-photo-slider" {...settings}>
+                    <Slider className="cafe-detail-photo-slider" {...mapSettings}>
                         {photos.map((photo, i) => {
                             return (
                                 <div key={i} className="cafe-detail-photo">

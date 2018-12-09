@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +12,8 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"/>
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"/>
+    <!-- 메인 style css 파일은 마지막에 전체 오버라이드해준다.-->
+    <link rel="stylesheet" href="{% static "assets/css/style.css" %}">
     <title>Cafe-detail</title>
 </head>
 <body>
@@ -23,6 +26,5 @@
          class="columns"><!-- React --></div>
 </section>
 </body>
-{% load static %}
 <script src="{% static "frontend/cafeDetailEdit.js" %}"></script>
 </html>
