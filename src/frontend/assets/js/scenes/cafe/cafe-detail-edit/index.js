@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import * as api from '../../../api'
 import CafeDetailView from "./scenes/CafeDetailView";
+import CafeEditView from "./scenes/CafeEditView";
 
 export default class CafeDetailEdit extends Component {
     constructor(props) {
@@ -51,6 +52,11 @@ export default class CafeDetailEdit extends Component {
                         cafe={this.state.cafe}
                         photos={this.state.photos}
                         editButtonClickHandler={this.onCafeEditButtonClicked}/>
+                    : null}
+                {this.state.viewmode == 'edit' ?
+                    <CafeEditView
+                        cafe={this.state.cafe}
+                        photos={this.state.photos}/>
                     : null}
             </div>
         )
