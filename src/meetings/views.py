@@ -19,7 +19,7 @@ from django.views.generic.edit import (
 from accounts.models import ActiveUser
 from cafes.models import Cafe, CafePhoto
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin, StaffRequiredMixin, ValidAuthorRequiredMixin
+from core.mixins import StaffRequiredMixin, ValidAuthorRequiredMixin
 from meetings.mixins import OfficialMeetingCreateUpdateMixin, CoffeeEducationCreateUpdateMixin, \
     CoffeeMeetingCreateUpdateMixin
 
@@ -54,7 +54,7 @@ class OfficialAndEducationListView(LoginRequiredMixin, ListView):
 
 # CRUD for OfficialMeeting
 
-class OfficialMeetingCreateView(StaffRequiredMixin, FaceBookPostMixin, OfficialMeetingCreateUpdateMixin, CreateView):
+class OfficialMeetingCreateView(StaffRequiredMixin, OfficialMeetingCreateUpdateMixin, CreateView):
     def form_valid(self, form):
         instance = form.save()
         self.message = '{}님이 공식모임을 생성하였습니다. 아래 링크에서 확인해주세요!'.format(self.request.user.name)
@@ -104,7 +104,7 @@ class OfficialMeetingDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
 
 # CoffeeEducation
-class CoffeeEducationCreateView(StaffRequiredMixin, FaceBookPostMixin, CoffeeEducationCreateUpdateMixin, CreateView):
+class CoffeeEducationCreateView(StaffRequiredMixin, CoffeeEducationCreateUpdateMixin, CreateView):
 
     def form_valid(self, form):
         instance = form.save()
@@ -155,7 +155,7 @@ class CoffeeEducationDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
 
 # CoffeeMeeting
-class CoffeeMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
+class CoffeeMeetingCreateView(LoginRequiredMixin, CoffeeMeetingCreateUpdateMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.cafe = get_object_or_404(Cafe, pk=self.kwargs['pk'])
 

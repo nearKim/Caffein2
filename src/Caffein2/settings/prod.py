@@ -9,12 +9,12 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 # Facebook
 # snucoffee계정
-APP_ID = os.environ['FACEBOOK_APP_ID']
-APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
+# APP_ID = os.environ['FACEBOOK_APP_ID']
+# APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
 # FIXME: 이 그룹은 현재 snucoffee계정이 가입한 django_test 그룹이다.
-FACEBOOK_GROUP_ID = '542458402875116'  # django_test
+# FACEBOOK_GROUP_ID = '542458402875116'  # django_test
 # FIXME: 이 토큰은 2개월후 만료된다.
-FACEBOOK_TOKEN = os.environ['FACEBOOK_APP_TOKEN_60']
+# FACEBOOK_TOKEN = os.environ['FACEBOOK_APP_TOKEN_60']
 
 # NaverMap
 NAVER_CLIENT_ID = os.environ['NAVER_CLIENT_ID']
