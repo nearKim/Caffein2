@@ -11,7 +11,7 @@ from django.views.generic.edit import (
     DeleteView, FormMixin)
 
 from comments.forms import CommentForm
-from core.mixins import FaceBookPostMixin, ValidAuthorRequiredMixin
+from core.mixins import ValidAuthorRequiredMixin
 from core.models import FeedPhoto, OperationScheme, Instagram
 from meetings.models import CoffeeMeeting
 from partners.forms import PartnerMeetingForm, CoffeeMeetingFeedForm
@@ -75,7 +75,7 @@ class PartnerMeetingUpdateView(ValidAuthorRequiredMixin, PartnerMeetingUpdateCre
         return super(PartnerMeetingUpdateView, self).form_valid(form)
 
 
-class PartnerMeetingCreateView(LoginRequiredMixin, FaceBookPostMixin, PartnerMeetingUpdateCreateMixin, CreateView):
+class PartnerMeetingCreateView(LoginRequiredMixin, PartnerMeetingUpdateCreateMixin, CreateView):
     def get(self, request, **kwargs):
         # 유저가 속한 최신의 짝지 객체를 가져온다.
         try:
