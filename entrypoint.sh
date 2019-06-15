@@ -35,6 +35,15 @@ export NAVER_CLIENT_SECRET="$(aws ssm get-parameters \
                             --with-decryption \
                             --name /prod/naver/client_secret \
                             | jq -r '.Parameters | .[] |  .Value')"
+export LEGACY_NAVER_CLIENT_ID="$(aws ssm get-parameters \
+                            --region ${REGION} \
+                            --name /prod/naver/legacy_client_id \
+                            | jq -r '.Parameters | .[] | .Value')"
+export LEGACY_NAVER_CLIENT_SECRET="$(aws ssm get-parameters \
+                            --region ${REGION} \
+                            --with-decryption \
+                            --name /prod/naver/legacy_client_secret \
+                            | jq -r '.Parameters | .[] |  .Value')"
 export FACEBOOK_APP_ID="$(aws ssm get-parameters \
                             --region ${REGION} \
                             --name /prod/facebook/app_id \
